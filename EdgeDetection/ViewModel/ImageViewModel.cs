@@ -104,7 +104,6 @@ namespace EdgeDetection.ViewModel
         }
         private void Processing()
         {
-
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
 

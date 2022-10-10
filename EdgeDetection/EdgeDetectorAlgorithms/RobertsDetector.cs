@@ -12,15 +12,15 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
         public override string Name => "Roberts";
         private readonly double[][] Gx = new double[3][]
         {
-            new double[] { 0, 0, -1},
-            new double[] { 0, 1, 0 },
-            new double[] { 0, 0, 0 }
+            new double[] { 0.0, 0.0, -1.0},
+            new double[] { 0.0, 1.0, 0.0 },
+            new double[] { 0.0, 0.0, 0.0 }
         };
         private readonly double[][] Gy = new double[3][]
         {
-            new double[] {-1, 0, 0 },
-            new double[] { 0, 1, 0 },
-            new double[] { 0, 0, 0 }
+            new double[] {-1.0, 0.0, 0.0},
+            new double[] { 0.0, 1.0, 0.0 },
+            new double[] { 0.0, 0.0, 0.0 }
         };
 
         public RobertsDetector(){}
@@ -32,13 +32,13 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
 
             PixelArray imgGx = Convolution(Gx);
             PixelArray imgGy = Convolution(Gy);
+            watch.Stop();
+
             PixelArray magnitude = Magnitude(imgGx, imgGy);
 
-            watch.Stop();
             System.Diagnostics.Trace.WriteLine("Convolution:" + watch.ElapsedMilliseconds + " ms");
 
-
-            return imgGx.Bitmap;
+            return magnitude.Bitmap;
         }
 
 

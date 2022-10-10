@@ -59,58 +59,6 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
                 processedBitmap.UnlockBits(bitmapData);
             }
         }
-        public static Pixel[,] BitmapToDoubleArray(this Bitmap bitmap)
-        {
-            Pixel[,] image = new Pixel[bitmap.Width, bitmap.Height];
 
-            for (int x = 0; x < bitmap.Width; x++)
-            {
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    image[x, y] = bitmap.GetPixel(x, y);
-                }
-            }
-            return image;
-        }
-        public static Bitmap DoubleArrayToBitmap(Pixel[,] array, bool greyscale)
-        {
-            int width = array.GetLength(0);
-            int height = array.GetLength(1);
-            Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            double maxValue = MaxValue(array);
-            for (int x = 0; x < bitmap.Width; x++)
-            {
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    //bitmap.SetPixel(x, y, Color.FromArgb(DoubleToImage(array[x, y].R, maxValue),
-                    //                                     DoubleToImage(array[x, y].G, maxValue),
-                    //                                     DoubleToImage(array[x, y].B, maxValue)));
-                    if (!greyscale)
-                        bitmap.SetPixel(x, y, Color.FromArgb((int)array[x, y].R,
-                                                             (int)array[x, y].G,
-                                                             (int)array[x, y].B));
-                    else
-                        bitmap.SetPixel(x, y, Color.FromArgb((int)array[x, y].R,
-                                                             (int)array[x, y].R,
-                                                             (int)array[x, y].R));
-                }
-            }
-            return bitmap;
-        }
-        private static int DoubleToImage(double oldPixel, double maxValue)
-        {
-            if (oldPixel > 0)
-                return (int)(255 * oldPixel / maxValue);
-            return 0;
-        }
-        private static double MaxValue(Pixel[,] array)
-        {
-            double maxValue = 0;
-            foreach (Pixel pixel in array)
-            {
-                if (pixel.R > maxValue) maxValue = pixel.R;
-            }
-            return maxValue;
-        }
     }
 }

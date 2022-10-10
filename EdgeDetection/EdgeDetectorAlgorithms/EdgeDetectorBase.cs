@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace EdgeDetection.EdgeDetectorAlgorithms
 {
@@ -27,12 +28,26 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
 
         protected PixelArray Convolution(double[][] filter)
         {
+            return _isGrayscale ? Convolution2D(filter) : Convolution3D(filter);
+        }
+        protected PixelArray Magnitude(PixelArray imgGx, PixelArray imgGy)
+        {
+            PixelArray magnitudeImg = new PixelArray(_width, _height);
+            imgGx.AbsParallel();
+            imgGy.AbsParallel();
+            magnitudeImg = imgGx + imgGy;
+
+            return magnitudeImg;
+        }
+        private PixelArray Convolution3D(double[][] filter)
+        {
             PixelArray resultImg = new PixelArray(_width, _height);
             int limiter = (filter.GetLength(0) - 1) / 2;
 
             if (PixelArray is not null)
             {
-                for (int x = limiter; x < _width - limiter; x++)
+                //for (int x = limiter; x < _width - limiter; x++)
+                Parallel.For(limiter, _width - limiter, x =>
                 {
                     for (int y = limiter; y < _height - limiter; y++)
                     {
@@ -44,31 +59,37 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
                                 {
                                     resultImg[x, y, d] += PixelArray[x - m, y - n, d] * filter[m + limiter][n + limiter];
                                 }
-                                //if (!Greyscale)
-                                //    resultImg[x, y] += PixelArray[x - m, y - n] * filter[m + limiter][ n + limiter];
-                                //else
-                                //    resultImg[x, y].R += PixelArray[x - m, y - n].R * filter[m + limiter][ n + limiter];
                             }
                         }
                     }
-                }
+                });
             }
             return resultImg;
         }
-        protected PixelArray Magnitude(PixelArray imgGx, PixelArray imgGy)
+        private PixelArray Convolution2D(double[][] filter)
         {
-            PixelArray magnitudeImg = new PixelArray(_width, _height);
+            PixelArray resultImg = new PixelArray(_width, _height);
+            int limiter = (filter.GetLength(0) - 1) / 2;
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            imgGx.Abs();
-            imgGy.Abs();
-            magnitudeImg = imgGx + imgGy;
-
-            watch.Stop();
-            System.Diagnostics.Trace.WriteLine("Abs + magnitude:" + watch.ElapsedMilliseconds + " ms");
-
-            return magnitudeImg;
+            if (PixelArray is not null)
+            {
+                //for (int x = limiter; x < _width - limiter; x++)
+                Parallel.For(limiter, _width - limiter, x =>
+                {
+                    for (int y = limiter; y < _height - limiter; y++)
+                    {
+                        for (int m = -limiter; m <= limiter; m++)
+                        {
+                            for (int n = -limiter; n <= limiter; n++)
+                            {
+                                resultImg[x, y, 0] += PixelArray[x - m, y - n, 0] * filter[m + limiter][n + limiter];
+                            }
+                        }
+                        resultImg[x, y, 2] = resultImg[x, y, 1] = resultImg[x, y, 0];
+                    }
+                });
+            }
+            return resultImg;
         }
     }
 }
