@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EdgeDetection.Views
+namespace EdgeDetectionApp.Views
 {
     /// <summary>
     /// Logika interakcji dla klasy ChartView.xaml

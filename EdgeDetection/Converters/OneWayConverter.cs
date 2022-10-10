@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace EdgeDetection.Converters
+namespace EdgeDetectionApp.Converters
 {
     public class OneWayConverter
     {

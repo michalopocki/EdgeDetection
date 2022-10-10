@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     interface IEdgeDetector
     {

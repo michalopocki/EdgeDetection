@@ -1,17 +1,9 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public class PixelArray
     {
@@ -46,8 +38,6 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
         #region Get and Set pixel
         public double this[int x, int y, int dimension]
         {
-            //get => GetPixel(x, y, dimension);
-            //set => SetPixel(x, y, dimension, value);
             get => Bits[dimension * Width * Height + y * Width + x];
             set => Bits[dimension * Width * Height + y * Width + x] = value;
         }

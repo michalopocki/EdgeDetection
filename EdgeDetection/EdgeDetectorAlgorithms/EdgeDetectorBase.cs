@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public abstract class EdgeDetectorBase : IEdgeDetector
     {

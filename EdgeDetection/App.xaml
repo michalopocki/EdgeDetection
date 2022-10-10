@@ -1,7 +1,10 @@
-﻿<Application x:Class="EdgeDetection.App"
+﻿<Application x:Class="EdgeDetectionApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:EdgeDetection"
-             >
-    <Application.Resources/>
+             xmlns:local="clr-namespace:EdgeDetectionApp"
+             xmlns:vm ="clr-namespace:EdgeDetectionApp.ViewModel"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <vm:ViewModelLocator x:Key="ViewModelLocator" />
+    </Application.Resources>
 </Application>

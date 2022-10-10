@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public abstract class EdgeDetector
     {

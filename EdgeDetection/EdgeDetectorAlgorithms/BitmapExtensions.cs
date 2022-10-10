@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public static class BitmapExtensions
     {

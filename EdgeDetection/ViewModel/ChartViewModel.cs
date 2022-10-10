@@ -7,9 +7,9 @@ using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 
-namespace EdgeDetection.ViewModel
+namespace EdgeDetectionApp.ViewModel
 {
-    public class ChartViewModel : BaseViewModel
+    public class ChartViewModel : ViewModelBase
     {
         public SeriesCollection Series { get; set; }
 

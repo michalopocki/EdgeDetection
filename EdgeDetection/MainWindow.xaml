@@ -1,14 +1,15 @@
-﻿<Window x:Class="EdgeDetection.MainWindow"
+﻿<Window x:Class="EdgeDetectionApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EdgeDetection"
-        xmlns:mv ="clr-namespace:EdgeDetection.ViewModel"
-        xmlns:v="clr-namespace:EdgeDetection.Views"
-        xmlns:converters ="clr-namespace:EdgeDetection.Converters"
+        xmlns:local="clr-namespace:EdgeDetectionApp"
+        xmlns:mv ="clr-namespace:EdgeDetectionApp.ViewModel"
+        xmlns:v="clr-namespace:EdgeDetectionApp.Views"
+        xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
         mc:Ignorable="d"
         x:Name="mainWindow"
+        DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
         Title="Edge Detection" Height="600" Width="900">
     <!--<Window.DataContext>
         <mv:MainViewModel/>
@@ -24,14 +25,14 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" DataContext="{Binding ImageViewModel}">
-            <Image Margin="20" MaxHeight="{Binding ElementName=mainWindow, Path=ActualHeight}" Height="300" 
+        <StackPanel Grid.Column="0">
+            <Image Margin="20" Height="300" 
                Source="{Binding Path=ProcessedImage, Mode=OneWay, Converter={StaticResource bitmapToBitmapImageConverter}}" />
             <Button Width="100" Height="25" Content="Process..." Command="{Binding Process}"/>
             <Button Width="100" Height="25" Content="Load" Margin="10" HorizontalAlignment="Left" Command="{Binding Load}"/>
             <Button Width="100" Height="25" Content="Save as..." Margin="10" HorizontalAlignment="Left" Command="{Binding SaveAs}"/>
         </StackPanel>
-        <Grid Grid.Column="1" Height="300" DataContext="{Binding ImageViewModel}">
+        <Grid Grid.Column="1" Height="300">
             <!--<ContentPresenter Content="{Binding ChartView}" />-->
             <v:ChartView />
         </Grid>

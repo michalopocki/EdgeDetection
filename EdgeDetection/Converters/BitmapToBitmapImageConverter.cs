@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
-namespace EdgeDetection.Converters
+namespace EdgeDetectionApp.Converters
 {
     public class BitmapToBitmapImageConverter : OneWayConverter, IValueConverter
     {

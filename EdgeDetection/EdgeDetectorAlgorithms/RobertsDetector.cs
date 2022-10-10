@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EdgeDetection.EdgeDetectorAlgorithms
+namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public class RobertsDetector : EdgeDetectorBase
     {
@@ -40,23 +40,5 @@ namespace EdgeDetection.EdgeDetectorAlgorithms
 
             return magnitude.Bitmap;
         }
-
-
-
-
-        //public RobertsDetector(Bitmap originalImg) : base(originalImg){}
-
-        //public override Bitmap DetectEdges()
-        //{
-        //    Pixel[,] imgGx = Convolution(Gx);
-        //    Pixel[,] imgGy = Convolution(Gy);
-        //    PixelArray = Magnitude(imgGx, imgGy);
-        //    var watch = System.Diagnostics.Stopwatch.StartNew();
-        //    Bitmap bmp = BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-        //    //return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-        //    watch.Stop();
-        //    System.Diagnostics.Trace.WriteLine("PixelArr to Bitmap:" + watch.ElapsedMilliseconds + " ms");
-        //    return bmp;
-        //}
     }
 }

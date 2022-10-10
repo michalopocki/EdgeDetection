@@ -1,4 +1,7 @@
-﻿using EdgeDetection.ViewModel;
+﻿using BuildYourOwnMessenger.Services;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using EdgeDetectionApp.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,27 +10,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace EdgeDetection
+namespace EdgeDetectionApp
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        public ViewModelLocator ViewModelLocator { get { return (ViewModelLocator)Current.TryFindResource("ViewModelLocator"); } }
+        public App()
         {
-            ImageViewModel imageViewModel = new ImageViewModel();
-            ChartViewModel chartViewModel = new ChartViewModel();
-            MainViewModel mainViewModel = new MainViewModel(imageViewModel, chartViewModel);
-
-            MainWindow = new MainWindow()
-            {
-                DataContext = mainViewModel
-            };
-            MainWindow.Show();
-
-
-            base.OnStartup(e);
+            SetupDependencyInjection();
+        }
+        private void SetupDependencyInjection()
+        {
+            Ioc.Default.ConfigureServices(
+                new ServiceCollection()
+                    .AddSingleton<IMessenger, Messenger>()
+                    .AddViewModels<ViewModelBase>()
+                    .BuildServiceProvider()
+            );
         }
     }
 }
