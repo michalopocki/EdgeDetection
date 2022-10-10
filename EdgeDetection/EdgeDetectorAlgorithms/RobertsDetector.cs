@@ -7,58 +7,56 @@ using System.Threading.Tasks;
 
 namespace EdgeDetection.EdgeDetectorAlgorithms
 {
-    public class RobertsDetector : EdgeDetector
+    public class RobertsDetector : EdgeDetectorBase
     {
-        protected override Pixel[,] PixelArray { get; set; }
-        protected override int Width { get => _width; set => _width = value; }
-        protected override int Height { get => _height; set => _height = value; }
-        protected override bool Greyscale { get => _greyscale; set => _greyscale = value; }
-
-        private readonly double[,] Gx = new double[3, 3]
+        public override string Name => "Roberts";
+        private readonly double[][] Gx = new double[3][]
         {
-             {0, 0, -1 },
-             {0, 1, 0 },
-             {0, 0, 0 }
+            new double[] { 0, 0, -1},
+            new double[] { 0, 1, 0 },
+            new double[] { 0, 0, 0 }
         };
-        private readonly double[,] Gy = new double[3, 3]
+        private readonly double[][] Gy = new double[3][]
         {
-             {-1, 0, 0 },
-             {0, 1, 0 },
-             {0, 0, 0 }
+            new double[] {-1, 0, 0 },
+            new double[] { 0, 1, 0 },
+            new double[] { 0, 0, 0 }
         };
 
-        public RobertsDetector(Bitmap originalImg) : base(originalImg){}
-        public Bitmap DoNothing()
-        {
-            return BitmapExtensions.DoubleArrayToBitmap(PixelArray, false);
-        }
-        public override Bitmap MakeGreyscale()
-        {
-            PixelArray = ImageInGreyscale();
-            Greyscale = true;
-            return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-        }
+        public RobertsDetector(){}
+        public RobertsDetector(Bitmap bitmap, bool isGrayscale = false) : base(bitmap, isGrayscale) {}
+
         public override Bitmap DetectEdges()
         {
-            Pixel[,] imgGx = Convolution(Gx);
-            Pixel[,] imgGy = Convolution(Gy);
-            PixelArray = Magnitude(imgGx, imgGy);
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            Bitmap bmp = BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-            //return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
+
+            PixelArray imgGx = Convolution(Gx);
+            PixelArray imgGy = Convolution(Gy);
+            PixelArray magnitude = Magnitude(imgGx, imgGy);
+
             watch.Stop();
-            System.Diagnostics.Trace.WriteLine("PixelArr to Bitmap:" + watch.ElapsedMilliseconds + " ms");
-            return bmp;
+            System.Diagnostics.Trace.WriteLine("Convolution:" + watch.ElapsedMilliseconds + " ms");
+
+
+            return imgGx.Bitmap;
         }
-        public override Bitmap ApplyThresholding(int threshold)
-        {
-            PixelArray = Thresholing(threshold);
-            return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-        }
-        public override Bitmap MakeNegative()
-        {
-            PixelArray = Negative();
-            return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
-        }
+
+
+
+
+        //public RobertsDetector(Bitmap originalImg) : base(originalImg){}
+
+        //public override Bitmap DetectEdges()
+        //{
+        //    Pixel[,] imgGx = Convolution(Gx);
+        //    Pixel[,] imgGy = Convolution(Gy);
+        //    PixelArray = Magnitude(imgGx, imgGy);
+        //    var watch = System.Diagnostics.Stopwatch.StartNew();
+        //    Bitmap bmp = BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
+        //    //return BitmapExtensions.DoubleArrayToBitmap(PixelArray, Greyscale);
+        //    watch.Stop();
+        //    System.Diagnostics.Trace.WriteLine("PixelArr to Bitmap:" + watch.ElapsedMilliseconds + " ms");
+        //    return bmp;
+        //}
     }
 }

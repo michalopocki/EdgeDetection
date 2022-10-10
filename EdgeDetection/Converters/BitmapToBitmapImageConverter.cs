@@ -10,8 +10,6 @@ namespace EdgeDetection.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
             MemoryStream ms = new MemoryStream();
             ((System.Drawing.Bitmap)value).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
             var image = new BitmapImage();
@@ -19,9 +17,6 @@ namespace EdgeDetection.Converters
             ms.Seek(0, SeekOrigin.Begin);
             image.StreamSource = ms;
             image.EndInit();
-
-            watch.Stop();
-            System.Diagnostics.Trace.WriteLine("Bitmap To Image source:" + watch.ElapsedMilliseconds + " ms");
 
             return image;
         }

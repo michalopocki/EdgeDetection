@@ -1,5 +1,4 @@
 ﻿using EdgeDetection.EdgeDetectorAlgorithms;
-using EdgeDetection.Model;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

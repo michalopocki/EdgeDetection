@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace EdgeDetection.ViewModel
 {
-    public class ImageViewModel :BaseViewModel
+    public class ImageViewModel : BaseViewModel
     {
         #region Properties
         private Bitmap _originalImage;
@@ -88,7 +88,7 @@ namespace EdgeDetection.ViewModel
         public ImageViewModel()
         {
             OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetection\bin\Debug\net6.0-windows\ptak3.jpg");
-            ProcessedImage = OriginalImage;
+            ProcessedImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetection\bin\Debug\net6.0-windows\ptak3.jpg");
             ChartView = new Views.ChartView();
             SetupCommands();
         }
@@ -104,28 +104,17 @@ namespace EdgeDetection.ViewModel
         }
         private void Processing()
         {
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            //Bitmap bitmap = BitmapExtensions.MakeGrayscale(ProcessedImage);
-            //Pixel[,] pixels = BitmapExtensions.BitmapToDoubleArray(bitmap);
-            //ProcessedImage = bitmap;
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            //Pixel[,] pixAr = BitmapExtensions.BitmapToDoubleArray(OriginalImage);
 
-            // var watch = System.Diagnostics.Stopwatch.StartNew();
-            // TestDetector testDetector = new TestDetector(pixAr);
-
-            // var watch = System.Diagnostics.Stopwatch.StartNew();
-            //ProcessedImage = testDetector.MakeGreyscale();
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            RobertsDetector robertsDetector = new RobertsDetector(OriginalImage);
-            // robertsDetector.MakeGreyscale();
-            // var watch = System.Diagnostics.Stopwatch.StartNew();
-            ProcessedImage = robertsDetector.DetectEdges();
-            watch.Stop();
-            //var img = robertsDetector.DoNothing();
-            //ProcessedImage = robertsDetector.ApplyThresholding(100);
-            // ProcessedImage = robertsDetector.MakeNegative();
-            //watch.Stop();
+
+
+            RobertsDetector detector = new RobertsDetector(OriginalImage, false);
+            Bitmap bmp = detector.DetectEdges();
+
+            ProcessedImage = bmp;
+            //OriginalImage = mbp;
+
+            watch.Stop();   
             System.Diagnostics.Trace.WriteLine("Roberts detector:" + watch.ElapsedMilliseconds + " ms");
         }
         private void LoadImage()
