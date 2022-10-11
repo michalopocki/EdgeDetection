@@ -9,30 +9,15 @@
              mc:Ignorable="d" 
              DataContext="{Binding Path=ChartViewModel, Source={StaticResource ViewModelLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <lvc:CartesianChart Background="#222E31" Series="{Binding Series}" Margin="10">
-            <!--<lvc:CartesianChart.Resources>
-                <Style TargetType="lvc:DefaultTooltip">
-                    <Setter Property="Background" Value="DarkOrange"></Setter>
-                    <Setter Property="Foreground" Value="White"></Setter>
-                    <Setter Property="ShowTitle" Value="False"></Setter>
-                    <Setter Property="ShowSeries" Value="False"></Setter>
-                    <Setter Property="FontSize" Value="16"></Setter>
-                    <Setter Property="FontWeight" Value="Bold"></Setter>
-                    <Setter Property="CornerRadius" Value="20"></Setter>
-                    <Setter Property="Width" Value="40"></Setter>
-                    <Setter Property="Height" Value="40"></Setter>
-                    <Setter Property="BorderThickness" Value="0"></Setter>
-                </Style>
-            </lvc:CartesianChart.Resources>-->
-            <!--<lvc:CartesianChart.Series>
-                <lvc:LineSeries Values="{Binding Series}"/>
-                <lvc:LineSeries Values="{Binding Series}"/>
-            </lvc:CartesianChart.Series>-->
+    <DockPanel LastChildFill="True" Background="#222E31">
+        <TextBlock DockPanel.Dock="Top" Text="Luminance Histogram" FontSize="20" FontWeight="Bold"
+                   Foreground="#A9A9A9"  HorizontalAlignment="Center"/>
+        <lvc:CartesianChart Series="{Binding Series}" Margin="10,10,20,20"
+                            DisableAnimations="True" Hoverable="False" Zoom="X" >
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis IsMerged="True">
+                <lvc:Axis IsMerged="True" MinValue="0" MaxValue="260" Title="Pixel Intensity" FontSize="14">
                     <lvc:Axis.Separator>
-                        <lvc:Separator StrokeThickness="1" StrokeDashArray="2">
+                        <lvc:Separator StrokeThickness="1" StrokeDashArray="2" Step="20">
                             <lvc:Separator.Stroke>
                                 <SolidColorBrush Color="#404F56">
                                 </SolidColorBrush>
@@ -42,7 +27,7 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisX>
             <lvc:CartesianChart.AxisY>
-                <lvc:Axis IsMerged="True">
+                <lvc:Axis IsMerged="True" Title="Occurrence" FontSize="14" MinValue="0">
                     <lvc:Axis.Separator>
                         <lvc:Separator StrokeThickness="1.5" StrokeDashArray="4">
                             <lvc:Separator.Stroke>
@@ -54,5 +39,5 @@
                 </lvc:Axis>
             </lvc:CartesianChart.AxisY>
         </lvc:CartesianChart>
-    </Grid>
+    </DockPanel>
 </UserControl>

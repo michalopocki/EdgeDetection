@@ -12,6 +12,7 @@
         md:DialogServiceViews.IsRegistered="True"
         x:Name="mainWindow"
         DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
+        Background="#222E31"
         Title="Edge Detection" Height="600" Width="900">
     <Window.Resources>
         <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
@@ -21,13 +22,19 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
-            <Image Margin="20" Height="300" 
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Image Margin="20" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                Source="{Binding Path=ProcessedImage, Mode=OneWay, Converter={StaticResource bitmapToBitmapImageConverter}}" />
-            <Button Width="100" Height="25" Content="Process..." Command="{Binding Process}"/>
-            <Button Width="100" Height="25" Content="Load" Margin="10" HorizontalAlignment="Left" Command="{Binding Load}"/>
-            <Button Width="100" Height="25" Content="Save as..." Margin="10" HorizontalAlignment="Left" Command="{Binding SaveAs}"/>
-        </StackPanel>
+            <StackPanel Grid.Row="1">
+                <Button Width="100" Height="25" Content="Process..." Command="{Binding Process}"/>
+                <Button Width="100" Height="25" Content="Load" Margin="10" HorizontalAlignment="Left" Command="{Binding Load}"/>
+                <Button Width="100" Height="25" Content="Save as..." Margin="10" HorizontalAlignment="Left" Command="{Binding SaveAs}"/>
+            </StackPanel>
+        </Grid>
         <Grid Grid.Column="1">
             <Grid>
                 <Grid.RowDefinitions>
@@ -35,7 +42,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <GroupBox Grid.Row="0" Header="Edge Detection Method" Margin="10">
-                    <ListBox x:Name="EdgeDetectorsListBox" ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector, Mode=TwoWay}" BorderBrush="Transparent" SelectedIndex="0">
+                    <ListBox x:Name="EdgeDetectorsListBox" Background="#222E31"
+                             ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector, Mode=TwoWay}" BorderBrush="Transparent" SelectedIndex="0">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>

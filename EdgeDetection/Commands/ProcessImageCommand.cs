@@ -1,6 +1,7 @@
 ﻿using BuildYourOwnMessenger.Services;
 using EdgeDetectionApp.EdgeDetectorAlgorithms;
 using EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram;
+using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.ViewModel;
 using MVVMEssentials.Commands;
 using System;
@@ -42,14 +43,12 @@ namespace EdgeDetectionApp.Commands
             Bitmap processedImage = await Task.Run(() => edgeDetector.DetectEdges());
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            IHistogram histogram = new Histogram(processedImage);
-            HistogramResults results = histogram.Calculate();
             
             watch.Stop();
             System.Diagnostics.Trace.WriteLine("Roberts detector:" + watch.ElapsedMilliseconds + " ms");
 
             _mainViewModel.ProcessedImage = processedImage;
-            _messenger.Send(results);
+            _messenger.Send(new HistogramDataChangedMessage(processedImage, false));
         }
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

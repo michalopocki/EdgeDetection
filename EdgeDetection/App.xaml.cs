@@ -1,6 +1,7 @@
 ﻿using BuildYourOwnMessenger.Services;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using EdgeDetectionApp.EdgeDetectorAlgorithms;
+using EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram;
 using EdgeDetectionApp.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using MvvmDialogs;
@@ -31,6 +32,7 @@ namespace EdgeDetectionApp
                     .AddSingleton<IDialogService, DialogService>()
                     .AddSingleton<IMessenger, Messenger>()
                     .AddSingleton<IEdgeDetectorFactory>(new EdgeDetectorFactory())
+                    .AddSingleton<IHistogramFactory>(new HistogramFactory())
                     .AddViewModels<ViewModelBase>()
                     .BuildServiceProvider()
             );

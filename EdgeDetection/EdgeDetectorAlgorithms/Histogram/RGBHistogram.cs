@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
 {
-    public class Histogram : IHistogram
+    public class RGBHistogram : IHistogram
     {
         private readonly PixelArray _PixelArray;
 
-        public Histogram(Bitmap bitmap)
+        public RGBHistogram(Bitmap bitmap)
         {
             _PixelArray = new PixelArray(bitmap);
         }
@@ -23,21 +23,22 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
 
             for (int x = 0; x < width; x++)
             {
-                for(int y = 0; y < height; y++)
+                for (int y = 0; y < height; y++)
                 {
                     for (int d = 0; d < 3; d++)
                     {
-                        if (d == 0)
+                        switch (d)
                         {
-                            results.R_Series[(int)_PixelArray[x, y, d]]++;
-                        }
-                        if (d == 1)
-                        {
-                            results.G_Series[(int)_PixelArray[x, y, d]]++;
-                        }
-                        if (d == 2)
-                        {
-                            results.B_Series[(int)_PixelArray[x, y, d]]++;
+                            case 0:
+                                results.R_Series[(int)_PixelArray[x, y, d]]++;
+                                break;
+                            case 1:
+                                results.G_Series[(int)_PixelArray[x, y, d]]++;
+                                break;
+                            case 2:
+                                results.B_Series[(int)_PixelArray[x, y, d]]++;
+                                break;
+
                         }
                     }
                 }

@@ -12,5 +12,6 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
         public List<int> R_Series { get; set; } = new List<int>(new int[ColorDepth]);
         public List<int> G_Series { get; set; } = new List<int>(new int[ColorDepth]);
         public List<int> B_Series { get; set; } = new List<int>(new int[ColorDepth]);
+        public List<int> Gray_Series { get; set; } = new List<int>(new int[ColorDepth]);
     }
 }
