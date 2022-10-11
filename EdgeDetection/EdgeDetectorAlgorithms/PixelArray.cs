@@ -133,7 +133,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         {
             unsafe
             {
-                Bitmap processedBitmap = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+                Bitmap processedBitmap = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
                 BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.WriteOnly, processedBitmap.PixelFormat);
 
                 int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;

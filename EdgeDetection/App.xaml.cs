@@ -1,7 +1,9 @@
 ﻿using BuildYourOwnMessenger.Services;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using EdgeDetectionApp.EdgeDetectorAlgorithms;
 using EdgeDetectionApp.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
+using MvvmDialogs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -26,7 +28,9 @@ namespace EdgeDetectionApp
         {
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
+                    .AddSingleton<IDialogService, DialogService>()
                     .AddSingleton<IMessenger, Messenger>()
+                    .AddSingleton<IEdgeDetectorFactory>(new EdgeDetectorFactory())
                     .AddViewModels<ViewModelBase>()
                     .BuildServiceProvider()
             );

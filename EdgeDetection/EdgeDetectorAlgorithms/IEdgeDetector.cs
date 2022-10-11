@@ -3,7 +3,7 @@
 
 namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
-    interface IEdgeDetector
+    public interface IEdgeDetector
     {
         string Name { get; }
         Bitmap DetectEdges();

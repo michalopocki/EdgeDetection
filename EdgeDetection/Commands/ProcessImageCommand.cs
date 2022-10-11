@@ -14,10 +14,12 @@ namespace EdgeDetectionApp.Commands
     public class ProcessImageCommand : AsyncCommandBase
     {
         private readonly MainViewModel _mainViewModel;
+        private readonly IEdgeDetectorFactory _edgeDetectorFactory;
 
-        public ProcessImageCommand(MainViewModel imageViewModel)
+        public ProcessImageCommand(MainViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory)
         {
             _mainViewModel = imageViewModel;
+            _edgeDetectorFactory = edgeDetectorFactory;
             _mainViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
@@ -30,8 +32,10 @@ namespace EdgeDetectionApp.Commands
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            RobertsDetector robertsDetector = new RobertsDetector(_mainViewModel.OriginalImage, false);
-            Bitmap processedImage = await Task.Run(() => robertsDetector.DetectEdges());
+            //RobertsDetector robertsDetector = new RobertsDetector(_mainViewModel.OriginalImage, false);
+            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(_mainViewModel.SelectedEdgeDetector, _mainViewModel.OriginalImage, false);
+
+            Bitmap processedImage = await Task.Run(() => edgeDetector.DetectEdges());
 
             watch.Stop();
             System.Diagnostics.Trace.WriteLine("Roberts detector:" + watch.ElapsedMilliseconds + " ms");

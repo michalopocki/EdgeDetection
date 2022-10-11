@@ -1,0 +1,59 @@
+﻿using EdgeDetectionApp.ViewModel;
+using MVVMEssentials.Commands;
+using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs.OpenFile;
+using System.Reflection;
+
+namespace EdgeDetectionApp.Commands
+{
+    public class LoadImageCommand : CommandBase
+    {
+        private readonly MainViewModel _mainViewModel;
+        private readonly IDialogService _dialogService;
+
+        public LoadImageCommand(MainViewModel mainViewModel, IDialogService dialogService)
+        {
+            _mainViewModel = mainViewModel;
+            _dialogService = dialogService;
+        }   
+        public override void Execute(object parameter)
+        {
+            LoadImageFromFile();
+        }
+        private void LoadImageFromFile()
+        {
+            var settings = new OpenFileDialogSettings
+            {
+                Title = "Load Image",
+                FilterIndex = 2,
+            };
+
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+            string sep = string.Empty;
+
+            foreach (var c in codecs)
+            {
+                string codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
+                settings.Filter = String.Format("{0}{1}{2} ({3})|{3}", settings.Filter, sep, codecName, c.FilenameExtension);
+                sep = "|";
+            }
+            settings.Filter = String.Format("{0}{1}{2} ({3})|{3}", settings.Filter, sep, "All Files", "*.*");
+
+            bool? dialogResult = _dialogService.ShowOpenFileDialog(_mainViewModel, settings);
+
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                Bitmap resultBmp = new Bitmap(settings.FileName);
+                _mainViewModel.OriginalImage = resultBmp;
+            }
+        }
+    }
+}

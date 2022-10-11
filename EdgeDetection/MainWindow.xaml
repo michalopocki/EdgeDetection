@@ -6,24 +6,20 @@
         xmlns:local="clr-namespace:EdgeDetectionApp"
         xmlns:mv ="clr-namespace:EdgeDetectionApp.ViewModel"
         xmlns:v="clr-namespace:EdgeDetectionApp.Views"
+        xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
         mc:Ignorable="d"
+        md:DialogServiceViews.IsRegistered="True"
         x:Name="mainWindow"
         DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
         Title="Edge Detection" Height="600" Width="900">
-    <!--<Window.DataContext>
-        <mv:MainViewModel/>
-    </Window.DataContext>-->
     <Window.Resources>
         <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
-        <DataTemplate DataType="{x:Type mv:ChartViewModel}">
-            <v:ChartView/>
-        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
             <Image Margin="20" Height="300" 
@@ -32,9 +28,42 @@
             <Button Width="100" Height="25" Content="Load" Margin="10" HorizontalAlignment="Left" Command="{Binding Load}"/>
             <Button Width="100" Height="25" Content="Save as..." Margin="10" HorizontalAlignment="Left" Command="{Binding SaveAs}"/>
         </StackPanel>
-        <Grid Grid.Column="1" Height="300">
-            <!--<ContentPresenter Content="{Binding ChartView}" />-->
-            <v:ChartView />
+        <Grid Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Grid.Row="0" Header="Edge Detection Method" Margin="10">
+                    <ListBox x:Name="EdgeDetectorsListBox" ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector, Mode=TwoWay}" BorderBrush="Transparent" SelectedIndex="0">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter Margin="5"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <RadioButton GroupName="raid" Content="{Binding Name}" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </GroupBox>
+                <Grid Grid.Row="1">
+                    <v:ChartView/>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
