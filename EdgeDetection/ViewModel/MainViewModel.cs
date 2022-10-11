@@ -71,7 +71,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Methods
         private void SetupCommands()
         {
-            Process = new ProcessImageCommand(this, _EdgeDetectorFactory);
+            Process = new ProcessImageCommand(this, _EdgeDetectorFactory, _Messenger);
             Load = new LoadImageCommand(this, _DialogService);
             SaveAs = new SaveAsImageCommand(this, _DialogService);
         }

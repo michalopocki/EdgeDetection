@@ -7,13 +7,11 @@
              xmlns:mv="clr-namespace:EdgeDetectionApp.ViewModel"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
+             DataContext="{Binding Path=ChartViewModel, Source={StaticResource ViewModelLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.DataContext>
-        <mv:ChartViewModel/>
-    </UserControl.DataContext>
     <Grid>
         <lvc:CartesianChart Background="#222E31" Series="{Binding Series}" Margin="10">
-            <lvc:CartesianChart.Resources>
+            <!--<lvc:CartesianChart.Resources>
                 <Style TargetType="lvc:DefaultTooltip">
                     <Setter Property="Background" Value="DarkOrange"></Setter>
                     <Setter Property="Foreground" Value="White"></Setter>
@@ -26,7 +24,7 @@
                     <Setter Property="Height" Value="40"></Setter>
                     <Setter Property="BorderThickness" Value="0"></Setter>
                 </Style>
-            </lvc:CartesianChart.Resources>
+            </lvc:CartesianChart.Resources>-->
             <!--<lvc:CartesianChart.Series>
                 <lvc:LineSeries Values="{Binding Series}"/>
                 <lvc:LineSeries Values="{Binding Series}"/>
