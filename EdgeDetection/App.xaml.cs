@@ -1,5 +1,4 @@
-﻿using BuildYourOwnMessenger.Services;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using EdgeDetectionApp.EdgeDetectorAlgorithms;
 using EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram;
 using EdgeDetectionApp.ViewModel;

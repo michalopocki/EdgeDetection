@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.EdgeDetectorAlgorithms
@@ -68,14 +69,6 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         public void Abs()
         {
             int length = Width * Height * 3;
-            for (int i = 0; i < length; i++)
-            {
-                Bits[i] = Math.Abs(Bits[i]);
-            }
-        }
-        public void AbsParallel()
-        {
-            int length = Width * Height * 3;
             int degreeOfParallelism = Environment.ProcessorCount;
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
@@ -83,6 +76,38 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
                     Bits[i] = Math.Abs(Bits[i]);
+                }
+            });
+        }
+        public double Mean()
+        {
+            int length = Width * Height * 3;
+            int degreeOfParallelism = Environment.ProcessorCount;
+            double mean = 0;
+
+            Parallel.For(0, degreeOfParallelism, workerId =>
+            {
+                var max = length * (workerId + 1) / degreeOfParallelism;
+                for (int i = length * workerId / degreeOfParallelism; i < max; i++)
+                {
+                    mean = Math.Abs(Bits[i]) / length;
+                }
+            });
+            return mean;
+        }
+        public void Normalize()
+        {
+            double minValue = Bits.AsParallel().Min();
+            double maxValue = Bits.AsParallel().Max();
+            int length = Width * Height * 3;
+            int degreeOfParallelism = Environment.ProcessorCount;
+
+            Parallel.For(0, degreeOfParallelism, workerId =>
+            {
+                var max = length * (workerId + 1) / degreeOfParallelism;
+                for (int i = length * workerId / degreeOfParallelism; i < max; i++)
+                {
+                    Bits[i] = (Bits[i] - minValue) * 255.0 / (maxValue - minValue);
                 }
             });
         }

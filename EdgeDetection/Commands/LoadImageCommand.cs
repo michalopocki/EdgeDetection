@@ -1,5 +1,4 @@
 ﻿using EdgeDetectionApp.ViewModel;
-using MVVMEssentials.Commands;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using System.Reflection;
+using EdgeDetectionApp.Messages;
 
 namespace EdgeDetectionApp.Commands
 {
@@ -18,11 +18,13 @@ namespace EdgeDetectionApp.Commands
     {
         private readonly MainViewModel _mainViewModel;
         private readonly IDialogService _dialogService;
+        private readonly IMessenger _Messenger;
 
-        public LoadImageCommand(MainViewModel mainViewModel, IDialogService dialogService)
+        public LoadImageCommand(MainViewModel mainViewModel, IDialogService dialogService, IMessenger messenger)
         {
             _mainViewModel = mainViewModel;
             _dialogService = dialogService;
+            _Messenger = messenger;
         }   
         public override void Execute(object parameter)
         {
@@ -53,6 +55,7 @@ namespace EdgeDetectionApp.Commands
             {
                 Bitmap resultBmp = new Bitmap(settings.FileName);
                 _mainViewModel.OriginalImage = resultBmp;
+                _Messenger.Send(new HistogramDataChangedMessage(resultBmp));
             }
         }
     }

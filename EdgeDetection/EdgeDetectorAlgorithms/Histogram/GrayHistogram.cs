@@ -21,13 +21,13 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
             int width = _PixelArray.Width;
             int height = _PixelArray.Height;
 
-            for (int x = 0; x < width; x++)
+            Parallel.For(0, width, x =>
             {
                 for (int y = 0; y < height; y++)
                 {
                     results.Gray_Series[(int)_PixelArray[x, y, 0]]++;
                 }
-            }
+            });
             return results;
         }
     }

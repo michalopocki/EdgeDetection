@@ -33,8 +33,8 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         protected PixelArray Magnitude(PixelArray imgGx, PixelArray imgGy)
         {
             PixelArray magnitudeImg = new PixelArray(_width, _height);
-            imgGx.AbsParallel();
-            imgGy.AbsParallel();
+            imgGx.Abs();
+            imgGy.Abs();
             magnitudeImg = imgGx + imgGy;
 
             return magnitudeImg;

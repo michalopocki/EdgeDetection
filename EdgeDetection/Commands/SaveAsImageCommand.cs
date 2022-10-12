@@ -1,7 +1,6 @@
 ﻿using EdgeDetectionApp.ViewModel;
 using Microsoft.Win32;
 using MvvmDialogs;
-using MVVMEssentials.Commands;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;

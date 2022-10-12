@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.Messages
 {
-    public record HistogramDataChangedMessage(Bitmap bitmap, bool isGrayscale);
+    public record HistogramDataChangedMessage(Bitmap Bitmap, bool IsGrayscale = false);
 }

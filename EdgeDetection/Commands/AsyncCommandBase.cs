@@ -4,52 +4,51 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MVVMEssentials.Commands
+
+public abstract class AsyncCommandBase : CommandBase
 {
-    public abstract class AsyncCommandBase : CommandBase
+    private readonly Action<Exception> _onException;
+
+    private bool _isExecuting;
+    public bool IsExecuting
     {
-        private readonly Action<Exception> _onException;
-
-        private bool _isExecuting;
-        public bool IsExecuting
+        get
         {
-            get
-            {
-                return _isExecuting;
-            }
-            private set
-            {
-                _isExecuting = value;
-                OnCanExecuteChanged();
-            }
+            return _isExecuting;
         }
-
-        public AsyncCommandBase(Action<Exception> onException = null)
+        private set
         {
-            _onException = onException;
+            _isExecuting = value;
+            OnCanExecuteChanged();
         }
-
-        public override bool CanExecute(object parameter)
-        {
-            return !IsExecuting && base.CanExecute(parameter);
-        }
-
-        public override async void Execute(object parameter)
-        {
-            IsExecuting = true;
-
-            try
-            {
-                await ExecuteAsync(parameter);
-            }
-            catch (Exception ex)
-            {
-                _onException?.Invoke(ex);
-            }
-
-            IsExecuting = false;
-        }
-
-        protected abstract Task ExecuteAsync(object parameter);
     }
+
+    public AsyncCommandBase(Action<Exception> onException = null)
+    {
+        _onException = onException;
+    }
+
+    public override bool CanExecute(object parameter)
+    {
+        return !IsExecuting && base.CanExecute(parameter);
+    }
+
+    public override async void Execute(object parameter)
+    {
+        IsExecuting = true;
+
+        try
+        {
+            await ExecuteAsync(parameter);
+        }
+        catch (Exception ex)
+        {
+            _onException?.Invoke(ex);
+        }
+
+        IsExecuting = false;
+    }
+
+    protected abstract Task ExecuteAsync(object parameter);
 }
+

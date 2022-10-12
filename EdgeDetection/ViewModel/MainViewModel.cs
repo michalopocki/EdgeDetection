@@ -1,6 +1,6 @@
-﻿using BuildYourOwnMessenger.Services;
-using EdgeDetectionApp.Commands;
+﻿using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.EdgeDetectorAlgorithms;
+using EdgeDetectionApp.Messages;
 using Microsoft.Win32;
 using MvvmDialogs;
 using System;
@@ -66,13 +66,15 @@ namespace EdgeDetectionApp.ViewModel
             _EdgeDetectorFactory = edgeDetectorFactory;
             EdgeDetectors = new ObservableCollection<IEdgeDetector>(_EdgeDetectorFactory.GetAll());
             SetupCommands();
+
+            _Messenger.Send(new HistogramDataChangedMessage(OriginalImage));
         }
         #endregion
         #region Methods
         private void SetupCommands()
         {
             Process = new ProcessImageCommand(this, _EdgeDetectorFactory, _Messenger);
-            Load = new LoadImageCommand(this, _DialogService);
+            Load = new LoadImageCommand(this, _DialogService, _Messenger);
             SaveAs = new SaveAsImageCommand(this, _DialogService);
         }
         #endregion

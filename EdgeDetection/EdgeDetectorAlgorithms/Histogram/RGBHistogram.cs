@@ -21,7 +21,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
             int width = _PixelArray.Width;
             int height = _PixelArray.Height;
 
-            for (int x = 0; x < width; x++)
+            Parallel.For(0, width, x =>
             {
                 for (int y = 0; y < height; y++)
                 {
@@ -42,7 +42,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram
                         }
                     }
                 }
-            }
+            });
             return results;
         }
     }
