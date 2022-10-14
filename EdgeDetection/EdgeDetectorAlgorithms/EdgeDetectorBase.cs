@@ -11,14 +11,14 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
     public abstract class EdgeDetectorBase : IEdgeDetector
     {
         public abstract string Name { get; }
-        protected PixelArray? PixelArray;
+        protected PixelArray _PixelArray;
         protected int _width;
         protected int _height;
         protected bool _isGrayscale;
 
         public EdgeDetectorBase(Bitmap bitmap, bool isGrayscale = false)
         {
-            PixelArray = new PixelArray(bitmap);
+            _PixelArray = new PixelArray(bitmap);
             _width = bitmap.Width;
             _height = bitmap.Height;
             _isGrayscale = isGrayscale;
@@ -30,66 +30,70 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         {
             return _isGrayscale ? Convolution2D(filter) : Convolution3D(filter);
         }
-        protected PixelArray Magnitude(PixelArray imgGx, PixelArray imgGy)
+        protected static PixelArray GradientMagnitude(PixelArray gradientGx, PixelArray gradientGy)
         {
-            PixelArray magnitudeImg = new PixelArray(_width, _height);
-            imgGx.Abs();
-            imgGy.Abs();
-            magnitudeImg = imgGx + imgGy;
+            //PixelArray gradientMagnitude = PixelArray.Abs(gradientGx) + PixelArray.Abs(gradientGy);
+            int width = gradientGx.Width;
+            int height = gradientGx.Height;
+            var gradientMagnitude = new PixelArray(width, height);
 
-            return magnitudeImg;
+            Parallel.For(0, width, x =>
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int d = 0; d < 3; d++)
+                    {
+                        gradientMagnitude[x, y, d] = Math.Sqrt(gradientGx[x, y, d] * gradientGx[x, y, d] + gradientGy[x, y, d] * gradientGy[x, y, d]);
+                    }
+                }
+            });
+            return gradientMagnitude;
         }
         private PixelArray Convolution3D(double[][] filter)
         {
-            PixelArray resultImg = new PixelArray(_width, _height);
+            var resultArray = new PixelArray(_width, _height);
             int limiter = (filter.GetLength(0) - 1) / 2;
 
-            if (PixelArray is not null)
+            Parallel.For(limiter, _width - limiter, x =>
             {
-                //for (int x = limiter; x < _width - limiter; x++)
-                Parallel.For(limiter, _width - limiter, x =>
+                for (int y = limiter; y < _height - limiter; y++)
                 {
-                    for (int y = limiter; y < _height - limiter; y++)
+                    for (int m = -limiter; m <= limiter; m++)
                     {
-                        for (int m = -limiter; m <= limiter; m++)
+                        for (int n = -limiter; n <= limiter; n++)
                         {
-                            for (int n = -limiter; n <= limiter; n++)
+                            for (int d = 0; d < 3; d++)
                             {
-                                for (int d = 0; d < 3; d++)
-                                {
-                                    resultImg[x, y, d] += PixelArray[x - m, y - n, d] * filter[m + limiter][n + limiter];
-                                }
+                                resultArray[x, y, d] += _PixelArray[x - m, y - n, d] * filter[m + limiter][n + limiter];
                             }
                         }
                     }
-                });
-            }
-            return resultImg;
+                }
+            });
+
+            return resultArray;
         }
         private PixelArray Convolution2D(double[][] filter)
         {
-            PixelArray resultImg = new PixelArray(_width, _height);
+            var resultArray = new PixelArray(_width, _height);
             int limiter = (filter.GetLength(0) - 1) / 2;
 
-            if (PixelArray is not null)
+            Parallel.For(limiter, _width - limiter, x =>
             {
-                //for (int x = limiter; x < _width - limiter; x++)
-                Parallel.For(limiter, _width - limiter, x =>
+                for (int y = limiter; y < _height - limiter; y++)
                 {
-                    for (int y = limiter; y < _height - limiter; y++)
+                    for (int m = -limiter; m <= limiter; m++)
                     {
-                        for (int m = -limiter; m <= limiter; m++)
+                        for (int n = -limiter; n <= limiter; n++)
                         {
-                            for (int n = -limiter; n <= limiter; n++)
-                            {
-                                resultImg[x, y, 0] += PixelArray[x - m, y - n, 0] * filter[m + limiter][n + limiter];
-                            }
+                            resultArray[x, y, 0] += _PixelArray[x - m, y - n, 0] * filter[m + limiter][n + limiter];
                         }
-                        resultImg[x, y, 2] = resultImg[x, y, 1] = resultImg[x, y, 0];
                     }
-                });
-            }
-            return resultImg;
+                    resultArray[x, y, 2] = resultArray[x, y, 1] = resultArray[x, y, 0];
+                }
+            });
+
+            return resultArray;
         }
     }
 }

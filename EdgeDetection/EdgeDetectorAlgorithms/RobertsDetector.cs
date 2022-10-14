@@ -10,13 +10,13 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
     public class RobertsDetector : EdgeDetectorBase
     {
         public override string Name => "Roberts";
-        private readonly double[][] Gx = new double[3][]
+        private readonly double[][] _Gx = new double[3][]
         {
             new double[] { 0.0, 0.0, -1.0},
             new double[] { 0.0, 1.0, 0.0 },
             new double[] { 0.0, 0.0, 0.0 }
         };
-        private readonly double[][] Gy = new double[3][]
+        private readonly double[][] _Gy = new double[3][]
         {
             new double[] {-1.0, 0.0, 0.0},
             new double[] { 0.0, 1.0, 0.0 },
@@ -28,17 +28,12 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 
         public override Bitmap DetectEdges()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            PixelArray gradientGx = Convolution(_Gx);
+            PixelArray gradientGy = Convolution(_Gy);
+            PixelArray gradient = GradientMagnitude(gradientGx, gradientGy);
+            gradient.Normalize();
 
-            PixelArray imgGx = Convolution(Gx);
-            PixelArray imgGy = Convolution(Gy);
-            watch.Stop();
-
-            PixelArray magnitude = Magnitude(imgGx, imgGy);
-
-            System.Diagnostics.Trace.WriteLine("Convolution:" + watch.ElapsedMilliseconds + " ms");
-
-            return magnitude.Bitmap;
+            return gradient.Bitmap;
         }
     }
 }

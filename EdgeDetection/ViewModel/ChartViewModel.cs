@@ -85,7 +85,7 @@ namespace EdgeDetectionApp.ViewModel
                 {
                     new LineSeries
                     {
-                       Values = new ChartValues<int>(histogramResults.R_Series),
+                       Values = new ChartValues<int>(histogramResults.Gray_Series),
                        Stroke = new SolidColorBrush(Color.FromRgb(72,72,72)),
                        Title = "GRAY",
                        PointGeometry = null,

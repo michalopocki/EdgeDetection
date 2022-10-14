@@ -3,18 +3,14 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace EdgeDetectionApp.EdgeDetectorAlgorithms
 {
     public class PixelArray
     {
         #region Properties
-        private Bitmap? _bitmap;
-        public Bitmap Bitmap
-        {
-            get => ToBitmap();
-            set => _bitmap = value;
-        }
+        public Bitmap Bitmap => ToBitmap();
         private double[] Bits { get; set; }
         public int Height { get; private set; }
         public int Width { get; private set; }
@@ -25,14 +21,12 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
             Width = width;
             Height = height;
             Bits = new double[width * height * 3];
-            Bitmap = new Bitmap(width, height);
         }
         public PixelArray(Bitmap bitmap)
         {
             Width = bitmap.Width;
             Height = bitmap.Height;
             Bits = new double[Width * Height * 3];
-            Bitmap = bitmap;
             LoadBitmapData(bitmap);
         }
         #endregion
@@ -66,18 +60,19 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         }
         #endregion
         #region Methods
-        public void Abs()
+        public static PixelArray Abs(PixelArray pixelArray)
         {
-            int length = Width * Height * 3;
+            int length = pixelArray.Width * pixelArray.Height * 3;
             int degreeOfParallelism = Environment.ProcessorCount;
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
                 var max = length * (workerId + 1) / degreeOfParallelism;
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
-                    Bits[i] = Math.Abs(Bits[i]);
+                    pixelArray.Bits[i] = Math.Abs(pixelArray.Bits[i]);
                 }
             });
+            return pixelArray;
         }
         public double Mean()
         {
@@ -90,7 +85,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
                 var max = length * (workerId + 1) / degreeOfParallelism;
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
-                    mean = Math.Abs(Bits[i]) / length;
+                    mean += Math.Abs(Bits[i]) / length;
                 }
             });
             return mean;
@@ -113,7 +108,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         }
         public static PixelArray operator +(PixelArray pixelArray1, PixelArray pixelArray2)
         {
-            PixelArray pixelArray = new PixelArray(pixelArray1.Width, pixelArray1.Height);
+            var resultArray = new PixelArray(pixelArray1.Width, pixelArray1.Height);
             int length = pixelArray1.Width * pixelArray1.Height * 3;
             int degreeOfParallelism = Environment.ProcessorCount;
 
@@ -122,10 +117,10 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
                 var max = length * (workerId + 1) / degreeOfParallelism;
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
-                    pixelArray.Bits[i] = pixelArray1.Bits[i] + pixelArray2.Bits[i];
+                    resultArray.Bits[i] = pixelArray1.Bits[i] + pixelArray2.Bits[i];
                 }
             });
-            return pixelArray;
+            return resultArray;
         }
         private unsafe void LoadBitmapData(Bitmap processedBitmap)
         {
@@ -158,7 +153,7 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
         {
             unsafe
             {
-                Bitmap processedBitmap = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
+                var processedBitmap = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
                 BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.WriteOnly, processedBitmap.PixelFormat);
 
                 int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;

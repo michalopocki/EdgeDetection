@@ -10,29 +10,23 @@ namespace EdgeDetectionApp.EdgeDetectorAlgorithms
     public class LaplacianDetector : EdgeDetectorBase
     {
         public override string Name => "Laplacian";
-        private readonly double alpha = 0.5;
-        private readonly double[][] kernel;
+        private readonly double _alpha = 0.5;
+        private readonly double[][] _kernel;
         public LaplacianDetector(){}
         public LaplacianDetector(Bitmap bitmap, bool isGrayscale = false) : base(bitmap, isGrayscale)
         {
-            kernel = new double[3][]
+            _kernel = new double[3][]
             {   
-                new double[] { alpha / (alpha + 1),       (1 - alpha) / (1 + alpha),   alpha / (alpha + 1) },
-                new double[] { (1 - alpha) / (1 + alpha), -4 / (alpha + 1),            (1 - alpha) / (1 + alpha) },
-                new double[] { alpha / (alpha + 1),       (1 - alpha) / (1 + alpha),   alpha / (alpha + 1) }
+                new double[] { _alpha / (_alpha + 1),       (1 - _alpha) / (1 + _alpha),  _alpha / (_alpha + 1) },
+                new double[] { (1 - _alpha) / (1 + _alpha), -4 / (_alpha + 1),            (1 - _alpha) / (1 + _alpha) },
+                new double[] { _alpha / (_alpha + 1),       (1 - _alpha) / (1 + _alpha),  _alpha / (_alpha + 1) }
             };
         }
-
         public override Bitmap DetectEdges()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            PixelArray img = Convolution(kernel);
-            img.Abs();
-
-            //img.Normalize();
-
-            System.Diagnostics.Trace.WriteLine($"Detecting time: { watch.ElapsedMilliseconds } ms");
+            PixelArray img = Convolution(_kernel);
+            img = PixelArray.Abs(img);
+            img.Normalize();
 
             return img.Bitmap;
         }
