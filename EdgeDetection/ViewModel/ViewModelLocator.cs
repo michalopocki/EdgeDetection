@@ -1,9 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.ViewModel
 {
@@ -11,17 +7,15 @@ namespace EdgeDetectionApp.ViewModel
     {
         public MainViewModel MainViewModel
         {
-            get
-            {
-                return Ioc.Default.GetRequiredService<MainViewModel>();
-            }
+            get { return Ioc.Default.GetRequiredService<MainViewModel>(); }
         }
         public ChartViewModel ChartViewModel
         {
-            get
-            {
-                return Ioc.Default.GetRequiredService<ChartViewModel>();
-            }
+            get { return Ioc.Default.GetRequiredService<ChartViewModel>(); }
+        }
+        public OptionsViewModel OptionsViewModel
+        {
+            get { return Ioc.Default.GetRequiredService<OptionsViewModel>(); }
         }
     }
 }

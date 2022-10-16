@@ -1,15 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using EdgeDetectionApp.EdgeDetectorAlgorithms;
-using EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram;
 using EdgeDetectionApp.ViewModel;
+using EdgeDetectionLib.EdgeDetectionAlgorithms;
+using EdgeDetectionLib.Histogram;
 using Microsoft.Extensions.DependencyInjection;
 using MvvmDialogs;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace EdgeDetectionApp

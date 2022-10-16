@@ -1,16 +1,11 @@
 ﻿using EdgeDetectionApp.ViewModel;
-using Microsoft.Win32;
 using MvvmDialogs;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using MvvmDialogs.FrameworkDialogs.SaveFile;
-using System.Reflection;
 using System.IO;
 
 namespace EdgeDetectionApp.Commands
@@ -43,7 +38,7 @@ namespace EdgeDetectionApp.Commands
             bool? success = _dialogService.ShowSaveFileDialog(_mainViewModel, settings);
             if (success == true)
             {
-                var tmp = _mainViewModel.ProcessedImage;
+                var tmp = _mainViewModel.ImageToShow;
                 using (var bmp = new Bitmap(tmp))
                 {
                     if (File.Exists(settings.FileName))

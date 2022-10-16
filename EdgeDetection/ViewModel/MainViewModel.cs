@@ -1,18 +1,11 @@
 ﻿using EdgeDetectionApp.Commands;
-using EdgeDetectionApp.EdgeDetectorAlgorithms;
 using EdgeDetectionApp.Messages;
-using Microsoft.Win32;
+using EdgeDetectionApp.Models;
+using EdgeDetectionLib;
+using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using MvvmDialogs;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace EdgeDetectionApp.ViewModel
@@ -20,10 +13,11 @@ namespace EdgeDetectionApp.ViewModel
     public class MainViewModel : ViewModelBase
     {
         #region Properties
-        private readonly IMessenger _Messenger;
-        private readonly IDialogService _DialogService;
-        private readonly IEdgeDetectorFactory _EdgeDetectorFactory;
+        private readonly IMessenger _messenger;
+        private readonly IDialogService _dialogService;
+        private readonly IEdgeDetectorFactory _edgeDetectorFactory;
 
+        public DetectionParameters DetectionParameters { get; set; }
         private Bitmap _originalImage;
         public Bitmap OriginalImage
         {
@@ -32,50 +26,62 @@ namespace EdgeDetectionApp.ViewModel
             {
                 _originalImage = (Bitmap)value.Clone();
                 GrayscaleImage = value.MakeGrayscale();
-                ProcessedImage = (Bitmap)value.Clone();
+                ImageToShow = (Bitmap)value.Clone();
             }
         }
         public Bitmap GrayscaleImage { get; set; }
 
-        private Bitmap _processedImage;
-        public Bitmap ProcessedImage
+        private Bitmap _imageToShow;
+        public Bitmap ImageToShow
         {
-            get => _processedImage;
-            set => SetField(ref _processedImage, value);
+            get => _imageToShow;
+            set => SetField(ref _imageToShow, value);
         }
-        public ObservableCollection<IEdgeDetector> EdgeDetectors { get; init; }
-        private IEdgeDetector _selectedEdgeDetector;
-        public IEdgeDetector SelectedEdgeDetector
-        {
-            get => _selectedEdgeDetector;
-            set => SetField(ref _selectedEdgeDetector, value);
-        }
-
         #endregion
         #region Commands
         public ICommand Process { get; set; }
+        public ICommand DropImage { get; set; }
         public ICommand Load { get; set; }
         public ICommand SaveAs { get; set; }
         #endregion
         #region Constructor
-        public MainViewModel(IMessenger messenger, IDialogService dialogService, IEdgeDetectorFactory edgeDetectorFactory)
+        public MainViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
         {
             OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetection\bin\Debug\net6.0-windows\ptak3.jpg");
-            _Messenger = messenger;
-            _DialogService = dialogService;
-            _EdgeDetectorFactory = edgeDetectorFactory;
-            EdgeDetectors = new ObservableCollection<IEdgeDetector>(_EdgeDetectorFactory.GetAll());
+            _edgeDetectorFactory = edgeDetectorFactory;
+            _messenger = messenger;
+            _dialogService = dialogService;
             SetupCommands();
-
-            _Messenger.Send(new HistogramDataChangedMessage(OriginalImage));
+            _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
+            _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
+            _messenger.Send(new HistogramDataChangedMessage(OriginalImage));
         }
         #endregion
         #region Methods
         private void SetupCommands()
         {
-            Process = new ProcessImageCommand(this, _EdgeDetectorFactory, _Messenger);
-            Load = new LoadImageCommand(this, _DialogService, _Messenger);
-            SaveAs = new SaveAsImageCommand(this, _DialogService);
+            Process = new ProcessImageCommand(this, _edgeDetectorFactory, _messenger);
+            Load = new LoadImageCommand(this, _dialogService, _messenger);
+            SaveAs = new SaveAsImageCommand(this, _dialogService);
+            DropImage = new DropImageCommand(this, _dialogService);
+        }
+        private void ChangeColorModel(object obj)
+        {
+            var message = (ColorModelChangedMessage)obj;
+            if (message.IsGrayscale)
+            {
+                ImageToShow = GrayscaleImage;
+            }
+            else
+            {
+                ImageToShow = OriginalImage;
+            }
+            _messenger.Send(new HistogramDataChangedMessage(ImageToShow, message.IsGrayscale));
+        }
+        private void UpdateDetectionParamaters(object obj)
+        {
+            var message = (SendOptionsMessage)obj;
+            DetectionParameters = message.Parameters;
         }
         #endregion
     }

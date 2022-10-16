@@ -1,17 +1,17 @@
-﻿using System.Windows.Media;
-using EdgeDetectionApp.EdgeDetectorAlgorithms.Histogram;
-using EdgeDetectionApp.Messages;
+﻿using EdgeDetectionLib.Histogram;
+using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 using MvvmDialogs;
 using Color = System.Windows.Media.Color;
+using EdgeDetectionApp.Messages;
 
 namespace EdgeDetectionApp.ViewModel
 {
     public class ChartViewModel : ViewModelBase
     {
-        private readonly IHistogramFactory _HistogramFactory;
-        private readonly IMessenger _Messenger;
+        private readonly IHistogramFactory _histogramFactory;
+        private readonly IMessenger _messenger;
 
         public SeriesCollection _series;
         public SeriesCollection Series
@@ -22,9 +22,9 @@ namespace EdgeDetectionApp.ViewModel
         private LinearGradientBrush gradientBrush;
         public ChartViewModel(IHistogramFactory histogramFactory, IMessenger messenger, IDialogService dialogService)
         {
-            _HistogramFactory = histogramFactory;
-            _Messenger = messenger;
-            _Messenger.Subscribe<HistogramDataChangedMessage>(this, HistogramDataChanged);
+            _histogramFactory = histogramFactory;
+            _messenger = messenger;
+            _messenger.Subscribe<HistogramDataChangedMessage>(this, HistogramDataChanged);
 
             gradientBrush = new LinearGradientBrush
             {
@@ -39,7 +39,7 @@ namespace EdgeDetectionApp.ViewModel
         {
             var message = (HistogramDataChangedMessage)obj;
 
-            IHistogram histogram = _HistogramFactory.Create(message.Bitmap, message.IsGrayscale);
+            IHistogram histogram = _histogramFactory.Create(message.Bitmap, message.IsGrayscale);
             HistogramResults histogramResults = histogram.Calculate();
     
             if (message.IsGrayscale == false)
@@ -75,7 +75,6 @@ namespace EdgeDetectionApp.ViewModel
                        Fill = gradientBrush,  // new SolidColorBrush(Colors.Transparent),
                        LineSmoothness = 0.4,
                        StrokeThickness = 2.5
-                       //PointGeometrySize = 0,
                     }
                 };
             }
@@ -92,7 +91,6 @@ namespace EdgeDetectionApp.ViewModel
                        Fill = gradientBrush, //new SolidColorBrush(Colors.Transparent),
                        LineSmoothness = 0.4,
                        StrokeThickness = 2.5
-                       //PointGeometrySize = 0,
                     }
                 };
             }
