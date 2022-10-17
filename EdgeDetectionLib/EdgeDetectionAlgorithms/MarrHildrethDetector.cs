@@ -1,4 +1,5 @@
-﻿using EdgeDetectionLib.Kernels;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using EdgeDetectionLib.Kernels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,13 +14,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public override string Name => "Marr-Hildreth";
         private readonly int _LoGKernelSize;
         private readonly double _sigma;
-        public MarrHildrethDetector(Bitmap bitmap, bool isGrayscale = false) : base(bitmap, isGrayscale)
-        {
-            _sigma = 1.5;
-            _LoGKernelSize = 5;
-        }
-        public MarrHildrethDetector() { }
 
+        public MarrHildrethDetector() { }
+        public MarrHildrethDetector(MarrHildrethArgs args) : base(args)
+        {
+            _LoGKernelSize = args.KernelSize;
+            _sigma = args.Sigma;
+        }
         public override Bitmap DetectEdges()
         {
             IKernel LoGKernel = new LaplacianOfGaussianKernel(_LoGKernelSize, _LoGKernelSize, _sigma);
@@ -27,6 +28,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             PixelArray img = Convolution(kernel);
             PixelArray imgZeroCrossing = ZeroCrossing(img);
+
+            img.Abs();
+            img.Normalize();
+            BeforeThresholdingBitmap = img.Bitmap;
 
             return imgZeroCrossing.Bitmap;
         }
@@ -61,11 +66,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         {
                             resultArray[x, y, d] = pixelArray[x, y, d];
                         }
-                        if (_isGrayscale) 
+                        if (_isGrayscale)
+                        {
+                            resultArray[x, y, 2] = resultArray[x, y, 1] = resultArray[x, y, 0];
                             break;
+                        }
                     }
-                    if (_isGrayscale)
-                        resultArray[x, y, 2] = resultArray[x, y, 1] = resultArray[x, y, 0];
                 }
             });
             return resultArray;

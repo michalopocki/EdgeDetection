@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -7,6 +8,8 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public class RobertsDetector : EdgeDetectorBase
     {
         public override string Name => "Roberts";
+        private readonly bool _thresholding;
+        private readonly int _threshold;
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { 0.0, 0.0, -1.0},
@@ -21,7 +24,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         };
 
         public RobertsDetector(){}
-        public RobertsDetector(Bitmap bitmap, bool isGrayscale = false) : base(bitmap, isGrayscale) {}
+        public RobertsDetector(GradientArgs args) : base(args)
+        {
+            _thresholding = args.Thresholding;
+            _threshold = args.Threshold;
+        }
 
         public override Bitmap DetectEdges()
         {
@@ -29,6 +36,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             PixelArray gradientGy = Convolution(_Gy);
             PixelArray gradient = GradientMagnitude(gradientGx, gradientGy);
             gradient.Normalize();
+            BeforeThresholdingBitmap = gradient.Bitmap;
+
+            if (_thresholding)
+            {
+                gradient.Thresholding(_threshold);
+            }
 
             return gradient.Bitmap;
         }

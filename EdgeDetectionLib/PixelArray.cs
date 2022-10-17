@@ -21,11 +21,8 @@ namespace EdgeDetectionLib
             Height = height;
             Bits = new double[width * height * 3];
         }
-        public PixelArray(Bitmap bitmap)
+        public PixelArray(Bitmap bitmap) : this(bitmap.Width, bitmap.Height)
         {
-            Width = bitmap.Width;
-            Height = bitmap.Height;
-            Bits = new double[Width * Height * 3];
             LoadBitmapData(bitmap);
         }
         #endregion
@@ -59,19 +56,31 @@ namespace EdgeDetectionLib
         }
         #endregion
         #region Methods
-        public static PixelArray Abs(PixelArray pixelArray)
+        public void Abs()
         {
-            int length = pixelArray.Width * pixelArray.Height * 3;
+            int length = Width * Height * 3;
             int degreeOfParallelism = Environment.ProcessorCount;
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
                 var max = length * (workerId + 1) / degreeOfParallelism;
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
-                    pixelArray.Bits[i] = Math.Abs(pixelArray.Bits[i]);
+                    Bits[i] = Math.Abs(Bits[i]);
                 }
             });
-            return pixelArray;
+        }
+        public void ChangeNegativeNumberToZero()
+        {
+            int length = Width * Height * 3;
+            int degreeOfParallelism = Environment.ProcessorCount;
+            Parallel.For(0, degreeOfParallelism, workerId =>
+            {
+                var max = length * (workerId + 1) / degreeOfParallelism;
+                for (int i = length * workerId / degreeOfParallelism; i < max; i++)
+                {
+                    Bits[i] = Bits[i] < 0 ? 0 : Bits[i];
+                }
+            });
         }
         public double Mean()
         {
@@ -102,6 +111,20 @@ namespace EdgeDetectionLib
                 for (int i = length * workerId / degreeOfParallelism; i < max; i++)
                 {
                     Bits[i] = (Bits[i] - minValue) * 255.0 / (maxValue - minValue);
+                }
+            });
+        }
+        public void Thresholding(int threshold)
+        {
+            int length = Width * Height * 3;
+            int degreeOfParallelism = Environment.ProcessorCount;
+
+            Parallel.For(0, degreeOfParallelism, workerId =>
+            {
+                var max = length * (workerId + 1) / degreeOfParallelism;
+                for (int i = length * workerId / degreeOfParallelism; i < max; i++)
+                {
+                    Bits[i] = Bits[i] > threshold ? 255d : 0d;
                 }
             });
         }

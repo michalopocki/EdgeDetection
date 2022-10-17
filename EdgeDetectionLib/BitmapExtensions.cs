@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
 
 namespace EdgeDetectionLib
 {
@@ -28,6 +29,33 @@ namespace EdgeDetectionLib
 
             return newBitmap;
         }
+        public static unsafe void MakeNegative(this Bitmap processedBitmap)
+        {
+            unsafe
+            {
+                BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.ReadWrite, processedBitmap.PixelFormat);
 
+                int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
+                int heightInPixels = bitmapData.Height;
+                int widthInBytes = bitmapData.Width * bytesPerPixel;
+                byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
+
+                Parallel.For(0, heightInPixels, y =>
+                {
+                    byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
+                    for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                    {
+                        int bluePixel = currentLine[x];
+                        int greenPixel = currentLine[x + 1];
+                        int redPixel = currentLine[x + 2];
+
+                        currentLine[x] = (byte)(Math.Abs(bluePixel - 255));
+                        currentLine[x + 1] = (byte)(Math.Abs(greenPixel - 255));
+                        currentLine[x + 2] = (byte)(Math.Abs(redPixel - 255));
+                    }
+                });
+                processedBitmap.UnlockBits(bitmapData);
+            }
+        }
     }
 }

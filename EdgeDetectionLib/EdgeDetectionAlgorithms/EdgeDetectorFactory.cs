@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -25,9 +26,8 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         {
             return _EdgeDetectors;
         }
-        public IEdgeDetector Get(string name, Bitmap originalImage, bool isGrayscale)
+        public IEdgeDetector Get(string name, IEdgeDetectorArgs args)
         {
-            object[] args = { originalImage, isGrayscale };
             IEdgeDetector edgeDetector = _EdgeDetectors.Where(x => x.Name == name).First();
 
             return (IEdgeDetector)Activator.CreateInstance(edgeDetector.GetType(), args);

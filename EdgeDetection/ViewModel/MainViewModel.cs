@@ -16,22 +16,20 @@ namespace EdgeDetectionApp.ViewModel
         private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
-
-        public DetectionParameters DetectionParameters { get; set; }
         private Bitmap _originalImage;
+        private Bitmap _imageToShow;
+        public DetectionParameters DetectionParameters { get; set; }  
         public Bitmap OriginalImage
         {
             get => _originalImage;
             set
             {
-                _originalImage = (Bitmap)value.Clone();
+                _originalImage = value;
                 GrayscaleImage = value.MakeGrayscale();
-                ImageToShow = (Bitmap)value.Clone();
+                ImageToShow = value;
             }
         }
-        public Bitmap GrayscaleImage { get; set; }
-
-        private Bitmap _imageToShow;
+        public Bitmap GrayscaleImage { get; set; }      
         public Bitmap ImageToShow
         {
             get => _imageToShow;
@@ -52,9 +50,7 @@ namespace EdgeDetectionApp.ViewModel
             _messenger = messenger;
             _dialogService = dialogService;
             SetupCommands();
-            _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
-            _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
-            _messenger.Send(new HistogramDataChangedMessage(OriginalImage));
+            SetupMessages();
         }
         #endregion
         #region Methods
@@ -64,6 +60,12 @@ namespace EdgeDetectionApp.ViewModel
             Load = new LoadImageCommand(this, _dialogService, _messenger);
             SaveAs = new SaveAsImageCommand(this, _dialogService);
             DropImage = new DropImageCommand(this, _dialogService);
+        }
+        private void SetupMessages()
+        {
+            _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
+            _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
+            _messenger.Send(new HistogramDataChangedMessage(OriginalImage));
         }
         private void ChangeColorModel(object obj)
         {

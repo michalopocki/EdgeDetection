@@ -1,4 +1,5 @@
-﻿using EdgeDetectionLib.Kernels;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using EdgeDetectionLib.Kernels;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -26,12 +27,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { 0.25,  0.5,  0.25 }
         };
         public CannyDetector() { }
-        public CannyDetector(Bitmap bitmap, bool isGrayscale = false) : base(bitmap, isGrayscale)
+        public CannyDetector(CannyArgs args) :base(args)
         {
-            _gaussianKernelSize = 6;
-            _sigma = 3.0;
-            _THigh = 45;
-            _TLow = 19;
+            _gaussianKernelSize = args.KernelSize;
+            _sigma = args.Sigma;
+            _THigh = args.THigh;
+            _TLow = args.TLow;
         }
         public override Bitmap DetectEdges()
         {
@@ -50,6 +51,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             //3) Non-Maximum Suppression
             PixelArray nomMaximumSuppression = NonMaximumSuppression(gradient, gradientDirection); 
             nomMaximumSuppression.Normalize();
+            BeforeThresholdingBitmap = nomMaximumSuppression.Bitmap;
 
             //4) Hysteresis Thresholding
             PixelArray hysteresisThresholding = HysteresisThresholding(nomMaximumSuppression);
@@ -70,33 +72,17 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         cutPixelArray[i, j, d] = _PixelArray[x, y, d];
 
                         if (_isGrayscale)
+                        {
+                            cutPixelArray[i, j, 2] = cutPixelArray[i, j, 1] = cutPixelArray[i, j, 0];
                             break;
+                        }
                     }
-                    if (_isGrayscale)
-                        cutPixelArray[i, j, 2] = cutPixelArray[i, j, 1] = cutPixelArray[i, j, 0];
                 }
             }
             _PixelArray = cutPixelArray;
             _width -= 2 * size;
             _height -= 2 * size;
         }
-        //private double[] Max(PixelArray array)
-        //{
-        //    double[] max = new double[3];
-
-        //    Parallel.For(0, _width, x =>
-        //    {
-        //        for (int y = 0; y < _height; y++)
-        //        {
-        //            for (int d = 0; d < 3; d++)
-        //            {
-        //                if (array[x, y, d] > max[d])
-        //                    max[d] = array[x, y, d];
-        //            }
-        //        }
-        //    });
-        //    return max;
-        //}
         private PixelArray HysteresisThresholding(PixelArray NMS)
         {
             var hysteresisThreshold = new PixelArray(_width, _height);
@@ -128,10 +114,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         }
 
                         if (_isGrayscale)
+                        {
+                            hysteresisThreshold[x, y, 2] = hysteresisThreshold[x, y, 1] = hysteresisThreshold[x, y, 0];
                             break;
+                        }
                     }
-                    if (_isGrayscale)
-                        hysteresisThreshold[x, y, 2] = hysteresisThreshold[x, y, 1] = hysteresisThreshold[x, y, 0];
                 }
             });
             return hysteresisThreshold;
@@ -171,10 +158,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         }
 
                         if (_isGrayscale)
+                        {
+                            NMS[x, y, 2] = NMS[x, y, 1] = NMS[x, y, 0];
                             break;
+                        }
                     }
-                    if (_isGrayscale)
-                        NMS[x, y, 2] = NMS[x, y, 1] = NMS[x, y, 0];
                 }
             });
 
@@ -198,10 +186,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         gradientDirection[x, y, d] = RoundGradientDirectionAngle(gradDir);
 
                         if (_isGrayscale)
+                        {
+                            gradientDirection[x, y, 2] = gradientDirection[x, y, 1] = gradientDirection[x, y, 0];
                             break;
+                        }
                     }
-                    if (_isGrayscale)
-                        gradientDirection[x, y, 2] = gradientDirection[x, y, 1] = gradientDirection[x, y, 0];
                 }
             });
 

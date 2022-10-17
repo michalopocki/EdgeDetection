@@ -12,7 +12,6 @@ namespace EdgeDetectionApp.ViewModel
     {
         private readonly IHistogramFactory _histogramFactory;
         private readonly IMessenger _messenger;
-
         public SeriesCollection _series;
         public SeriesCollection Series
         {

@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EdgeDetectionLib2\EdgeDetectionLib.csproj" />
+    <ProjectReference Include="..\EdgeDetectionLib\EdgeDetectionLib.csproj" />
   </ItemGroup>
 
 </Project>

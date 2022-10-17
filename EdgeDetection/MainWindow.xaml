@@ -37,7 +37,6 @@
                 </i:Interaction.Triggers>
             </Image>
             <StackPanel Grid.Row="1">
-                <Button Width="100" Height="25" Content="Process..." Command="{Binding Process}"/>
                 <Button Width="100" Height="25" Content="Load" Margin="10" HorizontalAlignment="Left" Command="{Binding Load}"/>
                 <Button Width="100" Height="25" Content="Save as..." Margin="10" HorizontalAlignment="Left" Command="{Binding SaveAs}"/>
             </StackPanel>
@@ -50,31 +49,8 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <v:OptionsView/>
-                    <!--<ListBox x:Name="EdgeDetectorsListBox" Background="#222E31"
-                             ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector, Mode=TwoWay}" BorderBrush="Transparent" SelectedIndex="0">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <ContentPresenter Margin="5"/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel IsItemsHost="True" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <RadioButton GroupName="raid" Content="{Binding Name}" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>-->
+                    <Button Width="100" Height="25" Content="Detect Edges" Command="{Binding Process}" 
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20"/>
                 </Grid>
                 <Grid Grid.Row="1">
                     <v:ChartView/>

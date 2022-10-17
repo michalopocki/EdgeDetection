@@ -1,25 +1,28 @@
-﻿using System;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public abstract class EdgeDetectorBase : IEdgeDetector
     {
         public abstract string Name { get; }
+        public Bitmap? BeforeThresholdingBitmap { get; protected set; }
         protected PixelArray _PixelArray;
         protected int _width;
         protected int _height;
         protected bool _isGrayscale;
 
-        public EdgeDetectorBase(Bitmap bitmap, bool isGrayscale = false)
+        public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
-            _PixelArray = new PixelArray(bitmap);
-            _width = bitmap.Width;
-            _height = bitmap.Height;
-            _isGrayscale = isGrayscale;
+            _PixelArray = new PixelArray(args.ImageToProcess);
+            _width = args.ImageToProcess.Width;
+            _height = args.ImageToProcess.Height;
+            _isGrayscale = args.IsGrayscale;
         }
         public EdgeDetectorBase() { }
         public abstract Bitmap DetectEdges();
@@ -28,7 +31,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         {
             return _isGrayscale ? Convolution2D(filter) : Convolution3D(filter);
         }
-        protected static PixelArray GradientMagnitude(PixelArray gradientGx, PixelArray gradientGy)
+        protected PixelArray GradientMagnitude(PixelArray gradientGx, PixelArray gradientGy)
         {
             //PixelArray gradientMagnitude = PixelArray.Abs(gradientGx) + PixelArray.Abs(gradientGy);
             int width = gradientGx.Width;
@@ -42,6 +45,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                     for (int d = 0; d < 3; d++)
                     {
                         gradientMagnitude[x, y, d] = Math.Sqrt(gradientGx[x, y, d] * gradientGx[x, y, d] + gradientGy[x, y, d] * gradientGy[x, y, d]);
+
+                        if (_isGrayscale)
+                        {
+                            gradientMagnitude[x, y, 2] = gradientMagnitude[x, y, 1] = gradientMagnitude[x, y, 0];
+                            break;
+                        }
                     }
                 }
             });
@@ -92,6 +101,31 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             });
 
             return resultArray;
+        }
+        protected void Thresholding(int threshold)
+        {
+            Parallel.For(0, _width, x =>
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int d = 0; d < 3; d++)
+                    {
+                        if (_PixelArray[x, y, d] > threshold)
+                        {
+                            _PixelArray[x, y, d] = 255;
+                        }
+                        else
+                        {
+                            _PixelArray[x, y, d] = 0;
+                        }
+                        if (_isGrayscale)
+                        {
+                            _PixelArray[x, y, 2] = _PixelArray[x, y, 1] = _PixelArray[x, y, 0];
+                            break;
+                        }
+                    }
+                }
+            });
         }
     }
 }
