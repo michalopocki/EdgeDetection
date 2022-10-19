@@ -14,7 +14,6 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public override string Name => "Marr-Hildreth";
         private readonly int _LoGKernelSize;
         private readonly double _sigma;
-
         public MarrHildrethDetector() { }
         public MarrHildrethDetector(MarrHildrethArgs args) : base(args)
         {

@@ -6,11 +6,9 @@ using static System.Math;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class FreiChenDetector : EdgeDetectorBase
+    public class FreiChenDetector : GradientDetectorBase
     {
         public override string Name => "Frei-Chen";
-        private readonly bool _thresholding;
-        private readonly int _threshold;
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { -1 / (2 + Sqrt(2)), -Sqrt(2) / (2 + Sqrt(2)), -1 / (2 + Sqrt(2)) },
@@ -24,11 +22,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] {       1 / (2 + Sqrt(2)), 0 / (2 + Sqrt(2)),       -1 / (2 + Sqrt(2)) }
         };
         public FreiChenDetector() { }
-        public FreiChenDetector(GradientArgs args) : base(args) 
-        {
-            _thresholding = args.Thresholding;
-            _threshold = args.Threshold;
-        }
+        public FreiChenDetector(GradientArgs args) : base(args) {}
         public override Bitmap DetectEdges()
         {
             PixelArray gradientGx = Convolution(_Gx);

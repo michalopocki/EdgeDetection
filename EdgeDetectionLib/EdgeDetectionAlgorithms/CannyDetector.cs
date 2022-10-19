@@ -10,6 +10,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public class CannyDetector : EdgeDetectorBase
     {
         public override string Name => "Canny";
+        protected bool _prefiltration;
         private readonly int _gaussianKernelSize;
         private readonly double _sigma;
         private readonly int _THigh;
@@ -27,8 +28,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { 0.25,  0.5,  0.25 }
         };
         public CannyDetector() { }
-        public CannyDetector(CannyArgs args) :base(args)
+        public CannyDetector(CannyArgs args) : base(args)
         {
+            _prefiltration = args.Prefiltration;
             _gaussianKernelSize = args.KernelSize;
             _sigma = args.Sigma;
             _THigh = args.THigh;
@@ -37,10 +39,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public override Bitmap DetectEdges()
         {
             //1) Noise Reduction - Gaussian filter
-            IKernel gaussianKernel = new GaussianKernel(_gaussianKernelSize, _gaussianKernelSize, _sigma);
-            double[][] kernel = gaussianKernel.Create();
-            _PixelArray = Convolution(kernel);
-            CutSides();
+            if (_prefiltration)
+            {
+                IKernel gaussianKernel = new GaussianKernel(_gaussianKernelSize, _gaussianKernelSize, _sigma);
+                double[][] kernel = gaussianKernel.Create();
+                _PixelArray = Convolution(kernel);
+                CutSides(_gaussianKernelSize);
+            }
 
             //2) Finding the intensity gradient of the image
             PixelArray gradientGx = Convolution(_Gx);
@@ -58,31 +63,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             return hysteresisThresholding.Bitmap;
         }
-        private void CutSides()
-        {
-            int size = (int)Math.Ceiling((double)_gaussianKernelSize / 2);
-            var cutPixelArray = new PixelArray(_width - 2 * size, _height - 2 * size);
 
-            for (int x = size, i = 0; x < _width - size; x++, i++)
-            {
-                for (int y = size, j = 0; y < _height - size; y++, j++)
-                {
-                    for (int d = 0; d < 3; d++)
-                    {
-                        cutPixelArray[i, j, d] = _PixelArray[x, y, d];
-
-                        if (_isGrayscale)
-                        {
-                            cutPixelArray[i, j, 2] = cutPixelArray[i, j, 1] = cutPixelArray[i, j, 0];
-                            break;
-                        }
-                    }
-                }
-            }
-            _PixelArray = cutPixelArray;
-            _width -= 2 * size;
-            _height -= 2 * size;
-        }
         private PixelArray HysteresisThresholding(PixelArray NMS)
         {
             var hysteresisThreshold = new PixelArray(_width, _height);

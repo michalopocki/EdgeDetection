@@ -14,6 +14,10 @@ namespace EdgeDetectionLib.Kernels
         {
             this.M = M; this.N = N;
         }
+        public KernelBase(int MxN)
+        {
+            M = MxN; N = MxN;
+        }
         public KernelBase(){}
         public abstract double[][] Create();
         protected double[][] CreateMeshGrid(MeshType type)

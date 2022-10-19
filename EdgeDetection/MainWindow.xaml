@@ -13,8 +13,8 @@
         md:DialogServiceViews.IsRegistered="True"
         x:Name="mainWindow"
         DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
-        Background="#222E31"
-        Title="Edge Detection" Height="700" Width="1000">
+        Background="#222E31" WindowStartupLocation="CenterScreen"
+        Title="Edge Detection" Height="700" Width="1300">
     <Window.Resources>
         <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
     </Window.Resources>

@@ -10,8 +10,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
     public class LaplacianArgs : GradientArgs
     {
         public double Alpha { get; set; }
-        public LaplacianArgs(Bitmap? imageToProcess, bool isGrayscale, double alpha, bool thresholing, int threshold) 
-            : base(imageToProcess, isGrayscale, thresholing, threshold)
+        public LaplacianArgs(Bitmap? imageToProcess, bool isGrayscale, double alpha, 
+            bool thresholing, int threshold, bool prefiltration, int kernelSize, double sigma) 
+            : base(imageToProcess, isGrayscale, thresholing, threshold, prefiltration, kernelSize, sigma)
         {
             Alpha = alpha;
         }

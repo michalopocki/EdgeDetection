@@ -17,6 +17,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         protected int _height;
         protected bool _isGrayscale;
 
+        public EdgeDetectorBase() { }
         public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
             _PixelArray = new PixelArray(args.ImageToProcess);
@@ -24,12 +25,36 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _height = args.ImageToProcess.Height;
             _isGrayscale = args.IsGrayscale;
         }
-        public EdgeDetectorBase() { }
         public abstract Bitmap DetectEdges();
 
         protected PixelArray Convolution(double[][] filter)
         {
             return _isGrayscale ? Convolution2D(filter) : Convolution3D(filter);
+        }
+        protected void CutSides(int kernelSize)
+        {
+            int size = (int)Math.Ceiling((double)kernelSize / 2);
+            var cutPixelArray = new PixelArray(_width - 2 * size, _height - 2 * size);
+
+            for (int x = size, i = 0; x < _width - size; x++, i++)
+            {
+                for (int y = size, j = 0; y < _height - size; y++, j++)
+                {
+                    for (int d = 0; d < 3; d++)
+                    {
+                        cutPixelArray[i, j, d] = _PixelArray[x, y, d];
+
+                        if (_isGrayscale)
+                        {
+                            cutPixelArray[i, j, 2] = cutPixelArray[i, j, 1] = cutPixelArray[i, j, 0];
+                            break;
+                        }
+                    }
+                }
+            }
+            _PixelArray = cutPixelArray;
+            _width -= 2 * size;
+            _height -= 2 * size;
         }
         protected PixelArray GradientMagnitude(PixelArray gradientGx, PixelArray gradientGy)
         {

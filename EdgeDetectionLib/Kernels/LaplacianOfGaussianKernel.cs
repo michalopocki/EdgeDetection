@@ -13,6 +13,10 @@ namespace EdgeDetectionLib.Kernels
         {
             Sigma = sigma;
         }
+        public LaplacianOfGaussianKernel(int MxN, double sigma) : base(MxN)
+        {
+            Sigma = sigma;
+        }
         public LaplacianOfGaussianKernel(double sigma)
         {
             Sigma = sigma;

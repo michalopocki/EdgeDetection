@@ -6,16 +6,67 @@
              xmlns:local="clr-namespace:EdgeDetectionApp.Views"
              xmlns:mv="clr-namespace:EdgeDetectionApp.ViewModel"
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
              mc:Ignorable="d" 
              DataContext="{Binding Path=ChartViewModel, Source={StaticResource ViewModelLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+    </UserControl.Resources>
     <DockPanel LastChildFill="True" Background="#222E31">
+
         <TextBlock DockPanel.Dock="Top" Text="Luminance Histogram" FontSize="20" FontWeight="Bold"
                    Foreground="#A9A9A9"  HorizontalAlignment="Center"/>
+
         <lvc:CartesianChart Series="{Binding Series}" Margin="10,10,20,20"
-                            DisableAnimations="True" Hoverable="False" Zoom="X" >
+                            DisableAnimations="True" Hoverable="False" Zoom="X">
+            <!--<lvc:CartesianChart.VisualElements>
+                <lvc:VisualElement X="{Binding Source={StaticResource }}" Y="4000" x:Name="text1" >
+                    <lvc:VisualElement.UIElement >
+                        <TextBlock Text="Threshold" FontSize="14" Foreground="Magenta" RenderTransformOrigin="0,0">
+                            <TextBlock.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="-90"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </lvc:VisualElement.UIElement>
+                </lvc:VisualElement>
+            </lvc:CartesianChart.VisualElements>-->
             <lvc:CartesianChart.AxisX>
-                <lvc:Axis IsMerged="True" MinValue="0" MaxValue="260" Title="Pixel Intensity" FontSize="14">
+                <lvc:Axis MinValue="0" MaxValue="260" Title="Pixel Intensity" FontSize="14">
+                    <lvc:Axis.Sections>
+                        <lvc:AxisSection FromValue="0" ToValue="{Binding Threshold1, Mode=OneWay}" >
+                            <lvc:AxisSection.Fill>
+                                <LinearGradientBrush StartPoint="1,0.5" EndPoint="0,0.5" Opacity="0.25">
+                                    <GradientStop Color="White"  Offset="0.0" />
+                                    <GradientStop Color="#A9A9A9"  Offset="0.1" />
+                                    <GradientStop Color="Transparent" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </lvc:AxisSection.Fill>
+                        </lvc:AxisSection>
+                        <lvc:AxisSection FromValue="{Binding Threshold1, Mode=OneWay}" ToValue="{Binding Threshold2, Mode=OneWay}" 
+                                         Visibility="{Binding Threshold2Visibility, Mode=OneWay, Converter={StaticResource ResourceKey=boolToVisibilityConverter}}">
+                            <lvc:AxisSection.Fill>
+                                <LinearGradientBrush StartPoint="1,0.5" EndPoint="0,0.5">
+                                    <GradientStop  Offset="0.0">
+                                        <GradientStop.Color>
+                                            <Color A="255" R="255" G="255" B="255" />
+                                        </GradientStop.Color>
+                                    </GradientStop>
+                                    <GradientStop  Offset="0.05">
+                                        <GradientStop.Color>
+                                            <Color A="50" R="169" G="169" B="169" />
+                                        </GradientStop.Color>
+                                    </GradientStop>
+                                    <GradientStop Color="Transparent" Offset="1.1" />
+                                </LinearGradientBrush>
+                            </lvc:AxisSection.Fill>
+                        </lvc:AxisSection>
+                    </lvc:Axis.Sections>
                     <lvc:Axis.Separator>
                         <lvc:Separator StrokeThickness="1" StrokeDashArray="2" Step="20">
                             <lvc:Separator.Stroke>

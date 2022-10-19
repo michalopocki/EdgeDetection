@@ -5,11 +5,9 @@ using System.Drawing;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class RobertsDetector : EdgeDetectorBase
+    public class RobertsDetector : GradientDetectorBase
     {
         public override string Name => "Roberts";
-        private readonly bool _thresholding;
-        private readonly int _threshold;
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { 0.0, 0.0, -1.0},
@@ -24,11 +22,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         };
 
         public RobertsDetector(){}
-        public RobertsDetector(GradientArgs args) : base(args)
-        {
-            _thresholding = args.Thresholding;
-            _threshold = args.Threshold;
-        }
+        public RobertsDetector(GradientArgs args) : base(args){}
 
         public override Bitmap DetectEdges()
         {

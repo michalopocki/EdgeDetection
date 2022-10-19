@@ -5,11 +5,9 @@ using System.Drawing;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class PrewittDetector : EdgeDetectorBase
+    public class PrewittDetector : GradientDetectorBase
     {
         public override string Name => "Prewitt";
-        private readonly bool _thresholding;
-        private readonly int _threshold;
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { 1 / 3.0, 0 / 3.0, -1 / 3.0},
@@ -23,11 +21,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { -1 / 3.0, -1 / 3.0, -1 / 3.0 }
         };
         public PrewittDetector(){}
-        public PrewittDetector(GradientArgs args) : base(args) 
-        {
-            _thresholding = args.Thresholding;
-            _threshold = args.Threshold;
-        }
+        public PrewittDetector(GradientArgs args) : base(args) {}
         public override Bitmap DetectEdges()
         {
             PixelArray gradientGx = Convolution(_Gx);

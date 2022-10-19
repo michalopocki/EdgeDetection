@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class KirschDetector : EdgeDetectorBase
+    public class KirschDetector : GradientDetectorBase
     {
         public override string Name => "Kirsch";
-        private readonly bool _thresholding;
-        private readonly int _threshold;
         private readonly double[][] _W = new double[3][]
         {
             new double[] { 5, -3, -3 },
@@ -62,11 +60,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { -3, -3, -3 }
         };
         public KirschDetector(){}
-        public KirschDetector(GradientArgs args) : base(args)
-        {
-            _thresholding = args.Thresholding;
-            _threshold = args.Threshold;
-        }
+        public KirschDetector(GradientArgs args) : base(args){}
         public override Bitmap DetectEdges()
         {
             PixelArray[] gradientMagnitudes = new PixelArray[8];

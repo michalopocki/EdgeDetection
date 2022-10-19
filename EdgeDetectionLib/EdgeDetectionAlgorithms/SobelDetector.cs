@@ -1,15 +1,14 @@
 ﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using EdgeDetectionLib.Kernels;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class SobelDetector : EdgeDetectorBase
+    public class SobelDetector : GradientDetectorBase
     {
         public override string Name => "Sobel";
-        private readonly bool _thresholding;
-        private readonly int _threshold;
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { -0.25, 0.0, 0.25},
@@ -23,11 +22,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { 0.25,  0.5,  0.25 }
         };
         public SobelDetector(){ }
-        public SobelDetector(GradientArgs args) : base(args) 
-        {
-            _thresholding = args.Thresholding;
-            _threshold = args.Threshold;
-        }
+        public SobelDetector(GradientArgs args) : base(args) {}
         public override Bitmap DetectEdges()
         {
             PixelArray gradientGx = Convolution(_Gx);

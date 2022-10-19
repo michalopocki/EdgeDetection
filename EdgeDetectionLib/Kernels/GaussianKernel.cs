@@ -13,6 +13,10 @@ namespace EdgeDetectionLib.Kernels
         {
             Sigma = sigma;
         }
+        public GaussianKernel(int MxN, double sigma) : base(MxN)
+        {
+            Sigma = sigma;
+        }
         public override double[][] Create()
         {
             double[][] meshGridX = CreateMeshGrid(MeshType.X);
