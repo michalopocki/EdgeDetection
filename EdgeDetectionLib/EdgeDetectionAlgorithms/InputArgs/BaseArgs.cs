@@ -16,5 +16,6 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             ImageToProcess = imageToProcess;
             IsGrayscale = isGrayscale;
         }
+        public BaseArgs(){}
     }
 }

@@ -9,7 +9,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
     public class CannyArgs : BaseArgs
     {
-        public bool Prefiltration { get; }
+        public bool Prefiltration { get; set; }
         public int KernelSize { get; set; }
         public double Sigma { get; set; }
         public int THigh { get; set; }

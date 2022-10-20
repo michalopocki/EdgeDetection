@@ -2,6 +2,7 @@
 using EdgeDetectionApp.Models;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
 using System;
 using System.Collections.ObjectModel;
 
@@ -12,7 +13,7 @@ namespace EdgeDetectionApp.ViewModel
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
         private IEdgeDetector _selectedEdgeDetector;
-        private DetectionParameters _detectionParameters;
+        private DetectionParameters _detectionParameters = new DetectionParameters();
         private bool _isGrayscale;
         private bool _thresholingVisibility;
         private bool _prefiltrationVisibility;
@@ -111,7 +112,6 @@ namespace EdgeDetectionApp.ViewModel
             _messenger = messenger;
             EdgeDetectors = new ObservableCollection<IEdgeDetector>(_edgeDetectorFactory.GetAll());
             _messenger.Subscribe<SendOptionsRequestMessage>(this, SendOptions);
-            DetectionParameters = new DetectionParameters();
         }
 
         private void SendOptions(object obj)
@@ -126,25 +126,40 @@ namespace EdgeDetectionApp.ViewModel
 
             if (detectorType.IsAssignableFrom(typeof(CannyDetector)))
             {
-                args = new CannyArgs(null, IsGrayscale, Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma, THigh, TLow);
+                args = CannyArgsBuilder.Init()
+                    .SetGrayscale(IsGrayscale)
+                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
+                    .SetHysteresisThresholds(TLow, THigh)
+                    .Build();
                 parameters.Args = args;
             }
             else if (detectorType.IsAssignableFrom(typeof(MarrHildrethDetector)))
             {
-                args = new MarrHildrethArgs(null, IsGrayscale, LoGKernelSize, LoGSigma);
+                args = MarrHildrethArgsBuilder.Init()
+                    .SetGrayscale(IsGrayscale)
+                    .SetLoGKernel(LoGKernelSize, LoGSigma)
+                    .Build(); 
                 parameters.Args = args;
             }
             else if (detectorType.IsAssignableFrom(typeof(LaplacianDetector)))
             {
-                args = new LaplacianArgs(null, IsGrayscale, Alpha, Thresholding, Threshold, Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma);
+                args = LaplacianArgsBuilder.Init()
+                    .SetGrayscale(IsGrayscale)
+                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
+                    .SetThresholding(Thresholding, Threshold)
+                    .SetAlpha(Alpha)
+                    .Build();
                 parameters.Args = args;
             }
             else
             {
-                args = new GradientArgs(null, IsGrayscale, Thresholding, Threshold, Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma);
+                args = GradientArgsBuilder.Init()
+                    .SetGrayscale(IsGrayscale)
+                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
+                    .SetThresholding(Thresholding, Threshold)
+                    .Build();
                 parameters.Args = args;
             }
-
             _messenger.Send(new SendOptionsMessage(parameters));
         }
         private void AdjustOptions()
