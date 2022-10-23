@@ -12,12 +12,15 @@ namespace EdgeDetectionApp.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        #region Properties
+        #region Fields
         private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private Bitmap _originalImage;
         private Bitmap _imageToShow;
+        private int _computingTime = 0;
+        #endregion
+        #region Properties
         public DetectionParameters DetectionParameters { get; set; }  
         public Bitmap OriginalImage
         {
@@ -35,6 +38,11 @@ namespace EdgeDetectionApp.ViewModel
             get => _imageToShow;
             set => SetField(ref _imageToShow, value);
         }
+        public int ComputingTime
+        {
+            get => _computingTime;
+            set => SetField(ref _computingTime, value);
+        }
         #endregion
         #region Commands
         public ICommand Process { get; set; }
@@ -45,7 +53,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Constructor
         public MainViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
         {
-            OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetection\bin\Debug\net6.0-windows\ptak3.jpg");
+            OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetectionApp\bin\Debug\net6.0-windows\ptak3.jpg");
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
             _dialogService = dialogService;

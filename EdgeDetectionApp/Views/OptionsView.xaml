@@ -72,7 +72,7 @@
                             <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0" Margin="10,5,0,5" Value="{Binding PrefiltrationKernelSize, Mode=TwoWay}" Increment="1" Minimum="2" Maximum="25"
                                        AllowSpin="True" Width="70" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsChecked}"/>
                             <xctk:DoubleUpDown Grid.Column="1" Grid.Row="1" Margin="10,5,0,5" Value="{Binding PrefiltrationSigma, Mode=TwoWay}" Increment=".1" Minimum="0" Maximum="20" FormatString="N1"
-                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsCHecked}"/>
+                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsChecked}"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Visibility="{Binding ThresholingVisibility, Mode=OneWay, Converter={StaticResource boolToVisibilityConverter}}" Margin="5,7,5,2">

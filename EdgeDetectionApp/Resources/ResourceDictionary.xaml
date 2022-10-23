@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
+                    xmlns:vm ="clr-namespace:EdgeDetectionApp.ViewModel">
+
+    <vm:ViewModelLocator x:Key="ViewModelLocator" />
+    
+    <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
+    <ImageSource x:Key="cancelImage">Icons/cancel.png</ImageSource>
+    <ImageSource x:Key="minimizeImage">Icons/minimize.png</ImageSource>
+    <ImageSource x:Key="restoreDownImage">Icons/restore-down.png</ImageSource>
+
+</ResourceDictionary>
