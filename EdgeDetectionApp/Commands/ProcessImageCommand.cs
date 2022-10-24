@@ -35,22 +35,22 @@ namespace EdgeDetectionApp.Commands
             string detectorName = _mainViewModel.DetectionParameters.DetectorName;
             IEdgeDetectorArgs args = _mainViewModel.DetectionParameters.Args;
             args.ImageToProcess = args.IsGrayscale ? _mainViewModel.GrayscaleImage : _mainViewModel.OriginalImage;
-                
-            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);
+
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            Bitmap processedImage = await Task.Run(() => edgeDetector.DetectEdges());
+            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);        
+            EdgeDetectionResult detectionResult = await Task.Run(() => edgeDetector.DetectEdges());
 
             if (_mainViewModel.DetectionParameters.Negative)
             {
-                processedImage.MakeNegative();
+                detectionResult.ProcessedImage.MakeNegative();
             }
 
             watch.Stop();
             System.Diagnostics.Trace.WriteLine("Detector:" + watch.ElapsedMilliseconds + " ms");
             _mainViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
 
-            _mainViewModel.ImageToShow = processedImage;
-            _messenger.Send(new HistogramDataChangedMessage(edgeDetector.BeforeThresholdingBitmap, args.IsGrayscale));
+            _mainViewModel.ImageToShow = detectionResult.ProcessedImage;
+            _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding, args.IsGrayscale));
         }
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

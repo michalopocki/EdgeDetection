@@ -29,7 +29,7 @@ namespace EdgeDetectionApp.ViewModel
             set
             {
                 _originalImage = value;
-                GrayscaleImage = value.MakeGrayscale();
+                GrayscaleImage = value.ToGrayscale();
                 ImageToShow = value;
             }
         }

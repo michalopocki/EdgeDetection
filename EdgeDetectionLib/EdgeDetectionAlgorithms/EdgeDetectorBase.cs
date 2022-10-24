@@ -11,79 +11,25 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public abstract class EdgeDetectorBase : IEdgeDetector
     {
         public abstract string Name { get; }
-        public Bitmap? BeforeThresholdingBitmap { get; protected set; }
-        protected PixelArray _PixelArray;
+        protected EdgeDetectionResult _result = new();
+        protected PixelMatrix _pixelMatrix;
         protected int _width;
         protected int _height;
-        protected bool _isGrayscale;
+        protected int _dimensions;
 
         public EdgeDetectorBase() { }
         public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
-            _PixelArray = new PixelArray(args.ImageToProcess);
+            _pixelMatrix = new PixelMatrix(args.ImageToProcess);
             _width = args.ImageToProcess.Width;
             _height = args.ImageToProcess.Height;
-            _isGrayscale = args.IsGrayscale;
+            _dimensions = args.ImageToProcess.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
         }
-        public abstract Bitmap DetectEdges();
+        public abstract EdgeDetectionResult DetectEdges();
 
-        protected PixelArray Convolution(double[][] filter)
+        protected PixelMatrix Convolution(double[][] filter)
         {
-            return _isGrayscale ? Convolution2D(filter) : Convolution3D(filter);
-        }
-        protected void CutSides(int kernelSize)
-        {
-            int size = (int)Math.Ceiling((double)kernelSize / 2);
-            var cutPixelArray = new PixelArray(_width - 2 * size, _height - 2 * size);
-
-            for (int x = size, i = 0; x < _width - size; x++, i++)
-            {
-                for (int y = size, j = 0; y < _height - size; y++, j++)
-                {
-                    for (int d = 0; d < 3; d++)
-                    {
-                        cutPixelArray[i, j, d] = _PixelArray[x, y, d];
-
-                        if (_isGrayscale)
-                        {
-                            cutPixelArray[i, j, 2] = cutPixelArray[i, j, 1] = cutPixelArray[i, j, 0];
-                            break;
-                        }
-                    }
-                }
-            }
-            _PixelArray = cutPixelArray;
-            _width -= 2 * size;
-            _height -= 2 * size;
-        }
-        protected PixelArray GradientMagnitude(PixelArray gradientGx, PixelArray gradientGy)
-        {
-            //PixelArray gradientMagnitude = PixelArray.Abs(gradientGx) + PixelArray.Abs(gradientGy);
-            int width = gradientGx.Width;
-            int height = gradientGx.Height;
-            var gradientMagnitude = new PixelArray(width, height);
-
-            Parallel.For(0, width, x =>
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    for (int d = 0; d < 3; d++)
-                    {
-                        gradientMagnitude[x, y, d] = Math.Sqrt(gradientGx[x, y, d] * gradientGx[x, y, d] + gradientGy[x, y, d] * gradientGy[x, y, d]);
-
-                        if (_isGrayscale)
-                        {
-                            gradientMagnitude[x, y, 2] = gradientMagnitude[x, y, 1] = gradientMagnitude[x, y, 0];
-                            break;
-                        }
-                    }
-                }
-            });
-            return gradientMagnitude;
-        }
-        private PixelArray Convolution3D(double[][] filter)
-        {
-            var resultArray = new PixelArray(_width, _height);
+            var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
             int limiter = (filter.GetLength(0) - 1) / 2;
 
             Parallel.For(limiter, _width - limiter, x =>
@@ -94,63 +40,54 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                     {
                         for (int n = -limiter; n <= limiter; n++)
                         {
-                            for (int d = 0; d < 3; d++)
+                            for (int d = 0; d < _dimensions; d++)
                             {
-                                resultArray[x, y, d] += _PixelArray[x - m, y - n, d] * filter[m + limiter][n + limiter];
+                                resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limiter][n + limiter];
                             }
                         }
                     }
                 }
             });
 
-            return resultArray;
+            return resultMatrix;
         }
-        private PixelArray Convolution2D(double[][] filter)
-        {
-            var resultArray = new PixelArray(_width, _height);
-            int limiter = (filter.GetLength(0) - 1) / 2;
 
-            Parallel.For(limiter, _width - limiter, x =>
+        protected void CutSides(int kernelSize)
+        {
+            int size = (int)Math.Ceiling((double)kernelSize / 2);
+            var cutPixelMatrix = new PixelMatrix(_width - 2 * size, _height - 2 * size, _dimensions);
+
+            for (int x = size, i = 0; x < _width - size; x++, i++)
             {
-                for (int y = limiter; y < _height - limiter; y++)
+                for (int y = size, j = 0; y < _height - size; y++, j++)
                 {
-                    for (int m = -limiter; m <= limiter; m++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
-                        for (int n = -limiter; n <= limiter; n++)
-                        {
-                            resultArray[x, y, 0] += _PixelArray[x - m, y - n, 0] * filter[m + limiter][n + limiter];
-                        }
+                        cutPixelMatrix[i, j, d] = _pixelMatrix[x, y, d];
                     }
-                    resultArray[x, y, 2] = resultArray[x, y, 1] = resultArray[x, y, 0];
                 }
-            });
-
-            return resultArray;
+            }
+            _pixelMatrix = cutPixelMatrix;
+            _width -= 2 * size;
+            _height -= 2 * size;
         }
-        protected void Thresholding(int threshold)
+
+        protected PixelMatrix GradientMagnitude(PixelMatrix gradientGx, PixelMatrix gradientGy)
         {
+            //PixelArray gradientMagnitude = PixelArray.Abs(gradientGx) + PixelArray.Abs(gradientGy);
+            var gradientMagnitude = new PixelMatrix(_width, _height, _dimensions);
+
             Parallel.For(0, _width, x =>
             {
                 for (int y = 0; y < _height; y++)
                 {
-                    for (int d = 0; d < 3; d++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
-                        if (_PixelArray[x, y, d] > threshold)
-                        {
-                            _PixelArray[x, y, d] = 255;
-                        }
-                        else
-                        {
-                            _PixelArray[x, y, d] = 0;
-                        }
-                        if (_isGrayscale)
-                        {
-                            _PixelArray[x, y, 2] = _PixelArray[x, y, 1] = _PixelArray[x, y, 0];
-                            break;
-                        }
+                        gradientMagnitude[x, y, d] = Math.Sqrt(gradientGx[x, y, d] * gradientGx[x, y, d] + gradientGy[x, y, d] * gradientGy[x, y, d]);
                     }
                 }
             });
+            return gradientMagnitude;
         }
     }
 }

@@ -61,9 +61,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         };
         public KirschDetector(){}
         public KirschDetector(GradientArgs args) : base(args){}
-        public override Bitmap DetectEdges()
+        public override EdgeDetectionResult DetectEdges()
         {
-            PixelArray[] gradientMagnitudes = new PixelArray[8];
+            PixelMatrix[] gradientMagnitudes = new PixelMatrix[8];
             gradientMagnitudes[0] = Convolution(_W);
             gradientMagnitudes[1] = Convolution(_SW); 
             gradientMagnitudes[2] = Convolution(_S); 
@@ -77,41 +77,38 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             {
                 gradMag.Abs();
             }
-            PixelArray gradient = FindMaxMagnitude(gradientMagnitudes);
+            PixelMatrix gradient = FindMaxMagnitude(gradientMagnitudes);
             gradient.Normalize();
 
-            BeforeThresholdingBitmap = gradient.Bitmap;
+            _result.ImageBeforeThresholding = gradient.Bitmap;
 
             if (_thresholding)
             {
                 gradient.Thresholding(_threshold);
             }
+            _result.ProcessedImage = gradient.Bitmap;
 
-            return gradient.Bitmap;
+            return _result;
         }
-        private PixelArray FindMaxMagnitude(params PixelArray[] pixelArrays)
+
+        private PixelMatrix FindMaxMagnitude(params PixelMatrix[] pixelMatrixs)
         {
-            var gradientMagnitude = new PixelArray(_width, _height);
+            var gradientMagnitude = new PixelMatrix(_width, _height, _dimensions);
 
             Parallel.For(0, _width, x =>
             {
                 double maxMagnitude = double.MinValue;
                 for (int y = 0; y < _height; y++)
                 {
-                    for (int d = 0; d < 3; d++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
-                        foreach (var pixelArray in pixelArrays)
+                        foreach (var pixelMatrix in pixelMatrixs)
                         {
-                            if (pixelArray[x, y, d] > maxMagnitude)
-                                maxMagnitude = pixelArray[x, y, d];
+                            if (pixelMatrix[x, y, d] > maxMagnitude)
+                                maxMagnitude = pixelMatrix[x, y, d];
                         }
                         gradientMagnitude[x, y, d] = maxMagnitude;
                         maxMagnitude = double.MinValue;
-                        if (_isGrayscale)
-                        {
-                            gradientMagnitude[x, y, 2] = gradientMagnitude[x, y, 1] = gradientMagnitude[x, y, 0];
-                            break;
-                        }
                     }
                 }
             });

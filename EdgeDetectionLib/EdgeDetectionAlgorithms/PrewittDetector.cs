@@ -22,20 +22,21 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         };
         public PrewittDetector(){}
         public PrewittDetector(GradientArgs args) : base(args) {}
-        public override Bitmap DetectEdges()
+        public override EdgeDetectionResult DetectEdges()
         {
-            PixelArray gradientGx = Convolution(_Gx);
-            PixelArray gradientGy = Convolution(_Gy);
-            PixelArray gradient = GradientMagnitude(gradientGx, gradientGy);
+            PixelMatrix gradientGx = Convolution(_Gx);
+            PixelMatrix gradientGy = Convolution(_Gy);
+            PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);
             gradient.Normalize();
-            BeforeThresholdingBitmap = gradient.Bitmap;
+            _result.ImageBeforeThresholding = gradient.Bitmap;
 
             if (_thresholding)
             {
                 gradient.Thresholding(_threshold);
             }
+            _result.ProcessedImage = gradient.Bitmap;
 
-            return gradient.Bitmap;
+            return _result;
         }
     }
 }

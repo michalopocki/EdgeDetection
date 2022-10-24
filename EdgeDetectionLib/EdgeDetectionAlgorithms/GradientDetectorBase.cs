@@ -33,7 +33,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             {
                 IKernel gaussianKernel = new GaussianKernel(_kernelSize, _sigma);
                 double[][] kernel = gaussianKernel.Create();
-                _PixelArray = Convolution(kernel);
+                _pixelMatrix = Convolution(kernel);
                 CutSides(_kernelSize);
             }
         }

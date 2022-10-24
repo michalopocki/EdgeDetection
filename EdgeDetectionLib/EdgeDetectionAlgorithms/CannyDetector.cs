@@ -36,43 +36,44 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _THigh = args.THigh;
             _TLow = args.TLow;
         }
-        public override Bitmap DetectEdges()
+        public override EdgeDetectionResult DetectEdges()
         {
             //1) Noise Reduction - Gaussian filter
             if (_prefiltration)
             {
                 IKernel gaussianKernel = new GaussianKernel(_gaussianKernelSize, _gaussianKernelSize, _sigma);
                 double[][] kernel = gaussianKernel.Create();
-                _PixelArray = Convolution(kernel);
+                _pixelMatrix = Convolution(kernel);
                 CutSides(_gaussianKernelSize);
             }
 
             //2) Finding the intensity gradient of the image
-            PixelArray gradientGx = Convolution(_Gx);
-            PixelArray gradientGy = Convolution(_Gy);
-            PixelArray gradient = GradientMagnitude(gradientGx, gradientGy);
-            PixelArray gradientDirection = GradientDirection(gradientGx, gradientGy);
+            PixelMatrix gradientGx = Convolution(_Gx);
+            PixelMatrix gradientGy = Convolution(_Gy);
+            PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);
+            PixelMatrix gradientDirection = GradientDirection(gradientGx, gradientGy);
 
             //3) Non-Maximum Suppression
-            PixelArray nomMaximumSuppression = NonMaximumSuppression(gradient, gradientDirection); 
+            PixelMatrix nomMaximumSuppression = NonMaximumSuppression(gradient, gradientDirection); 
             nomMaximumSuppression.Normalize();
-            BeforeThresholdingBitmap = nomMaximumSuppression.Bitmap;
+            _result.ImageBeforeThresholding = nomMaximumSuppression.Bitmap;
 
             //4) Hysteresis Thresholding
-            PixelArray hysteresisThresholding = HysteresisThresholding(nomMaximumSuppression);
+            PixelMatrix hysteresisThresholding = HysteresisThresholding(nomMaximumSuppression);
+            _result.ProcessedImage = hysteresisThresholding.Bitmap;
 
-            return hysteresisThresholding.Bitmap;
+            return _result;
         }
 
-        private PixelArray HysteresisThresholding(PixelArray NMS)
+        private PixelMatrix HysteresisThresholding(PixelMatrix NMS)
         {
-            var hysteresisThreshold = new PixelArray(_width, _height);
+            var hysteresisThreshold = new PixelMatrix(_width, _height, _dimensions);
 
             Parallel.For(1, _width - 1, x =>
             {
                 for (int y = 1; y < _height - 1; y++)
                 {
-                    for (int d = 0; d < 3; d++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
                         if (NMS[x, y, d] < _TLow)
                         {
@@ -93,28 +94,22 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         {
                             hysteresisThreshold[x, y, d] = 255d;
                         }
-
-                        if (_isGrayscale)
-                        {
-                            hysteresisThreshold[x, y, 2] = hysteresisThreshold[x, y, 1] = hysteresisThreshold[x, y, 0];
-                            break;
-                        }
                     }
                 }
             });
             return hysteresisThreshold;
         }
 
-        private PixelArray NonMaximumSuppression(PixelArray gradient, PixelArray gradientDirection)
+        private PixelMatrix NonMaximumSuppression(PixelMatrix gradient, PixelMatrix gradientDirection)
         {
-            var NMS = new PixelArray(_width, _height);
+            var NMS = new PixelMatrix(_width, _height, _dimensions);
 
             Parallel.For(1, _width - 1, x =>
             {
                 double max = 0;
                 for (int y = 1; y < _height - 1; y++)
                 {
-                    for (int d = 0; d < 3; d++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
                         if (gradientDirection[x, y, d] == 0.0)
                         {
@@ -137,12 +132,6 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                         {
                             NMS[x, y, d] = gradient[x, y, d];
                         }
-
-                        if (_isGrayscale)
-                        {
-                            NMS[x, y, 2] = NMS[x, y, 1] = NMS[x, y, 0];
-                            break;
-                        }
                     }
                 }
             });
@@ -150,9 +139,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             return NMS;
         }
 
-        private PixelArray GradientDirection(PixelArray gradientGx, PixelArray gradientGy)
+        private PixelMatrix GradientDirection(PixelMatrix gradientGx, PixelMatrix gradientGy)
         {
-            var gradientDirection = new PixelArray(_width, _height);
+            var gradientDirection = new PixelMatrix(_width, _height, _dimensions);
             double toDeg = 180d / Math.PI;
 
             Parallel.For(0, _width, x =>
@@ -160,17 +149,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                 double gradDir;
                 for (int y = 0; y < _height; y++)
                 {
-                    for (int d = 0; d < 3; d++)
+                    for (int d = 0; d < _dimensions; d++)
                     {
                         gradDir = Math.Atan2(gradientGy[x, y, d], gradientGx[x, y, d]) * toDeg;
                         gradDir = gradDir < 0 ? gradDir + 360d : gradDir;
                         gradientDirection[x, y, d] = RoundGradientDirectionAngle(gradDir);
-
-                        if (_isGrayscale)
-                        {
-                            gradientDirection[x, y, 2] = gradientDirection[x, y, 1] = gradientDirection[x, y, 0];
-                            break;
-                        }
                     }
                 }
             });

@@ -2,29 +2,37 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Printing;
 using System.Threading.Tasks;
+using System.Windows.Markup;
+using System.Windows.Media.Media3D;
 
 namespace EdgeDetectionLib
 {
-    public class PixelArray
+    public class PixelMatrix
     {
+        private double[] Bits { get; set; }
+
         #region Properties
         public Bitmap Bitmap => ToBitmap();
-        private double[] Bits { get; set; }
         public int Height { get; private set; }
         public int Width { get; private set; }
+        public int Dimensions { get; private set; }
         #endregion
         #region Constructors
-        public PixelArray(int width, int height)
+        public PixelMatrix(int width, int height, int dimensions)
         {
             Width = width;
             Height = height;
-            Bits = new double[width * height * 3];
+            Dimensions = dimensions;
+            Bits = new double[width * height * dimensions];
         }
-        public PixelArray(Bitmap bitmap) : this(bitmap.Width, bitmap.Height)
+
+        public PixelMatrix(Bitmap bitmap) : this(bitmap.Width, bitmap.Height, GetBytesPerPixel(bitmap.PixelFormat))
         {
             LoadBitmapData(bitmap);
         }
+
         #endregion
         #region Get and Set pixel
         public double this[int x, int y, int dimension]
@@ -32,6 +40,7 @@ namespace EdgeDetectionLib
             get => Bits[dimension * Width * Height + y * Width + x];
             set => Bits[dimension * Width * Height + y * Width + x] = value;
         }
+
         public void SetPixel(int x, int y, int dimension, double value)
         {
             if (x < 0 || y < 0 ||
@@ -43,6 +52,7 @@ namespace EdgeDetectionLib
             int index = dimension * Width * Height + y * Width + x;
             Bits[index] = value;
         }
+
         public double GetPixel(int x, int y, int dimension)
         {
             if (x < 0 || y < 0 ||
@@ -58,7 +68,7 @@ namespace EdgeDetectionLib
         #region Methods
         public void Abs()
         {
-            int length = Width * Height * 3;
+            int length = Width * Height * Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
@@ -69,9 +79,10 @@ namespace EdgeDetectionLib
                 }
             });
         }
+
         public void ChangeNegativeNumberToZero()
         {
-            int length = Width * Height * 3;
+            int length = Width * Height * Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
@@ -82,9 +93,10 @@ namespace EdgeDetectionLib
                 }
             });
         }
+
         public double Mean()
         {
-            int length = Width * Height * 3;
+            int length = Width * Height * Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
             double mean = 0;
 
@@ -98,11 +110,12 @@ namespace EdgeDetectionLib
             });
             return mean;
         }
+
         public void Normalize()
         {
             double minValue = Bits.AsParallel().Min();
             double maxValue = Bits.AsParallel().Max();
-            int length = Width * Height * 3;
+            int length = Width * Height * Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
 
             Parallel.For(0, degreeOfParallelism, workerId =>
@@ -114,9 +127,10 @@ namespace EdgeDetectionLib
                 }
             });
         }
+
         public void Thresholding(int threshold)
         {
-            int length = Width * Height * 3;
+            int length = Width * Height * Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
 
             Parallel.For(0, degreeOfParallelism, workerId =>
@@ -128,10 +142,11 @@ namespace EdgeDetectionLib
                 }
             });
         }
-        public static PixelArray operator +(PixelArray pixelArray1, PixelArray pixelArray2)
+
+        public static PixelMatrix operator +(PixelMatrix pixelArray1, PixelMatrix pixelArray2)
         {
-            var resultArray = new PixelArray(pixelArray1.Width, pixelArray1.Height);
-            int length = pixelArray1.Width * pixelArray1.Height * 3;
+            var resultArray = new PixelMatrix(pixelArray1.Width, pixelArray1.Height, pixelArray1.Dimensions);
+            int length = pixelArray1.Width * pixelArray1.Height * pixelArray1.Dimensions;
             int degreeOfParallelism = Environment.ProcessorCount;
 
             Parallel.For(0, degreeOfParallelism, workerId =>
@@ -144,12 +159,13 @@ namespace EdgeDetectionLib
             });
             return resultArray;
         }
+
         private unsafe void LoadBitmapData(Bitmap processedBitmap)
         {
             unsafe
             {
                 BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.ReadOnly, processedBitmap.PixelFormat);
-                int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
+                int bytesPerPixel = GetBytesPerPixel(processedBitmap.PixelFormat);
                 int height = bitmapData.Height;
                 int width = bitmapData.Width;
                 byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
@@ -159,26 +175,36 @@ namespace EdgeDetectionLib
                     byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
                     for (int x = 0; x < width; x++)
                     {
-                        double pixelBlue = currentLine[x * bytesPerPixel];
-                        double pixelGreen = currentLine[x * bytesPerPixel + 1];
-                        double pixelRed = currentLine[x * bytesPerPixel + 2];
-
-                        this[x, y, 0] = pixelRed;
-                        this[x, y, 1] = pixelGreen;
-                        this[x, y, 2] = pixelBlue;
+                        for (int dim = 0; dim < Dimensions; dim++)
+                        {
+                            double pixel = currentLine[x * bytesPerPixel + dim];
+                            this[x, y, dim] = pixel;
+                        }
                     }
                 });
                 processedBitmap.UnlockBits(bitmapData);
             }
         }
+
         private unsafe Bitmap ToBitmap()
         {
             unsafe
             {
-                var processedBitmap = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
-                BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.WriteOnly, processedBitmap.PixelFormat);
+                var pixelFormat = Dimensions == 1 ? PixelFormat.Format8bppIndexed : PixelFormat.Format24bppRgb;
+                var processedBitmap = new Bitmap(Width, Height, pixelFormat);
 
-                int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
+                if (pixelFormat == PixelFormat.Format8bppIndexed)
+                {
+                    var resultPalette = processedBitmap.Palette;
+                    for (int i = 0; i < 256; i++)
+                    {
+                        resultPalette.Entries[i] = Color.FromArgb(255, i, i, i);
+                    }
+                    processedBitmap.Palette = resultPalette;
+                }
+
+                BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.WriteOnly, processedBitmap.PixelFormat);
+                int bytesPerPixel = GetBytesPerPixel(processedBitmap.PixelFormat);
                 int heightInPixels = bitmapData.Height;
                 int widthInBytes = bitmapData.Width;
                 byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
@@ -186,20 +212,23 @@ namespace EdgeDetectionLib
                 Parallel.For(0, heightInPixels, y =>
                 {
                     byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
-                    for (int x = 0; x < widthInBytes; x ++)
+                    for (int x = 0; x < widthInBytes; x++)
                     {
-                        double pixelBlue = this[x, y, 2];
-                        double pixelGreen = this[x, y, 1];
-                        double pixelRed = this[x, y, 0];
-
-                        currentLine[x * bytesPerPixel] = (byte)pixelBlue;
-                        currentLine[x * bytesPerPixel + 1] = (byte)pixelGreen;
-                        currentLine[x * bytesPerPixel + 2] = (byte)pixelRed;
+                        for (int dim = 0; dim < Dimensions; dim++)
+                        {
+                            double pixel = this[x, y, dim];
+                            currentLine[x * bytesPerPixel + dim] = (byte)pixel;
+                        }
                     }
                 });
                 processedBitmap.UnlockBits(bitmapData);
                 return processedBitmap;
             }
+        }
+
+        private static int GetBytesPerPixel(PixelFormat pixelFormat)
+        {
+            return System.Drawing.Bitmap.GetPixelFormatSize(pixelFormat) / 8;
         }
         #endregion
     }

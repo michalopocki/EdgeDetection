@@ -9,11 +9,11 @@ namespace EdgeDetectionLib.Histogram
 {
     public class RGBHistogram : IHistogram
     {
-        private readonly PixelArray _PixelArray;
+        private readonly PixelMatrix _PixelArray;
 
         public RGBHistogram(Bitmap bitmap)
         {
-            _PixelArray = new PixelArray(bitmap);
+            _PixelArray = new PixelMatrix(bitmap);
         }
         public HistogramResults Calculate()
         {
@@ -30,13 +30,13 @@ namespace EdgeDetectionLib.Histogram
                         switch (d)
                         {
                             case 0:
-                                results.R_Series[(int)_PixelArray[x, y, d]]++;
+                                results.B_Series[(int)_PixelArray[x, y, d]]++;
                                 break;
                             case 1:
                                 results.G_Series[(int)_PixelArray[x, y, d]]++;
                                 break;
                             case 2:
-                                results.B_Series[(int)_PixelArray[x, y, d]]++;
+                                results.R_Series[(int)_PixelArray[x, y, d]]++;
                                 break;
 
                         }

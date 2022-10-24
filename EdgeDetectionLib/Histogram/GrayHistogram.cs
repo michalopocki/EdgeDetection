@@ -9,11 +9,11 @@ namespace EdgeDetectionLib.Histogram
 {
     public class GrayHistogram : IHistogram
     {
-        private readonly PixelArray _PixelArray;
+        private readonly PixelMatrix _PixelArray;
 
         public GrayHistogram(Bitmap bitmap)
         {
-            _PixelArray = new PixelArray(bitmap);
+            _PixelArray = new PixelMatrix(bitmap);
         }
         public HistogramResults Calculate()
         {

@@ -22,20 +22,21 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                 new double[] { _alpha / (_alpha + 1),       (1 - _alpha) / (1 + _alpha),  _alpha / (_alpha + 1) }
             };
         }
-        public override Bitmap DetectEdges()
+        public override EdgeDetectionResult DetectEdges()
         {
-            PixelArray gradient = Convolution(_kernel);
+            PixelMatrix gradient = Convolution(_kernel);
             gradient.ChangeNegativeNumberToZero();
             gradient.Normalize();
 
-            BeforeThresholdingBitmap = gradient.Bitmap;
+            _result.ImageBeforeThresholding = gradient.Bitmap;
 
             if (_thresholding)
             {
                 gradient.Thresholding(_threshold);
             }
+            _result.ProcessedImage = gradient.Bitmap;
 
-            return gradient.Bitmap;
+            return _result;
         }
     }
 }
