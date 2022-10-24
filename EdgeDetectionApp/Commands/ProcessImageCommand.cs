@@ -47,6 +47,7 @@ namespace EdgeDetectionApp.Commands
 
             watch.Stop();
             System.Diagnostics.Trace.WriteLine("Detector:" + watch.ElapsedMilliseconds + " ms");
+            _mainViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
 
             _mainViewModel.ImageToShow = processedImage;
             _messenger.Send(new HistogramDataChangedMessage(edgeDetector.BeforeThresholdingBitmap, args.IsGrayscale));

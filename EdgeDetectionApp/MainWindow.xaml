@@ -9,6 +9,7 @@
         xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:behaviors="clr-namespace:EdgeDetectionApp.Bahaviors"
+        xmlns:controls="clr-namespace:EdgeDetectionApp.Views.UserControls"
         mc:Ignorable="d"
         md:DialogServiceViews.IsRegistered="True"
         ResizeMode="CanResizeWithGrip"
@@ -16,162 +17,27 @@
         AllowsTransparency="True"
         x:Name="mainWindow"
         DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
-        Background="#222E31" WindowStartupLocation="CenterScreen"
+        Background="{StaticResource mainColor}" WindowStartupLocation="CenterScreen"
         Title="Edge Detection" Height="700" Width="1300">
     <Window.Resources>
 
     </Window.Resources>
     <i:Interaction.Behaviors>
-        <behaviors:CloseWindowBehavior x:Name="closeWindowBehavior" Button="{Binding ElementName=btnCloseWindow}"/>
-        <behaviors:RestoreDownBehavior x:Name="restoreDownWindowBehavior" Button="{Binding ElementName=btnRestoreDownWindow}"/>
-        <behaviors:MinimizeWindowBehavior x:Name="minimizeWindowBehavior" Button="{Binding ElementName=btnMinimizeWindow}"/>
-        <behaviors:WindowMoveBehavior x:Name="windowMoveBehavior" Grid="{Binding ElementName=topGrid}"/>
+        <!--<behaviors:CloseWindowBehavior x:Name="closeWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonClose}"/>-->
+        <behaviors:CloseWindowBehavior2 x:Name="closeWindowBehavior" UIElement="{Binding ElementName=titleBar, Path=ButtonClose}"/>
+        <behaviors:CloseWindowBehavior2 UIElement="{Binding ElementName=menuBar, Path=CloseMenuItem}"/>
+        <behaviors:RestoreDownBehavior x:Name="restoreDownWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonRestoreDown}"/>
+        <behaviors:MinimizeWindowBehavior x:Name="minimizeWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonMinimize}"/>
+        <behaviors:WindowMoveBehavior x:Name="windowMoveBehavior" UserControl="{Binding ElementName=titleBar}"/>
     </i:Interaction.Behaviors>
     <Border BorderThickness="0.5,0,0,0" BorderBrush="Black">
         <DockPanel>
-            <Grid DockPanel.Dock="Top" Height="25" Background="#181818" x:Name="topGrid">
-                <!--<Thumb  x:Name="headerThumb" 
-                        Opacity="0" 
-                        Background="{x:Null}" 
-                        Foreground="{x:Null}" 
-                        DragDelta="headerThumb_DragDelta"/>-->
-                <DockPanel>
-                    <Image DockPanel.Dock="Left" HorizontalAlignment="Left" Width="20" Margin="7,1,1,1" 
-                           Source="{StaticResource cancelImage}"/>
-                    <TextBlock DockPanel.Dock="Left" HorizontalAlignment="Left" Text="{Binding ElementName=mainWindow, Path=Title}" Foreground="#cccdcd" FontSize="15" Margin="8,2,1,1"/>
-                    <Button DockPanel.Dock="Right"  x:Name="btnCloseWindow" Width="30" HorizontalAlignment="Right">
-                        <Button.Content>
-                            <Image Source="{StaticResource cancelImage}" Width="20"/>
-                        </Button.Content>
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Background" Value="#212121"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Background="{TemplateBinding Background}" BorderBrush="#cccdcd" BorderThickness="0.1,0.1,0.1,0.1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Button.Background" Value="#ff0000"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Width="30" HorizontalAlignment="Right" x:Name="btnRestoreDownWindow">
-                        <Button.Content>
-                            <Image Source="{StaticResource restoreDownImage}" Width="20"/>
-                        </Button.Content>
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Background" Value="#212121"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Background="{TemplateBinding Background}" BorderBrush="#cccdcd" BorderThickness="0.1,0.1,0.1,0.1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Button.Background" Value="#424242"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button DockPanel.Dock="Right" Width="30" HorizontalAlignment="Right" x:Name="btnMinimizeWindow">
-                        <Button.Content>
-                            <Image Source="{StaticResource minimizeImage}" Width="25"/>
-                        </Button.Content>
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Background" Value="#212121"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type Button}">
-                                            <Border Background="{TemplateBinding Background}" BorderBrush="#cccdcd" BorderThickness="0.1,0.1,0.1,0.1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Button.Background" Value="#424242"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </DockPanel>
-            </Grid>
-            <Border DockPanel.Dock="Top" BorderThickness="0.3, 0.2, 0.3, 0.3" BorderBrush="#cccdcd">
-                <ToolBarPanel Orientation="Horizontal" Background="#212121">
-                    <ToolBarPanel.Resources>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Background" Value="#383838" />
-                            <Setter Property="Foreground" Value="#A9A9A9" />
-                            <Setter Property="Height" Value="30"/>
-                            <Setter Property="Width" Value="100"/>
-                            <Setter Property="Margin" Value="2"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Button}">
-                                        <Border Background="{TemplateBinding Background}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="DarkGoldenrod"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ToolBarPanel.Resources>
-                    <Button ToolTip="Load image from file" Content="Load" Command="{Binding Load}">
+            <controls:TitleBar DockPanel.Dock="Top" x:Name="titleBar"/>
+            <controls:MenuBar DockPanel.Dock="Top" x:Name="menuBar"/>
+            <controls:ToolBar DockPanel.Dock="Top"/>
+            <controls:StatusBar DockPanel.Dock="Bottom"/>
 
-                    </Button>
-                    <Button ToolTip="Save image as..." Content="Save" Command="{Binding SaveAs}" >
-
-                    </Button>
-                    <Button ToolTip="Open settings" Content="Settings" >
-
-                    </Button>
-                    <Separator Margin="5,0,5,0" Background="#A9A9A9">
-                        <Separator.LayoutTransform>
-                            <RotateTransform Angle="90" />
-                        </Separator.LayoutTransform>
-                    </Separator>
-                    <Button ToolTip="Open image window" Content="Image Processing" >
-
-                    </Button>
-                    <Button ToolTip="Open video window" Content="Video Processing" >
-
-                    </Button>
-                </ToolBarPanel>
-            </Border>
-            <StatusBar DockPanel.Dock="Bottom" Height="22" Background="#181818" BorderThickness="0,0.3,0,0" BorderBrush="#cccdcd">
-                <StatusBarItem>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Foreground="#A9A9A9">
-                        <Run Text="Computing time: "/>
-                        <Run Text="{Binding ComputingTime}"/>
-                        <Run Text=" ms"/>
-                        </TextBlock>
-                    </StackPanel>
-                </StatusBarItem>
-            </StatusBar>
-            <Grid Background="#222E31" >
+            <Grid Background="{StaticResource mainColor}" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>

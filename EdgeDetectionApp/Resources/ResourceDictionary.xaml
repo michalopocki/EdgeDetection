@@ -5,9 +5,69 @@
 
     <vm:ViewModelLocator x:Key="ViewModelLocator" />
     
+    <!--Converters-->
     <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
+    
+    <!--Brushes-->
+    <SolidColorBrush x:Key="textColor" Color="#A9A9A9" />
+    <SolidColorBrush x:Key="mainColor" Color="#222E31" />
+    <SolidColorBrush x:Key="blackColor" Color="#181818" />
+    <SolidColorBrush x:Key="titleBarButtonColor" Color="#212121" />
+    <SolidColorBrush x:Key="titleBarMouseOverCloseButtonColor" Color="#ff0000" />
+    <SolidColorBrush x:Key="titleBarMouseOverButtonColor" Color="#424242" />
+    <SolidColorBrush x:Key="borderColor" Color="#cccdcd" />
+
+    <!--Images-->
+    <ImageSource x:Key="appIcon">Icons/edge.png</ImageSource>
     <ImageSource x:Key="cancelImage">Icons/cancel.png</ImageSource>
     <ImageSource x:Key="minimizeImage">Icons/minimize.png</ImageSource>
     <ImageSource x:Key="restoreDownImage">Icons/restore-down.png</ImageSource>
+    <ImageSource x:Key="newImage">Icons/new.png</ImageSource>
+    <ImageSource x:Key="openFileImage">Icons/open-file.png</ImageSource>
+    <ImageSource x:Key="saveAsImage">Icons/save-as.png</ImageSource>
+    <ImageSource x:Key="settingsImage">Icons/settings.png</ImageSource>
+    <ImageSource x:Key="imageImage">Icons/image.png</ImageSource>
+    <ImageSource x:Key="webcamImage">Icons/webcam.png</ImageSource>
 
+    <!--Styles-->
+    <Style TargetType="{x:Type Button}" x:Key="closeButtonStyle">
+        <Setter Property="Background" Value="{StaticResource titleBarButtonColor}"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource borderColor}" BorderThickness="0.2">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Button.Background" Value="{StaticResource titleBarMouseOverCloseButtonColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="topBarButtonStyle">
+        <Setter Property="Background" Value="{StaticResource titleBarButtonColor}"/>
+        <Setter Property="Width" Value="30"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource borderColor}" BorderThickness="0.2">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Button.Background" Value="{StaticResource titleBarMouseOverButtonColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
 </ResourceDictionary>

@@ -1,4 +1,5 @@
-﻿using EdgeDetectionApp.Commands;
+﻿using CommunityToolkit.Mvvm.Input;
+using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
 using EdgeDetectionLib;

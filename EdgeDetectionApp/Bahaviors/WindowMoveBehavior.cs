@@ -10,15 +10,15 @@ namespace EdgeDetectionApp.Bahaviors
     {
         private Window? _window;
 
-        public static readonly DependencyProperty GridProperty =
+        public static readonly DependencyProperty UserControlProperty =
                 DependencyProperty.Register(
-                "Grid",
-                typeof(Grid),
+                "UserControl",
+                typeof(UserControl),
                 typeof(WindowMoveBehavior));
-        public Grid Grid
+        public UserControl UserControl
         {
-            get { return (Grid)GetValue(GridProperty); }
-            set { SetValue(GridProperty, value); }
+            get { return (UserControl)GetValue(UserControlProperty); }
+            set { SetValue(UserControlProperty, value); }
         }
 
         protected override void OnAttached()
@@ -27,19 +27,18 @@ namespace EdgeDetectionApp.Bahaviors
             AssociatedObject.Loaded += AssociatedObject_Loaded;
             AssociatedObject.Unloaded += AssociatedObject_Unloaded;
 
-            var window = (Window)AssociatedObject;
-            _window = window;
+            _window = (Window)AssociatedObject;
         }
         private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
         {
             AssociatedObject.Loaded -= AssociatedObject_Loaded;
-            Grid.MouseLeftButtonDown += Window_MouseDown;
+            UserControl.MouseLeftButtonDown += Window_MouseDown;
         }
 
         private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
         {
             AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
-            Grid.MouseLeftButtonDown -= Window_MouseDown;
+            UserControl.MouseLeftButtonDown -= Window_MouseDown;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

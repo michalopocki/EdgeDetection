@@ -37,9 +37,7 @@ namespace EdgeDetectionApp.Bahaviors
              };
 
             if (e.OldValue != null) ((Button)e.OldValue).Click -= buttonClick;
-            if (e.NewValue != null) ((Button)e.NewValue).Click += buttonClick;
-
-            
+            if (e.NewValue != null) ((Button)e.NewValue).Click += buttonClick;            
         }
     }
 }
