@@ -9,17 +9,17 @@ namespace EdgeDetectionLib.Histogram
 {
     public class RGBHistogram : IHistogram
     {
-        private readonly PixelMatrix _PixelArray;
+        private readonly PixelMatrix _pixelMatrix;
 
         public RGBHistogram(Bitmap bitmap)
         {
-            _PixelArray = new PixelMatrix(bitmap);
+            _pixelMatrix = new PixelMatrix(bitmap);
         }
         public HistogramResults Calculate()
         {
             var results = new HistogramResults();
-            int width = _PixelArray.Width;
-            int height = _PixelArray.Height;
+            int width = _pixelMatrix.Width;
+            int height = _pixelMatrix.Height;
 
             Parallel.For(0, width, x =>
             {
@@ -30,13 +30,13 @@ namespace EdgeDetectionLib.Histogram
                         switch (d)
                         {
                             case 0:
-                                results.B_Series[(int)_PixelArray[x, y, d]]++;
+                                results.B_Series[(int)_pixelMatrix[x, y, d]]++;
                                 break;
                             case 1:
-                                results.G_Series[(int)_PixelArray[x, y, d]]++;
+                                results.G_Series[(int)_pixelMatrix[x, y, d]]++;
                                 break;
                             case 2:
-                                results.R_Series[(int)_PixelArray[x, y, d]]++;
+                                results.R_Series[(int)_pixelMatrix[x, y, d]]++;
                                 break;
 
                         }

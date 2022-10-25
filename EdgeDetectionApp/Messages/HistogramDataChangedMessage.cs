@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.Messages
 {
-    public record HistogramDataChangedMessage(Bitmap Bitmap, bool IsGrayscale = false);
+    public record HistogramDataChangedMessage(Bitmap Bitmap);
 }

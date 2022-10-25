@@ -9,6 +9,6 @@ namespace EdgeDetectionLib.Histogram
 {
     public interface IHistogramFactory
     {
-        IHistogram Create(Bitmap bitmap, bool isGrayscale);
+        IHistogram Create(Bitmap bitmap);
     }
 }

@@ -9,23 +9,23 @@ namespace EdgeDetectionLib.Histogram
 {
     public class GrayHistogram : IHistogram
     {
-        private readonly PixelMatrix _PixelArray;
+        private readonly PixelMatrix _pixelMatrix;
 
         public GrayHistogram(Bitmap bitmap)
         {
-            _PixelArray = new PixelMatrix(bitmap);
+            _pixelMatrix = new PixelMatrix(bitmap);
         }
         public HistogramResults Calculate()
         {
             var results = new HistogramResults();
-            int width = _PixelArray.Width;
-            int height = _PixelArray.Height;
+            int width = _pixelMatrix.Width;
+            int height = _pixelMatrix.Height;
 
             Parallel.For(0, width, x =>
             {
                 for (int y = 0; y < height; y++)
                 {
-                    results.Gray_Series[(int)_PixelArray[x, y, 0]]++;
+                    results.Gray_Series[(int)_pixelMatrix[x, y, 0]]++;
                 }
             });
             return results;

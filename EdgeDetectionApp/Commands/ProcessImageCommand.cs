@@ -50,7 +50,7 @@ namespace EdgeDetectionApp.Commands
             _mainViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
 
             _mainViewModel.ImageToShow = detectionResult.ProcessedImage;
-            _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding, args.IsGrayscale));
+            _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding));
         }
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
