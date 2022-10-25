@@ -1,15 +1,19 @@
 ﻿using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 
 namespace EdgeDetectionApp.ViewModel
 {
     public class OptionsViewModel : ViewModelBase
     {
+        #region Fields
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
         private IEdgeDetector _selectedEdgeDetector;
@@ -26,6 +30,9 @@ namespace EdgeDetectionApp.ViewModel
         private int _threshold;
         private int _tLow = 15;
         private int _tHigh = 40;
+        #endregion
+
+        #region Properties
         public ObservableCollection<IEdgeDetector> EdgeDetectors { get; init; }
         public IEdgeDetector SelectedEdgeDetector
         {
@@ -106,6 +113,9 @@ namespace EdgeDetectionApp.ViewModel
         public bool AlphaVisibility { get => _alphaVisibility; set => SetField(ref _alphaVisibility, value); }
         public bool LoGKernelVisibility { get => _loGkernelVisibility; set => SetField(ref _loGkernelVisibility, value); }
         public bool HystTreshVisibility { get => _hystTreshVisibility; set => SetField(ref _hystTreshVisibility, value); }
+        #endregion
+
+        #region Constructor
         public OptionsViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger)
         {
             _edgeDetectorFactory = edgeDetectorFactory;
@@ -113,7 +123,9 @@ namespace EdgeDetectionApp.ViewModel
             EdgeDetectors = new ObservableCollection<IEdgeDetector>(_edgeDetectorFactory.GetAll());
             _messenger.Subscribe<SendOptionsRequestMessage>(this, SendOptions);
         }
+        #endregion
 
+        #region Private Methods
         private void SendOptions(object obj)
         {
             var parameters = new DetectionParameters()
@@ -127,7 +139,6 @@ namespace EdgeDetectionApp.ViewModel
             if (detectorType.IsAssignableFrom(typeof(CannyDetector)))
             {
                 args = CannyArgsBuilder.Init()
-                    .SetGrayscale(IsGrayscale)
                     .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
                     .SetHysteresisThresholds(TLow, THigh)
                     .Build();
@@ -136,7 +147,6 @@ namespace EdgeDetectionApp.ViewModel
             else if (detectorType.IsAssignableFrom(typeof(MarrHildrethDetector)))
             {
                 args = MarrHildrethArgsBuilder.Init()
-                    .SetGrayscale(IsGrayscale)
                     .SetLoGKernel(LoGKernelSize, LoGSigma)
                     .Build(); 
                 parameters.Args = args;
@@ -144,7 +154,6 @@ namespace EdgeDetectionApp.ViewModel
             else if (detectorType.IsAssignableFrom(typeof(LaplacianDetector)))
             {
                 args = LaplacianArgsBuilder.Init()
-                    .SetGrayscale(IsGrayscale)
                     .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
                     .SetThresholding(Thresholding, Threshold)
                     .SetAlpha(Alpha)
@@ -154,7 +163,6 @@ namespace EdgeDetectionApp.ViewModel
             else
             {
                 args = GradientArgsBuilder.Init()
-                    .SetGrayscale(IsGrayscale)
                     .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
                     .SetThresholding(Thresholding, Threshold)
                     .Build();
@@ -162,6 +170,7 @@ namespace EdgeDetectionApp.ViewModel
             }
             _messenger.Send(new SendOptionsMessage(parameters));
         }
+
         private void AdjustOptions()
         {
             Type detectorType = SelectedEdgeDetector.GetType();
@@ -202,7 +211,7 @@ namespace EdgeDetectionApp.ViewModel
                 HystTreshVisibility = false;
                 _messenger.Send(new ThresholdChangedMessage(Threshold, 0));
             }
-
         }
+        #endregion
     }
 }

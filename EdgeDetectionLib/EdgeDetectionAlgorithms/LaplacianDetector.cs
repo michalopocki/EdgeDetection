@@ -9,7 +9,6 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     {
         public override string Name => "Laplacian";
         private readonly double _alpha;
-
         private readonly double[][] _kernel;
         public LaplacianDetector(){}
         public LaplacianDetector(LaplacianArgs args) : base(args)

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace EdgeDetectionLib.EdgeDetectionAlgorithms
+namespace EdgeDetectionLib.EdgeDetectionAlgorithms.Factory
 {
     public interface IEdgeDetectorFactory
     {

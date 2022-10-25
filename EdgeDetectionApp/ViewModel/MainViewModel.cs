@@ -3,7 +3,7 @@ using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
 using EdgeDetectionLib;
-using EdgeDetectionLib.EdgeDetectionAlgorithms;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using MvvmDialogs;
 using System;
 using System.Drawing;
@@ -21,8 +21,10 @@ namespace EdgeDetectionApp.ViewModel
         private Bitmap _imageToShow;
         private int _computingTime = 0;
         #endregion
+
         #region Properties
-        public DetectionParameters DetectionParameters { get; set; }  
+        public DetectionParameters DetectionParameters { get; set; }
+        public bool IsGrayscale { get; set; }
         public Bitmap OriginalImage
         {
             get => _originalImage;
@@ -45,12 +47,14 @@ namespace EdgeDetectionApp.ViewModel
             set => SetField(ref _computingTime, value);
         }
         #endregion
+
         #region Commands
         public ICommand Process { get; set; }
         public ICommand DropImage { get; set; }
         public ICommand Load { get; set; }
         public ICommand SaveAs { get; set; }
         #endregion
+
         #region Constructor
         public MainViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
         {
@@ -62,7 +66,8 @@ namespace EdgeDetectionApp.ViewModel
             SetupMessages();
         }
         #endregion
-        #region Methods
+
+        #region Private Methods
         private void SetupCommands()
         {
             Process = new ProcessImageCommand(this, _edgeDetectorFactory, _messenger);
@@ -70,25 +75,30 @@ namespace EdgeDetectionApp.ViewModel
             SaveAs = new SaveAsImageCommand(this, _dialogService);
             DropImage = new DropImageCommand(this, _dialogService);
         }
+
         private void SetupMessages()
         {
             _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
             _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
-            _messenger.Send(new HistogramDataChangedMessage(OriginalImage));
+            _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
         }
+
         private void ChangeColorModel(object obj)
         {
             var message = (ColorModelChangedMessage)obj;
             if (message.IsGrayscale)
             {
                 ImageToShow = GrayscaleImage;
+                IsGrayscale = true;
             }
             else
             {
                 ImageToShow = OriginalImage;
+                IsGrayscale = false;
             }
-            _messenger.Send(new HistogramDataChangedMessage(ImageToShow, message.IsGrayscale));
+            _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
         }
+
         private void UpdateDetectionParamaters(object obj)
         {
             var message = (SendOptionsMessage)obj;

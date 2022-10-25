@@ -10,11 +10,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
     public abstract class BaseArgs : IEdgeDetectorArgs
     {
         public Bitmap? ImageToProcess { get; set; }
-        public bool IsGrayscale { get; set; }
-        public BaseArgs(Bitmap? imageToProcess, bool isGrayscale)
+        public BaseArgs(Bitmap? imageToProcess)
         {
             ImageToProcess = imageToProcess;
-            IsGrayscale = isGrayscale;
         }
         public BaseArgs(){}
     }

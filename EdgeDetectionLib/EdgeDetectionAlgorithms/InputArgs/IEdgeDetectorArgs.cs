@@ -11,6 +11,5 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
     public interface IEdgeDetectorArgs
     {
         Bitmap ImageToProcess { get; set; }
-        bool IsGrayscale { get; set; }
     }
 }

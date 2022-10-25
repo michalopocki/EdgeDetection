@@ -9,19 +9,23 @@ namespace EdgeDetectionLib.Kernels
     public class LaplacianOfGaussianKernel : KernelBase
     {
         public double Sigma { get; set; }
+
         public LaplacianOfGaussianKernel(int M, int N, double sigma) : base(M, N)
         {
             Sigma = sigma;
         }
+
         public LaplacianOfGaussianKernel(int MxN, double sigma) : base(MxN)
         {
             Sigma = sigma;
         }
+
         public LaplacianOfGaussianKernel(double sigma)
         {
             Sigma = sigma;
             M = N = (int)Math.Ceiling(sigma) * 5;
         }
+
         public override double[][] Create()
         {
             double[][] meshGridX = CreateMeshGrid(MeshType.X);
@@ -29,7 +33,7 @@ namespace EdgeDetectionLib.Kernels
 
             double[][] A = CalculateMatrixA(meshGridX, meshGridY);
             double[][] B = CalculateMatrixB(meshGridX, meshGridY);
-            double c = 1d;
+            double c = 1.0;
             double[][] LoGKernel = CalculateKernelElements(A, B, c);
             return LoGKernel;
         }

@@ -10,16 +10,20 @@ namespace EdgeDetectionLib.Kernels
     {
         public int M { get; set; } //M - number of rows
         public int N { get; set; } //N - number of columns
+
         public KernelBase(int M, int N)
         {
             this.M = M; this.N = N;
         }
+
         public KernelBase(int MxN)
         {
             M = MxN; N = MxN;
         }
         public KernelBase(){}
+
         public abstract double[][] Create();
+
         protected double[][] CreateMeshGrid(MeshType type)
         {
             int Mval = (M - 1) / 2;

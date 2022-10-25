@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
-
-namespace EdgeDetectionLib.EdgeDetectionAlgorithms
+namespace EdgeDetectionLib.EdgeDetectionAlgorithms.Factory
 {
     public class EdgeDetectorFactory : IEdgeDetectorFactory
     {
@@ -22,15 +23,18 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                              .OrderBy(x => x.Name)
                              .ToList();
         }
+
         public IReadOnlyList<IEdgeDetector> GetAll()
         {
             return _EdgeDetectors;
         }
+
         public IEdgeDetector Get(string name, IEdgeDetectorArgs args)
         {
             IEdgeDetector edgeDetector = _EdgeDetectors.Where(x => x.Name == name).First();
 
-            return (IEdgeDetector)Activator.CreateInstance(edgeDetector.GetType(), args);
+            return Activator.CreateInstance(edgeDetector.GetType(), args) as IEdgeDetector
+                                                ?? throw new InvalidOperationException();
         }
 
     }

@@ -10,22 +10,20 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
     public class LaplacianArgsBuilder : IArgsBuilder
     {
 
-        private LaplacianArgs _laplacianArgs = new LaplacianArgs(null, false, 0, false, 0, false, 0, 0);
+        private readonly LaplacianArgs _laplacianArgs = new LaplacianArgs(null, 0, false, 0, false, 0, 0);
         public IEdgeDetectorArgs Build() => _laplacianArgs;
+
         public static LaplacianArgsBuilder Init()
         {
             return new LaplacianArgsBuilder();
         }
+
         public LaplacianArgsBuilder SetBitmap(Bitmap imageToProcess)
         {
             _laplacianArgs.ImageToProcess = imageToProcess;
             return this;
         }
-        public LaplacianArgsBuilder SetGrayscale(bool isGrayscale)
-        {
-            _laplacianArgs.IsGrayscale = isGrayscale;
-            return this;
-        }
+
         public LaplacianArgsBuilder SetPrefiltration(bool prefiltration, int kernelSize, double sigma)
         {
             _laplacianArgs.Prefiltration = prefiltration;

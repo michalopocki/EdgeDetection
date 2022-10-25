@@ -11,8 +11,9 @@ namespace EdgeDetectionLib
 {
     public class PixelMatrix
     {
+        #region Fileds
         private double[] Bits { get; set; }
-
+        #endregion
         #region Properties
         public Bitmap Bitmap => ToBitmap();
         public int Height { get; private set; }

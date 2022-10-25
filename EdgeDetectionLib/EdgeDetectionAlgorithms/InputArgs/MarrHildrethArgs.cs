@@ -11,7 +11,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
     {
         public int KernelSize { get; set; }
         public double Sigma { get; set; }
-        public MarrHildrethArgs(Bitmap? imageToProcess, bool isGrayscale, int kernelSize, double sigma) : base(imageToProcess, isGrayscale)
+        public MarrHildrethArgs(Bitmap? imageToProcess, int kernelSize, double sigma) : base(imageToProcess)
         {
             KernelSize = kernelSize;
             Sigma = sigma;

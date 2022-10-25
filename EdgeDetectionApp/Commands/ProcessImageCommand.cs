@@ -2,6 +2,7 @@
 using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
 using System;
 using System.ComponentModel;
@@ -34,7 +35,7 @@ namespace EdgeDetectionApp.Commands
         {
             string detectorName = _mainViewModel.DetectionParameters.DetectorName;
             IEdgeDetectorArgs args = _mainViewModel.DetectionParameters.Args;
-            args.ImageToProcess = args.IsGrayscale ? _mainViewModel.GrayscaleImage : _mainViewModel.OriginalImage;
+            args.ImageToProcess = _mainViewModel.IsGrayscale ? _mainViewModel.GrayscaleImage : _mainViewModel.OriginalImage;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);        

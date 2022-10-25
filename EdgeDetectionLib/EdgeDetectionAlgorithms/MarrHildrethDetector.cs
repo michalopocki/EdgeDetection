@@ -71,6 +71,5 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             });
             return resultMatrix;
         }
- 
     }
 }

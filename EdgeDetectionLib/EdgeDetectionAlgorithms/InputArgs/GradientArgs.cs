@@ -15,8 +15,8 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
         public int KernelSize { get; set; }
         public double Sigma { get; set; }
 
-        public GradientArgs(Bitmap? imageToProcess, bool isGrayscale, bool thresholding, int threshold,
-                            bool prefiltration, int kernelSize, double sigma) : base(imageToProcess, isGrayscale)
+        public GradientArgs(Bitmap? imageToProcess, bool thresholding, int threshold,
+                            bool prefiltration, int kernelSize, double sigma) : base(imageToProcess)
         {
             Thresholding = thresholding;
             Threshold = threshold;

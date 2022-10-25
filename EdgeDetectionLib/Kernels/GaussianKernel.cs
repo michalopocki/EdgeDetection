@@ -9,6 +9,7 @@ namespace EdgeDetectionLib.Kernels
     public class GaussianKernel : KernelBase
     {
         public double Sigma { get; set; }
+
         public GaussianKernel(int M, int N, double sigma) : base(M, N)
         {
             Sigma = sigma;
@@ -17,6 +18,7 @@ namespace EdgeDetectionLib.Kernels
         {
             Sigma = sigma;
         }
+
         public override double[][] Create()
         {
             double[][] meshGridX = CreateMeshGrid(MeshType.X);
@@ -25,6 +27,7 @@ namespace EdgeDetectionLib.Kernels
 
             return gaussianKernel;
         }
+
         private double[][] CalculateKernelElements(double[][] meshX, double[][] meshY)
         {
             double[][] gaussianKernel = InitializeJaggedArray(M, N);
