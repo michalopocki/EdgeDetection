@@ -30,6 +30,7 @@ namespace EdgeDetectionApp.Commands
             }
             else if (parameter.ToString() == "Video")
             {
+                //ChartViewModel.canGet = false;
                 _mainViewModel.SelectedViewModel = _videoViewModel;
             }
         }

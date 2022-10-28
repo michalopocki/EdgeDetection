@@ -45,6 +45,10 @@ namespace EdgeDetectionApp.Bahaviors
         {
             if (_window is not null)
             {
+                //if (_window.WindowState == WindowState.Maximized)
+                //{
+                //    _window.WindowState = WindowState.Normal;
+                //}
                 _window.DragMove();
             }
         }

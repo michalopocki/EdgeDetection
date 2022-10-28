@@ -33,7 +33,7 @@ namespace EdgeDetectionApp.ViewModel
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<ImageViewModel>();
             services.AddSingleton<VideoViewModel>();
-            services.AddSingleton<ChartViewModel>();
+            services.AddTransient<ChartViewModel>();
             services.AddSingleton<OptionsViewModel>();
 
             services.AddSingleton<IDialogService, DialogService>();

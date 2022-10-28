@@ -5,21 +5,47 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EdgeDetectionApp.Views"
              xmlns:mv="clr-namespace:EdgeDetectionApp.ViewModel"
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
+             xmlns:lvc ="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
              DataContext="{Binding Path=ChartViewModel, Source={StaticResource ViewModelLocator}}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+        <Style TargetType="lvc:LineSeries" x:Key="seriesStyle">
+            <Setter Property="PointGeometry" Value="{x:Null}"/>
+            <Setter Property="StrokeThickness" Value="2.5"/>
+            <Setter Property="Fill" Value="Transparent"/>
+        </Style>
+        <SolidColorBrush x:Key="redColor" Color="#ff0000" Opacity="100"/>
+        <SolidColorBrush x:Key="blueColor" Color="#0066cc" />
+        <SolidColorBrush x:Key="greenColor" Color="#00b300" />
+        <LinearGradientBrush x:Key="redGradientBrush" StartPoint="0,0" EndPoint="0,1" Opacity="0.3">
+            <GradientStop Color="Red" Offset="0.85" />
+            <GradientStop Color="Transparent" Offset="1"/>
+        </LinearGradientBrush>
     </UserControl.Resources>
     <DockPanel LastChildFill="True" Background="#222E31">
 
         <TextBlock DockPanel.Dock="Top" Text="Luminance Histogram" FontSize="20" FontWeight="Bold"
                    Foreground="#A9A9A9"  HorizontalAlignment="Center"/>
 
-        <lvc:CartesianChart Series="{Binding Series, Mode=OneWay}" Margin="10,10,20,20"
+        <lvc:CartesianChart Margin="10,10,20,7" 
                             DisableAnimations="True" Hoverable="False" Zoom="X">
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Values="{Binding G_Values}" Style="{StaticResource seriesStyle}"
+                                Title="Green" Stroke="{StaticResource greenColor}" 
+                                Visibility="{Binding RGBVisibility, Converter={StaticResource boolToVisibilityConverter}}"/>
+                <lvc:LineSeries Values="{Binding B_Values}" Style="{StaticResource seriesStyle}" 
+                                Title="Blue" Stroke="{StaticResource blueColor}" 
+                                Visibility="{Binding RGBVisibility, Converter={StaticResource boolToVisibilityConverter}}"/>
+                <lvc:LineSeries Values="{Binding R_Values}" Style="{StaticResource seriesStyle}" 
+                                Title="Red" Stroke="{StaticResource redColor}" Fill="{StaticResource redGradientBrush}"
+                                Visibility="{Binding RGBVisibility, Converter={StaticResource boolToVisibilityConverter}}"/>
+                <lvc:LineSeries Values="{Binding Gray_Values}" Style="{StaticResource seriesStyle}" 
+                                Title="Blue" Stroke="#484848" Fill="{StaticResource redGradientBrush}"
+                                Visibility="{Binding GrayVisibility, Converter={StaticResource boolToVisibilityConverter}}"/>
+            </lvc:CartesianChart.Series>
             <lvc:CartesianChart.AxisX>
                 <lvc:Axis MinValue="0" MaxValue="260" Title="Pixel Intensity" FontSize="14">
                     <lvc:Axis.Sections>

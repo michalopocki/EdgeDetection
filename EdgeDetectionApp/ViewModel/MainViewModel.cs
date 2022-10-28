@@ -15,8 +15,6 @@ namespace EdgeDetectionApp.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private ViewModelBase _selectedViewModel;
-        private readonly ImageViewModel _imageViewModel;
-        private readonly VideoViewModel _videoViewModel;
 
         public ViewModelBase SelectedViewModel
         {
@@ -27,10 +25,8 @@ namespace EdgeDetectionApp.ViewModel
         public ICommand UpdateViewCommand { get; set; }
         public MainViewModel(ImageViewModel imageViewModel, VideoViewModel videoViewModel)
         {
-            _imageViewModel = imageViewModel;
-            _videoViewModel = videoViewModel;
-            UpdateViewCommand = new UpdateViewCommand(this, _imageViewModel, _videoViewModel);
-            _selectedViewModel = _imageViewModel;
+            UpdateViewCommand = new UpdateViewCommand(this, imageViewModel, videoViewModel);
+            _selectedViewModel = imageViewModel;
         }
     }
 }
