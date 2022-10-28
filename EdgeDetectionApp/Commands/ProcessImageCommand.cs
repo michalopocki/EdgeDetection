@@ -13,16 +13,16 @@ namespace EdgeDetectionApp.Commands
 {
     public class ProcessImageCommand : AsyncCommandBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly ImageViewModel _imageViewModel;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
 
-        public ProcessImageCommand(MainViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger)
+        public ProcessImageCommand(ImageViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger)
         {
-            _mainViewModel = imageViewModel;
+            _imageViewModel = imageViewModel;
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
-            _mainViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            _imageViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         protected override async Task ExecuteAsync(object parameter)
@@ -33,24 +33,24 @@ namespace EdgeDetectionApp.Commands
 
         private async Task Process()
         {
-            string detectorName = _mainViewModel.DetectionParameters.DetectorName;
-            IEdgeDetectorArgs args = _mainViewModel.DetectionParameters.Args;
-            args.ImageToProcess = _mainViewModel.IsGrayscale ? _mainViewModel.GrayscaleImage : _mainViewModel.OriginalImage;
+            string detectorName = _imageViewModel.DetectionParameters.DetectorName;
+            IEdgeDetectorArgs args = _imageViewModel.DetectionParameters.Args;
+            args.ImageToProcess = _imageViewModel.IsGrayscale ? _imageViewModel.GrayscaleImage : _imageViewModel.OriginalImage;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);        
             EdgeDetectionResult detectionResult = await Task.Run(() => edgeDetector.DetectEdges());
 
-            if (_mainViewModel.DetectionParameters.Negative)
+            if (_imageViewModel.DetectionParameters.Negative)
             {
                 detectionResult.ProcessedImage.MakeNegative();
             }
 
             watch.Stop();
             System.Diagnostics.Trace.WriteLine("Detector:" + watch.ElapsedMilliseconds + " ms");
-            _mainViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
+            _imageViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
 
-            _mainViewModel.ImageToShow = detectionResult.ProcessedImage;
+            _imageViewModel.ImageToShow = detectionResult.ProcessedImage;
             _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding));
         }
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -16,13 +16,13 @@ namespace EdgeDetectionApp.Commands
 {
     public class LoadImageCommand : CommandBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly ImageViewModel _imageViewModel;
         private readonly IDialogService _dialogService;
         private readonly IMessenger _Messenger;
 
-        public LoadImageCommand(MainViewModel mainViewModel, IDialogService dialogService, IMessenger messenger)
+        public LoadImageCommand(ImageViewModel imageViewModel, IDialogService dialogService, IMessenger messenger)
         {
-            _mainViewModel = mainViewModel;
+            _imageViewModel = imageViewModel;
             _dialogService = dialogService;
             _Messenger = messenger;
         }   
@@ -49,12 +49,12 @@ namespace EdgeDetectionApp.Commands
             }
             settings.Filter = String.Format("{0}{1}{2} ({3})|{3}", settings.Filter, sep, "All Files", "*.*");
 
-            bool? dialogResult = _dialogService.ShowOpenFileDialog(_mainViewModel, settings);
+            bool? dialogResult = _dialogService.ShowOpenFileDialog(_imageViewModel, settings);
 
             if (dialogResult.HasValue && dialogResult.Value)
             {
                 Bitmap resultBmp = new Bitmap(settings.FileName);
-                _mainViewModel.OriginalImage = resultBmp;
+                _imageViewModel.OriginalImage = resultBmp;
                 _Messenger.Send(new HistogramDataChangedMessage(resultBmp));
             }
         }

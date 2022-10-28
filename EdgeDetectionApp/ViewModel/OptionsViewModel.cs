@@ -16,7 +16,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Fields
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
-        private IEdgeDetector _selectedEdgeDetector;
+        private IEdgeDetector _selectedEdgeDetector = new RobertsDetector();
         private DetectionParameters _detectionParameters = new DetectionParameters();
         private bool _isGrayscale;
         private bool _thresholingVisibility;
@@ -40,7 +40,8 @@ namespace EdgeDetectionApp.ViewModel
             set
             {
                 SetField(ref _selectedEdgeDetector, value);
-                AdjustOptions();
+                if (_selectedEdgeDetector is not null)
+                    AdjustOptions();
             }
         }
         public DetectionParameters DetectionParameters

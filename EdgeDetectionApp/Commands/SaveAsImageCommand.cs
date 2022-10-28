@@ -12,12 +12,12 @@ namespace EdgeDetectionApp.Commands
 {
     public class SaveAsImageCommand : CommandBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly ImageViewModel _imageViewModel;
         private readonly IDialogService _dialogService;
 
-        public SaveAsImageCommand(MainViewModel mainViewModel, IDialogService dialogService)
+        public SaveAsImageCommand(ImageViewModel imageViewModel, IDialogService dialogService)
         {
-            _mainViewModel = mainViewModel;
+            _imageViewModel = imageViewModel;
             _dialogService = dialogService;
         }
 
@@ -35,10 +35,10 @@ namespace EdgeDetectionApp.Commands
                 CheckFileExists = false
             };
 
-            bool? success = _dialogService.ShowSaveFileDialog(_mainViewModel, settings);
+            bool? success = _dialogService.ShowSaveFileDialog(_imageViewModel, settings);
             if (success == true)
             {
-                var tmp = _mainViewModel.ImageToShow;
+                var tmp = _imageViewModel.ImageToShow;
                 using (var bmp = new Bitmap(tmp))
                 {
                     if (File.Exists(settings.FileName))
@@ -59,7 +59,7 @@ namespace EdgeDetectionApp.Commands
                             break;
                     }
                 }
-                _dialogService.ShowMessageBox(_mainViewModel,
+                _dialogService.ShowMessageBox(_imageViewModel,
                                              $"Image saved successfully!\nDirectory: {settings.FileName}",
                                              "Imaged Saved!",
                                              MessageBoxButton.OK,

@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="EdgeDetectionApp.Views.UserControls.ImagePresenterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EdgeDetectionApp.Views.UserControls"
+             xmlns:behaviors ="clr-namespace:EdgeDetectionApp.Bahaviors"
+             xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             Background="#222E31"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="grid">
+        <Image HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True" Stretch="Uniform" x:Name="image" 
+               Width="{Binding ElementName=grid, Path=ActualWidth}" Height="{Binding ElementName=grid, Path=ActualHeight}"
+               Source="{Binding Path=ImageToShow, Mode=OneWay, Converter={StaticResource bitmapToBitmapImageConverter}}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Drop">
+                    <i:InvokeCommandAction Command="{Binding DropImage}" PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <i:Interaction.Behaviors>
+                <behaviors:ScaleImageBehavior x:Name="zoomImage" />
+            </i:Interaction.Behaviors>
+        </Image>
+    </Grid>
+</UserControl>

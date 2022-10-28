@@ -2,6 +2,7 @@
 using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.Histogram;
+using LiveCharts.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using MvvmDialogs;
 using System;
@@ -14,7 +15,7 @@ namespace EdgeDetectionApp
     /// </summary>
     public partial class App : Application
     {
-        public ViewModelLocator ViewModelLocator { get { return (ViewModelLocator)Current.TryFindResource("ViewModelLocator"); } }
+        //public ViewModelLocator ViewModelLocator { get { return (ViewModelLocator)Current.TryFindResource("ViewModelLocator"); } }
         public App()
         {
             SetupDependencyInjection();
@@ -25,6 +26,7 @@ namespace EdgeDetectionApp
                 new ServiceCollection()
                     .AddSingleton<IDialogService, DialogService>()
                     .AddSingleton<IMessenger, Messenger>()
+                    .AddSingleton<INavigationService, FrameNavigationService>()
                     .AddSingleton<IEdgeDetectorFactory>(new EdgeDetectorFactory())
                     .AddSingleton<IHistogramFactory>(new HistogramFactory())
                     .AddViewModels<ViewModelBase>()

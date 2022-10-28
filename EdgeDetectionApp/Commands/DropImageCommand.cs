@@ -11,12 +11,12 @@ namespace EdgeDetectionApp.Commands
 {
     public class DropImageCommand : CommandBase
     {
-        private readonly MainViewModel _mainViewModel;
+        private readonly ImageViewModel _imageViewModel;
         private readonly IDialogService _dialogService;
         private readonly List<string> _imageExtensions = GetImageExtensions();
-        public DropImageCommand(MainViewModel mainViewModel, IDialogService dialogService)
+        public DropImageCommand(ImageViewModel imgeViewModel, IDialogService dialogService)
         {
-            _mainViewModel = mainViewModel;
+            _imageViewModel = imgeViewModel;
             _dialogService = dialogService;
         }
         public override void Execute(object parameter)
@@ -30,11 +30,11 @@ namespace EdgeDetectionApp.Commands
 
                 if(_imageExtensions.Contains(fileExtension))
                 {
-                    _mainViewModel.OriginalImage = new Bitmap(filename);
+                    _imageViewModel.OriginalImage = new Bitmap(filename);
                 }
                 else
                 {
-                    _dialogService.ShowMessageBox(_mainViewModel, "Error!", "Invalid file!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                    _dialogService.ShowMessageBox(_imageViewModel, "Error!", "Invalid file!", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 }
             }
         }

@@ -26,7 +26,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
         public override EdgeDetectionResult DetectEdges()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             PixelMatrix gradientGx = Convolution(_Gx);
+
+            watch.Stop();
+            System.Diagnostics.Trace.WriteLine($"Convolution: { watch.ElapsedMilliseconds } ms");
+
+
             PixelMatrix gradientGy = Convolution(_Gy);
             PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);
             gradient.Normalize();

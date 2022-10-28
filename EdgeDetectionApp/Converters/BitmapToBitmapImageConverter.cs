@@ -10,7 +10,7 @@ namespace EdgeDetectionApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MemoryStream ms = new MemoryStream();
+            var ms = new MemoryStream();
             ((System.Drawing.Bitmap)value).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
             var image = new BitmapImage();
             image.BeginInit();

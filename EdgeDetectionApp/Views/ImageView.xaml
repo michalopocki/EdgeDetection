@@ -4,28 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EdgeDetectionApp.Views"
-             xmlns:behaviors ="clr-namespace:EdgeDetectionApp.Bahaviors"
-             xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
-             Background="#222E31"
+             xmlns:v="clr-namespace:EdgeDetectionApp.Views"
+             xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+             md:DialogServiceViews.IsRegistered="True"
+             xmlns:controls="clr-namespace:EdgeDetectionApp.Views.UserControls"
+             DataContext="{Binding Path=ImageViewModel, Source={StaticResource ViewModelLocator}}"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="300">
-    <UserControl.Resources>
-        <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
-    </UserControl.Resources>
-    <Grid x:Name="grid">
-        <Image HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True" Stretch="Uniform" x:Name="image" 
-               Width="{Binding ElementName=grid, Path=ActualWidth}" Height="{Binding ElementName=grid, Path=ActualHeight}"
-               Source="{Binding Path=ImageToShow, Mode=OneWay, Converter={StaticResource bitmapToBitmapImageConverter}}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Drop">
-                    <i:InvokeCommandAction Command="{Binding DropImage}" PassEventArgsToCommand="True" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <i:Interaction.Behaviors>
-                <behaviors:ScaleImageBehavior x:Name="zoomImage" />
-            </i:Interaction.Behaviors>
-        </Image>
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="{StaticResource mainColor}" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="20">
+            <controls:ImagePresenterView/>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <v:OptionsView/>
+                    <Button Width="100" Height="25" Content="Detect Edges" Command="{Binding Process}" 
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <v:ChartView/>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

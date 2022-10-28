@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EdgeDetectionApp"
-        xmlns:mv ="clr-namespace:EdgeDetectionApp.ViewModel"
+        xmlns:vm ="clr-namespace:EdgeDetectionApp.ViewModel"
         xmlns:v="clr-namespace:EdgeDetectionApp.Views"
         xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -20,7 +20,12 @@
         Background="{StaticResource mainColor}" WindowStartupLocation="CenterScreen"
         Title="Edge Detection" Height="700" Width="1300">
     <Window.Resources>
-
+        <DataTemplate DataType="{x:Type vm:ImageViewModel}">
+            <v:ImageView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:VideoViewModel}">
+            <v:VideoView/>
+        </DataTemplate>
     </Window.Resources>
     <i:Interaction.Behaviors>
         <!--<behaviors:CloseWindowBehavior x:Name="closeWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonClose}"/>-->
@@ -33,35 +38,17 @@
     <Border BorderThickness="0.5,0,0,0" BorderBrush="Black">
         <DockPanel>
             <controls:TitleBar DockPanel.Dock="Top" x:Name="titleBar"/>
-            <controls:MenuBar DockPanel.Dock="Top" x:Name="menuBar"/>
-            <controls:ToolBar DockPanel.Dock="Top"/>
-            <controls:StatusBar DockPanel.Dock="Bottom"/>
-
-            <Grid Background="{StaticResource mainColor}" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Margin="20">
-                    <v:ImageView/>
-                </Grid>
-                <Grid Grid.Column="1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <v:OptionsView/>
-                            <Button Width="100" Height="25" Content="Detect Edges" Command="{Binding Process}" 
-                            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20"/>
-                        </Grid>
-                        <Grid Grid.Row="1">
-                            <v:ChartView/>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+            <controls:MenuBar DockPanel.Dock="Top" x:Name="menuBar" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"/>
+            <controls:ToolBar DockPanel.Dock="Top" />
+            <controls:StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"/>
+            <ContentControl Content="{Binding SelectedViewModel}"/>
+            <!--<Frame Name="ContentFrame"  NavigationUIVisibility="Hidden">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding ShowImageCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Frame>-->
         </DockPanel>
     </Border>
 </Window>

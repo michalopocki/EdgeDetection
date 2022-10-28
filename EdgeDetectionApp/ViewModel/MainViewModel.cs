@@ -8,102 +8,51 @@ using MvvmDialogs;
 using System;
 using System.Drawing;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace EdgeDetectionApp.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        #region Fields
-        private readonly IMessenger _messenger;
-        private readonly IDialogService _dialogService;
-        private readonly IEdgeDetectorFactory _edgeDetectorFactory;
-        private Bitmap _originalImage;
-        private Bitmap _imageToShow;
-        private int _computingTime = 0;
-        #endregion
+        //private readonly INavigationService _navigationService;
 
-        #region Properties
-        public DetectionParameters DetectionParameters { get; set; }
-        public bool IsGrayscale { get; set; }
-        public Bitmap OriginalImage
+        //public ICommand ShowImageCommand { get; private set; }
+        //public ICommand ShowVideoCommand { get; private set; }
+        //public MainViewModel(INavigationService navigationService)
+        //{
+        //    _navigationService = navigationService;
+
+        //    ShowImageCommand = new RelayCommand(ShowImage);
+        //    ShowVideoCommand = new RelayCommand(ShowVideo);
+        //}
+
+        //private void ShowImage()
+        //{
+        //    _navigationService.Navigate("Image");
+        //}
+        //private void ShowVideo()
+        //{
+        //    _navigationService.Navigate("Video");
+        //}
+        private ViewModelBase _selectedViewModel;
+        private ViewModelLocator _viewModelLocator = new();
+
+        public ViewModelBase SelectedViewModel
         {
-            get => _originalImage;
+            get { return _selectedViewModel; }
             set
             {
-                _originalImage = value;
-                GrayscaleImage = value.ToGrayscale();
-                ImageToShow = value;
+                _selectedViewModel = value;
+                OnPropertyChanged(nameof(SelectedViewModel));
             }
         }
-        public Bitmap GrayscaleImage { get; set; }      
-        public Bitmap ImageToShow
-        {
-            get => _imageToShow;
-            set => SetField(ref _imageToShow, value);
-        }
-        public int ComputingTime
-        {
-            get => _computingTime;
-            set => SetField(ref _computingTime, value);
-        }
-        #endregion
 
-        #region Commands
-        public ICommand Process { get; set; }
-        public ICommand DropImage { get; set; }
-        public ICommand Load { get; set; }
-        public ICommand SaveAs { get; set; }
-        #endregion
-
-        #region Constructor
-        public MainViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
+        public ICommand UpdateViewCommand { get; set; }
+        public MainViewModel()
         {
-            OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetectionApp\bin\Debug\net6.0-windows\ptak3.jpg");
-            _edgeDetectorFactory = edgeDetectorFactory;
-            _messenger = messenger;
-            _dialogService = dialogService;
-            SetupCommands();
-            SetupMessages();
+            //_viewModelLocator = new();
+            UpdateViewCommand = new UpdateViewCommand(this, _viewModelLocator);
+            _selectedViewModel = _viewModelLocator.ImageViewModel;
         }
-        #endregion
-
-        #region Private Methods
-        private void SetupCommands()
-        {
-            Process = new ProcessImageCommand(this, _edgeDetectorFactory, _messenger);
-            Load = new LoadImageCommand(this, _dialogService, _messenger);
-            SaveAs = new SaveAsImageCommand(this, _dialogService);
-            DropImage = new DropImageCommand(this, _dialogService);
-        }
-
-        private void SetupMessages()
-        {
-            _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
-            _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
-            _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
-        }
-
-        private void ChangeColorModel(object obj)
-        {
-            var message = (ColorModelChangedMessage)obj;
-            if (message.IsGrayscale)
-            {
-                ImageToShow = GrayscaleImage;
-                IsGrayscale = true;
-            }
-            else
-            {
-                ImageToShow = OriginalImage;
-                IsGrayscale = false;
-            }
-            _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
-        }
-
-        private void UpdateDetectionParamaters(object obj)
-        {
-            var message = (SendOptionsMessage)obj;
-            DetectionParameters = message.Parameters;
-        }
-        #endregion
     }
 }

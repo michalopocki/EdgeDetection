@@ -39,6 +39,7 @@ namespace EdgeDetectionLib.Kernels
             }
             return meshGrid;
         }
+
         protected static double[][] InitializeJaggedArray(int M, int N)
         {
             double[][] jaggedArray = new double[M][];
