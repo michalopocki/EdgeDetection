@@ -19,6 +19,7 @@
     <None Remove="Resources\Icons\save-as.png" />
     <None Remove="Resources\Icons\settings.png" />
     <None Remove="Resources\Icons\webcam.png" />
+    <None Remove="Resources\SampleImage\bird.JPG" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.4.0" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.514" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-rc.2.22472.3" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="MvvmDialogs" Version="9.1.0" />
@@ -72,6 +74,9 @@
     </Resource>
     <Resource Include="Resources\Icons\webcam.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SampleImage\bird.JPG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

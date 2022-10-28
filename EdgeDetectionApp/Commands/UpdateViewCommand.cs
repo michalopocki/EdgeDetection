@@ -12,22 +12,25 @@ namespace EdgeDetectionApp.Commands
     public class UpdateViewCommand : CommandBase
     {
         private readonly MainViewModel _mainViewModel;
-        private readonly ViewModelLocator _viewModelLocator;
-        public UpdateViewCommand(MainViewModel mainViewModel, ViewModelLocator viewModelLocator)
+        private readonly ImageViewModel _imageViewModel;
+        private readonly VideoViewModel _videoViewModel;
+
+        public UpdateViewCommand(MainViewModel mainViewModel, ImageViewModel imageViewModel, VideoViewModel videoViewModel)
         {
             _mainViewModel = mainViewModel;
-            _viewModelLocator = viewModelLocator;
+            _imageViewModel = imageViewModel;
+            _videoViewModel = videoViewModel;
         }
 
         public override void Execute(object parameter)
         {
             if (parameter.ToString() == "Image")
             {
-                _mainViewModel.SelectedViewModel = _viewModelLocator.ImageViewModel;
+                _mainViewModel.SelectedViewModel = _imageViewModel;
             }
             else if (parameter.ToString() == "Video")
             {
-                _mainViewModel.SelectedViewModel = _viewModelLocator.VideoViewModel;
+                _mainViewModel.SelectedViewModel = _videoViewModel;
             }
         }
     }

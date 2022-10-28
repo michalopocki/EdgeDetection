@@ -38,7 +38,8 @@ namespace EdgeDetectionApp.Commands
             args.ImageToProcess = _imageViewModel.IsGrayscale ? _imageViewModel.GrayscaleImage : _imageViewModel.OriginalImage;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);        
+            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);   
+            
             EdgeDetectionResult detectionResult = await Task.Run(() => edgeDetector.DetectEdges());
 
             if (_imageViewModel.DetectionParameters.Negative)

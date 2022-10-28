@@ -14,45 +14,23 @@ namespace EdgeDetectionApp.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        //private readonly INavigationService _navigationService;
-
-        //public ICommand ShowImageCommand { get; private set; }
-        //public ICommand ShowVideoCommand { get; private set; }
-        //public MainViewModel(INavigationService navigationService)
-        //{
-        //    _navigationService = navigationService;
-
-        //    ShowImageCommand = new RelayCommand(ShowImage);
-        //    ShowVideoCommand = new RelayCommand(ShowVideo);
-        //}
-
-        //private void ShowImage()
-        //{
-        //    _navigationService.Navigate("Image");
-        //}
-        //private void ShowVideo()
-        //{
-        //    _navigationService.Navigate("Video");
-        //}
         private ViewModelBase _selectedViewModel;
-        private ViewModelLocator _viewModelLocator = new();
+        private readonly ImageViewModel _imageViewModel;
+        private readonly VideoViewModel _videoViewModel;
 
         public ViewModelBase SelectedViewModel
         {
-            get { return _selectedViewModel; }
-            set
-            {
-                _selectedViewModel = value;
-                OnPropertyChanged(nameof(SelectedViewModel));
-            }
+            get => _selectedViewModel;
+            set => SetField(ref _selectedViewModel, value);
         }
 
         public ICommand UpdateViewCommand { get; set; }
-        public MainViewModel()
+        public MainViewModel(ImageViewModel imageViewModel, VideoViewModel videoViewModel)
         {
-            //_viewModelLocator = new();
-            UpdateViewCommand = new UpdateViewCommand(this, _viewModelLocator);
-            _selectedViewModel = _viewModelLocator.ImageViewModel;
+            _imageViewModel = imageViewModel;
+            _videoViewModel = videoViewModel;
+            UpdateViewCommand = new UpdateViewCommand(this, _imageViewModel, _videoViewModel);
+            _selectedViewModel = _imageViewModel;
         }
     }
 }

@@ -19,7 +19,7 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <GroupBox Grid.Column="0" Margin="10" Header="Edge Detection Method" Foreground="#A9A9A9" VerticalAlignment="Top">
-            <ListBox Background="Transparent"
+            <ListBox Background="Transparent" SelectedIndex="0"
                              ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector}" BorderBrush="Transparent">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">

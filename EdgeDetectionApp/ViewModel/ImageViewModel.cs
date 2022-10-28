@@ -21,6 +21,7 @@ namespace EdgeDetectionApp.ViewModel
         private readonly IDialogService _dialogService;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private Bitmap _originalImage;
+        private Bitmap _grayscaleImage;
         private Bitmap _imageToShow;
         private int _computingTime = 0;
         #endregion
@@ -38,7 +39,7 @@ namespace EdgeDetectionApp.ViewModel
                 ImageToShow = value;
             }
         }
-        public Bitmap GrayscaleImage { get; set; }
+        public Bitmap GrayscaleImage { get => _grayscaleImage; set => _grayscaleImage = value; }
         public Bitmap ImageToShow
         {
             get => _imageToShow;
@@ -60,18 +61,12 @@ namespace EdgeDetectionApp.ViewModel
         #region Constructor
         public ImageViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
         {
-            OriginalImage = new Bitmap(@"E:\VS202022Projects\EdgeDetection\EdgeDetectionApp\bin\Debug\net6.0-windows\ptak3.jpg");
+            OriginalImage = new Bitmap(@"Resources\Images\bird.jpg");
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
-            _dialogService = dialogService;
+            _dialogService = dialogService; 
             SetupCommands();
             SetupMessages();
-        }
-        public override void Dispose()
-        {
-            _originalImage.Dispose();
-            _imageToShow.Dispose();
-            GrayscaleImage.Dispose();
         }
 
         #endregion

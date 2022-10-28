@@ -5,6 +5,8 @@ using LiveCharts.Wpf;
 using Color = System.Windows.Media.Color;
 using EdgeDetectionApp.Messages;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using System;
+using System.Windows;
 
 namespace EdgeDetectionApp.ViewModel
 {
@@ -56,6 +58,13 @@ namespace EdgeDetectionApp.ViewModel
             IHistogram histogram = _histogramFactory.Create(message.Bitmap);
             HistogramResults histogramResults = histogram.Calculate();
 
+            //if (Series is not null)
+            //{
+            //    Series.Clear();
+            //    Series = null;
+            //}
+            //GC.Collect();
+
             if (isGrayscale == false)
             {
                 Series = new SeriesCollection
@@ -68,7 +77,8 @@ namespace EdgeDetectionApp.ViewModel
                        PointGeometry = null,
                        Fill = new SolidColorBrush(Colors.Transparent),
                        LineSmoothness = 0.4,
-                       StrokeThickness = 2.5
+                       StrokeThickness = 2.5,
+                      // DataLabelsTemplate = CreateDataLabelTemplate()
                     },
                     new LineSeries
                     {
@@ -78,7 +88,7 @@ namespace EdgeDetectionApp.ViewModel
                        PointGeometry = null,
                        Fill = new SolidColorBrush(Colors.Transparent),
                        LineSmoothness = 0.4,
-                       StrokeThickness = 2.5
+                       StrokeThickness = 2.5,
                     },
                     new LineSeries
                     {
@@ -86,9 +96,9 @@ namespace EdgeDetectionApp.ViewModel
                        Stroke = new SolidColorBrush(Color.FromRgb(255, 0, 0)),
                        Title = "RED",
                        PointGeometry = null,
-                       Fill = _gradientBrush, 
+                       Fill = _gradientBrush,
                        LineSmoothness = 0.4,
-                       StrokeThickness = 2.5
+                       StrokeThickness = 2.5,
                     }
                 };
             }
@@ -102,13 +112,18 @@ namespace EdgeDetectionApp.ViewModel
                        Stroke = new SolidColorBrush(Color.FromRgb(72,72,72)),
                        Title = "GRAY",
                        PointGeometry = null,
-                       Fill = _gradientBrush, 
+                       Fill = _gradientBrush,
                        LineSmoothness = 0.4,
-                       StrokeThickness = 2.5
+                       StrokeThickness = 2.5,
                     }
                 };
             }
 
+        }
+
+        private DataTemplate CreateDataLabelTemplate()
+        {
+            throw new NotImplementedException();
         }
 
         private static LinearGradientBrush InitializeLinearGradientBrush()

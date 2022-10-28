@@ -18,20 +18,19 @@ namespace EdgeDetectionApp
         //public ViewModelLocator ViewModelLocator { get { return (ViewModelLocator)Current.TryFindResource("ViewModelLocator"); } }
         public App()
         {
-            SetupDependencyInjection();
+            //SetupDependencyInjection();
         }
-        private void SetupDependencyInjection()
-        {
-            Ioc.Default.ConfigureServices(
-                new ServiceCollection()
-                    .AddSingleton<IDialogService, DialogService>()
-                    .AddSingleton<IMessenger, Messenger>()
-                    .AddSingleton<INavigationService, FrameNavigationService>()
-                    .AddSingleton<IEdgeDetectorFactory>(new EdgeDetectorFactory())
-                    .AddSingleton<IHistogramFactory>(new HistogramFactory())
-                    .AddViewModels<ViewModelBase>()
-                    .BuildServiceProvider()
-            );
-        }
+        //private void SetupDependencyInjection()
+        //{
+        //    Ioc.Default.ConfigureServices(
+        //        new ServiceCollection()
+        //            .AddSingleton<IDialogService, DialogService>()
+        //            .AddSingleton<IMessenger, Messenger>()
+        //            .AddSingleton<IEdgeDetectorFactory>(new EdgeDetectorFactory())
+        //            .AddSingleton<IHistogramFactory>(new HistogramFactory())
+        //            .AddViewModels<ViewModelBase>()
+        //            .BuildServiceProvider()
+        //    );
+        //}
     }
 }
