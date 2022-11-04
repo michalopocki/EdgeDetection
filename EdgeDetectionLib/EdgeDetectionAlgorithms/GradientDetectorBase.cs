@@ -16,6 +16,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         protected bool _prefiltration;
         protected int _kernelSize;
         protected double _sigma;
+        private double[][] _kernel;
 
         public GradientDetectorBase() { }
         public GradientDetectorBase(GradientArgs args) :base(args)
@@ -25,15 +26,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _prefiltration = args.Prefiltration;
             _kernelSize = args.KernelSize;
             _sigma = args.Sigma;
-            Prefiltration();
+            IKernel gaussianKernel = new GaussianKernel(_kernelSize, _sigma);
+            _kernel = gaussianKernel.Create();
         }
-        private void Prefiltration()
+        protected void Prefiltration()
         {
             if (_prefiltration)
             {
-                IKernel gaussianKernel = new GaussianKernel(_kernelSize, _sigma);
-                double[][] kernel = gaussianKernel.Create();
-                _pixelMatrix = Convolution(kernel);
+                _pixelMatrix = Convolution(_kernel);
                 CutSides(_kernelSize);
             }
         }

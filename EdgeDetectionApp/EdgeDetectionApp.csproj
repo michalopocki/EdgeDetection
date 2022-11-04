@@ -18,6 +18,7 @@
     <None Remove="Resources\Icons\restore-down.png" />
     <None Remove="Resources\Icons\save-as.png" />
     <None Remove="Resources\Icons\settings.png" />
+    <None Remove="Resources\Icons\snapshot.png" />
     <None Remove="Resources\Icons\webcam.png" />
     <None Remove="Resources\SampleImage\bird.JPG" />
   </ItemGroup>
@@ -38,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.4.0" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
@@ -69,6 +71,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\settings.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\snapshot.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\webcam.png">

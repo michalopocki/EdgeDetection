@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.Histogram;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,11 +11,6 @@ namespace EdgeDetectionApp.ViewModel
     public class ViewModelLocator
     {
         private readonly ServiceProvider _serviceProvider;
-        //public MainViewModel MainViewModel => Ioc.Default.GetRequiredService<MainViewModel>();
-        //public ImageViewModel ImageViewModel => Ioc.Default.GetRequiredService<ImageViewModel>();
-        //public VideoViewModel VideoViewModel => Ioc.Default.GetRequiredService<VideoViewModel>();
-        //public ChartViewModel ChartViewModel => Ioc.Default.GetRequiredService<ChartViewModel>();
-        //public OptionsViewModel OptionsViewModel => Ioc.Default.GetRequiredService<OptionsViewModel>();
         public MainViewModel MainViewModel => _serviceProvider.GetRequiredService<MainViewModel>();
         public ImageViewModel ImageViewModel => _serviceProvider.GetRequiredService<ImageViewModel>();
         public VideoViewModel VideoViewModel => _serviceProvider.GetRequiredService<VideoViewModel>();
@@ -30,11 +26,13 @@ namespace EdgeDetectionApp.ViewModel
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<DetectionParamsStore>();
+
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<ImageViewModel>();
             services.AddSingleton<VideoViewModel>();
             services.AddTransient<ChartViewModel>();
-            services.AddSingleton<OptionsViewModel>();
+            services.AddScoped<OptionsViewModel>();
 
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<IMessenger, Messenger>();

@@ -7,11 +7,13 @@
     
     <!--Converters-->
     <converters:BitmapToBitmapImageConverter x:Key="bitmapToBitmapImageConverter"/>
+    <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
     
     <!--Brushes-->
     <SolidColorBrush x:Key="textColor" Color="#A9A9A9" />
     <SolidColorBrush x:Key="mainColor" Color="#222E31" />
     <SolidColorBrush x:Key="blackColor" Color="#181818" />
+    <SolidColorBrush x:Key="greenColor" Color="#00b300" />
     <SolidColorBrush x:Key="titleBarButtonColor" Color="#212121" />
     <SolidColorBrush x:Key="titleBarMouseOverCloseButtonColor" Color="#ff0000" />
     <SolidColorBrush x:Key="titleBarMouseOverButtonColor" Color="#424242" />
@@ -28,6 +30,7 @@
     <ImageSource x:Key="settingsImage">Icons/settings.png</ImageSource>
     <ImageSource x:Key="imageImage">Icons/image.png</ImageSource>
     <ImageSource x:Key="webcamImage">Icons/webcam.png</ImageSource>
+    <ImageSource x:Key="snapshotImage">Icons/snapshot.png</ImageSource>
 
     <!--Styles-->
     <Style TargetType="{x:Type Button}" x:Key="closeButtonStyle">

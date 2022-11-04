@@ -21,7 +21,7 @@ namespace EdgeDetectionApp.Commands
             _dialogService = dialogService;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             SaveBitmapAs();
         }
@@ -35,11 +35,18 @@ namespace EdgeDetectionApp.Commands
                 CheckFileExists = false
             };
 
-            bool? success = _dialogService.ShowSaveFileDialog(_imageViewModel, settings);
+            bool? success = false;
+            try
+            {
+                success = _dialogService.ShowSaveFileDialog(_imageViewModel, settings);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("View not registered");
+            }
             if (success == true)
             {
-                var tmp = _imageViewModel.ImageToShow;
-                using (var bmp = new Bitmap(tmp))
+                using (var bmp = (Bitmap)_imageViewModel.ImageToShow.Clone())
                 {
                     if (File.Exists(settings.FileName))
                     {
@@ -48,13 +55,13 @@ namespace EdgeDetectionApp.Commands
 
                     switch (settings.FilterIndex)
                     {
-                        case 0:
+                        case 1:
                             bmp.Save(settings.FileName, ImageFormat.Png);
                             break;
-                        case 1:
+                        case 2:
                             bmp.Save(settings.FileName, ImageFormat.Jpeg);
                             break;
-                        case 2:
+                        case 3:
                             bmp.Save(settings.FileName, ImageFormat.Bmp);
                             break;
                     }

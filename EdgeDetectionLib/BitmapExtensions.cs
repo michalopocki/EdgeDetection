@@ -2,13 +2,31 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
+using Color = System.Drawing.Color;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace EdgeDetectionLib
 {
     public static class BitmapExtensions
     {
+        public static BitmapImage ToBitmapImage(this Bitmap bitmap)
+        {
+            var bi = new BitmapImage();
+            bi.BeginInit();
+            var ms = new MemoryStream();
+            bitmap.Save(ms, ImageFormat.Bmp);
+            ms.Seek(0, SeekOrigin.Begin);
+            bi.StreamSource = ms;
+            bi.EndInit();
+            return bi;
+        }
+
         public static Bitmap MakeGrayscale(this Bitmap original)
         {
             var newBitmap = new Bitmap(original.Width, original.Height);
@@ -31,28 +49,36 @@ namespace EdgeDetectionLib
             return newBitmap;
         }
 
-        public static Bitmap ToGrayscale(this Bitmap bitmap)
+        public unsafe static Bitmap ToGrayscale(this Bitmap bitmap)
         {
             var result = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format8bppIndexed);
             result.SetGrayscalePalete();
 
-            BitmapData data = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            byte[] bytes = new byte[data.Height * data.Stride];
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+            BitmapData originalBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            BitmapData resultBitmapData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.WriteOnly, result.PixelFormat);
 
-            for (int y = 0; y < bitmap.Height; y++)
+            int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+            int height = originalBitmapData.Height;
+            int width = originalBitmapData.Width;
+            byte* PtrFirstPixel = (byte*)originalBitmapData.Scan0;
+            byte* PtrFirstPixelResult = (byte*)resultBitmapData.Scan0;
+
+            Parallel.For(0, height, y =>
             {
-                for (int x = 0; x < bitmap.Width; x++)
+                byte* currentLine = PtrFirstPixel + (y * originalBitmapData.Stride);
+                byte* currentLineResult = PtrFirstPixelResult + (y * resultBitmapData.Stride);
+                for (int x = 0; x < width; x++)
                 {
-                    var c = bitmap.GetPixel(x, y);
-                    var grayPixel = (byte)(0.299 * c.R + 0.587 * c.G + 0.114 * c.B);
+                    double bluePixel = currentLine[x * bytesPerPixel];
+                    double greenPixel = currentLine[x * bytesPerPixel + 1];
+                    double redPixel = currentLine[x * bytesPerPixel + 2];
+                    byte grayPixel = (byte)(0.114 * bluePixel + 0.587 * greenPixel + 0.299 * redPixel);
 
-                    bytes[y * data.Stride + x] = grayPixel;
+                    currentLineResult[x] = grayPixel;
                 }
-            }
-
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
-            result.UnlockBits(data);
+            });
+            bitmap.UnlockBits(originalBitmapData);
+            result.UnlockBits(resultBitmapData);
 
             return result;
         }

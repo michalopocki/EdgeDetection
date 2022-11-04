@@ -7,156 +7,27 @@
              xmlns:converters ="clr-namespace:EdgeDetectionApp.Converters"
              xmlns:local="clr-namespace:EdgeDetectionApp.Views" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:controls="clr-namespace:EdgeDetectionApp.Views.UserControls"
              mc:Ignorable="d" 
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=OptionsViewModel}"
-             d:DesignHeight="650" d:DesignWidth="1100">
+             d:DesignHeight="300" d:DesignWidth="1100">
     <UserControl.Resources>
-        <converters:BoolToVisibilityConverter x:Key="boolToVisibilityConverter"/>
+
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Grid.Column="0" Margin="10" Header="Edge Detection Method" Foreground="#A9A9A9" VerticalAlignment="Top">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <ScrollViewer.Resources>
-                    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">10</sys:Double>
-                </ScrollViewer.Resources>
-                <ListBox Background="Transparent" SelectedIndex="0"
-                             ItemsSource="{Binding EdgeDetectors}" SelectedItem="{Binding SelectedEdgeDetector}" BorderBrush="Transparent">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <ContentPresenter Margin="5"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel IsItemsHost="True"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <RadioButton GroupName="raid" Foreground="#A9A9A9"
-                                     Content="{Binding Name}" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </ScrollViewer>
-        </GroupBox>
-        <GroupBox Grid.Column="1" Margin="10" Header="Detection Options" Foreground="#A9A9A9">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <ScrollViewer.Resources>
-                    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">10</sys:Double>
-                </ScrollViewer.Resources>
-                <StackPanel>
-                    <CheckBox Margin="16,5,16,5" Content="Grayscale Image" Foreground="#A9A9A9" IsChecked="{Binding IsGrayscale, Mode=OneWayToSource}"/>
-                    <GroupBox Margin="5,2,5,0" Visibility="{Binding PrefiltrationVisibility, Mode=OneWay, Converter={StaticResource ResourceKey=boolToVisibilityConverter}}">
-                        <GroupBox.Header>
-                            <CheckBox x:Name="smoothingCheckBox" Content="Smoothing Prefiltration" Margin="2,0,2,0"
-                                      Foreground="#A9A9A9" IsChecked="{Binding Prefiltration, Mode=TwoWay}"/>
-                        </GroupBox.Header>
-                        <Grid IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsChecked}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Size" Margin="10"/>
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Sigma" Margin="10"/>
-                            <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0" Margin="10,5,0,5" Value="{Binding PrefiltrationKernelSize, Mode=TwoWay}" Increment="1" Minimum="2" Maximum="25"
-                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsChecked}"/>
-                            <xctk:DoubleUpDown Grid.Column="1" Grid.Row="1" Margin="10,5,0,5" Value="{Binding PrefiltrationSigma, Mode=TwoWay}" Increment=".1" Minimum="0" Maximum="20" FormatString="N1"
-                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=smoothingCheckBox, Path=IsChecked}"/>
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Visibility="{Binding ThresholingVisibility, Mode=OneWay, Converter={StaticResource boolToVisibilityConverter}}" Margin="5,7,5,2">
-                        <GroupBox.Header>
-                            <CheckBox x:Name="ThresCheckBox" Content="Thresholding" Margin="2,0,2,0"
-                                      Foreground="#A9A9A9" IsChecked="{Binding Thresholding, Mode=OneWayToSource}"/>
-                        </GroupBox.Header>
-                        <Grid IsEnabled="{Binding ElementName=ThresCheckBox, Path=IsChecked}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Slider Grid.Column="0" x:Name="Slider" Minimum="0" Maximum="255" TickFrequency="1" Value="{Binding Threshold, Mode=OneWayToSource}"
-                            IsSnapToTickEnabled="True" Margin="5,10,5,10" IsEnabled="{Binding ElementName=ThresCheckBox, Path=IsChecked}"/>
-                            <xctk:DoubleUpDown Grid.Column="1" Value="{Binding ElementName=Slider, Path=Value}" Margin="10" 
-                                        IsEnabled="{Binding ElementName=ThresCheckBox, Path=IsChecked}" />
-                        </Grid>
-                    </GroupBox>
-                    <StackPanel Orientation="Horizontal" Margin="5,2,5,2"
-                                Visibility="{Binding AlphaVisibility, Mode=OneWay, Converter={StaticResource boolToVisibilityConverter}}">
-                        <TextBlock Text="Alpha" Margin="10"  Foreground="#A9A9A9"/>
-                        <xctk:DoubleUpDown Margin="10,5,0,5" Value="{Binding Alpha, Mode=TwoWay}" Increment=".1" Minimum="0" Maximum="1.0" FormatString="N1"
-                                           AllowSpin="True" Width="70" HorizontalAlignment="Left" />
-                    </StackPanel>
-                    <GroupBox Margin="5,2,5,2"
-                              Visibility="{Binding LoGKernelVisibility, Mode=OneWay, Converter={StaticResource boolToVisibilityConverter}}">
-                        <GroupBox.Header>
-                            <TextBlock Text="Laplacian of Gaussian Kernel" Margin="2,0,2,0"/>
-                        </GroupBox.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Size" Margin="10"/>
-                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Sigma" Margin="10"/>
-                            <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0" Margin="10,5,0,5" Value="{Binding LoGKernelSize, Mode=TwoWay}" Increment="1" Minimum="2" Maximum="25"
-                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" />
-                            <xctk:DoubleUpDown Grid.Column="1" Grid.Row="1" Margin="10,5,0,5" Value="{Binding LoGSigma, Mode=TwoWay}" Increment=".1" Minimum="0" Maximum="20" FormatString="N1"
-                                       AllowSpin="True" Width="70" HorizontalAlignment="Left" />
-                        </Grid>
-                    </GroupBox>
-                    <GroupBox Margin="5,2,5,2"
-                              Visibility="{Binding HystTreshVisibility, Mode=OneWay, Converter={StaticResource boolToVisibilityConverter}}">
-                        <GroupBox.Header>
-                            <TextBlock Text="Hysteresis Thresholding" Margin="2,0,2,0"/>
-                        </GroupBox.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <xctk:RangeSlider Grid.Row="0"
-                                Grid.ColumnSpan="2"  x:Name="rangeSlider"  LowerValue="{Binding TLow, Mode=TwoWay}" 
-                                              HigherValue="{Binding THigh, Mode=TwoWay}" Minimum="0" Maximum="255" 
-                                              TickFrequency="1" IsSnapToTickEnabled="True" Margin="5,10,5,10"/>
-                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="T Low" Margin="10,2,0,10"/>
-                                <xctk:IntegerUpDown  Value="{Binding ElementName=rangeSlider, Path=LowerValue}" Margin="8,0,10,10" Width="50"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="T High" Margin="10,2,0,10"/>
-                                <xctk:IntegerUpDown Value="{Binding ElementName=rangeSlider, Path=HigherValue}" Margin="8,0,10,10" Width="50"/>
-                            </StackPanel>
-                        </Grid>
-                    </GroupBox>
-                    <CheckBox Margin="16,5,16,5" Content="Make Negative" Foreground="#A9A9A9" 
-                              IsChecked="{Binding Negative, Mode=OneWayToSource}"/>
-                </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <controls:DetectionMethodView Grid.Row="0" Margin="10" VerticalAlignment="Top"/>
+            <Button DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"
+                Grid.Row="1" Content="Detect Edges" Command="{Binding Process}" Width="120" Height="30"/>
+        </Grid>
+        <controls:DetectionOptionsView Grid.Column="1" Margin="10"/>
     </Grid>
 </UserControl>

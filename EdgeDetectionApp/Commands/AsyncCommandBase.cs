@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 public abstract class AsyncCommandBase : CommandBase
 {
-    private readonly Action<Exception> _onException;
+    private readonly Action<Exception>? _onException;
 
     private bool _isExecuting;
     public bool IsExecuting
@@ -23,17 +23,17 @@ public abstract class AsyncCommandBase : CommandBase
         }
     }
 
-    public AsyncCommandBase(Action<Exception> onException = null)
+    public AsyncCommandBase(Action<Exception>? onException = null)
     {
         _onException = onException;
     }
 
-    public override bool CanExecute(object parameter)
+    public override bool CanExecute(object? parameter)
     {
         return !IsExecuting && base.CanExecute(parameter);
     }
 
-    public override async void Execute(object parameter)
+    public override async void Execute(object? parameter)
     {
         IsExecuting = true;
 
@@ -49,6 +49,6 @@ public abstract class AsyncCommandBase : CommandBase
         IsExecuting = false;
     }
 
-    protected abstract Task ExecuteAsync(object parameter);
+    protected abstract Task ExecuteAsync(object? parameter);
 }
 

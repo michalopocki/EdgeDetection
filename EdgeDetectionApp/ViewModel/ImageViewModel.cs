@@ -1,6 +1,8 @@
-﻿using EdgeDetectionApp.Commands;
+﻿using CommunityToolkit.Mvvm.Input;
+using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
+using EdgeDetectionApp.Stores;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using MvvmDialogs;
@@ -19,6 +21,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Fields
         private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
+        private readonly DetectionParamsStore _detectionParamsStore;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private Bitmap _originalImage;
         private Bitmap _grayscaleImage;
@@ -27,7 +30,6 @@ namespace EdgeDetectionApp.ViewModel
         #endregion
 
         #region Properties
-        public DetectionParameters DetectionParameters { get; set; }
         public bool IsGrayscale { get; set; }
         public Bitmap OriginalImage
         {
@@ -58,21 +60,25 @@ namespace EdgeDetectionApp.ViewModel
         public ICommand Load { get; set; }
         public ICommand SaveAs { get; set; }
         #endregion
+
         #region Constructor
-        public ImageViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDialogService dialogService)
+        public ImageViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, 
+                             IDialogService dialogService, DetectionParamsStore detectionParamsStore)
         {
             OriginalImage = new Bitmap(@"Resources\Images\bird.jpg");
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
-            _dialogService = dialogService; 
+            _dialogService = dialogService;
+            _detectionParamsStore = detectionParamsStore;
             SetupCommands();
             SetupMessages();
         }
-
         #endregion
+
+        #region Methods
         private void SetupCommands()
         {
-            Process = new ProcessImageCommand(this, _edgeDetectorFactory, _messenger);
+            Process = new ProcessImageCommand(this, _edgeDetectorFactory, _messenger, _detectionParamsStore);
             Load = new LoadImageCommand(this, _dialogService, _messenger);
             SaveAs = new SaveAsImageCommand(this, _dialogService);
             DropImage = new DropImageCommand(this, _dialogService);
@@ -80,7 +86,6 @@ namespace EdgeDetectionApp.ViewModel
 
         private void SetupMessages()
         {
-            _messenger.Subscribe<SendOptionsMessage>(this, UpdateDetectionParamaters);
             _messenger.Subscribe<ColorModelChangedMessage>(this, ChangeColorModel);
             _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
         }
@@ -101,10 +106,14 @@ namespace EdgeDetectionApp.ViewModel
             _messenger.Send(new HistogramDataChangedMessage(ImageToShow));
         }
 
-        private void UpdateDetectionParamaters(object obj)
+        public override void Dispose()
         {
-            var message = (SendOptionsMessage)obj;
-            DetectionParameters = message.Parameters;
+            OriginalImage.Dispose();
+            GrayscaleImage.Dispose();
+            ImageToShow.Dispose();
+            _messenger.Unsubscribe<ColorModelChangedMessage>(this);
+            base.Dispose();
         }
+        #endregion
     }
 }

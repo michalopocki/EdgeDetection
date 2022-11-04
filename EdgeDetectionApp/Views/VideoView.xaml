@@ -3,10 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:EdgeDetectionApp.Views.UserControls"
              xmlns:local="clr-namespace:EdgeDetectionApp.Views"
+             xmlns:behaviors ="clr-namespace:EdgeDetectionApp.Bahaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=VideoViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="VIDEO" FontSize="50"/>
+             d:DesignHeight="550" d:DesignWidth="1000">
+    <Grid x:Name="grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="20">
+            <Image Grid.Column="0"  Source="{Binding CurrentImage}" 
+                    Width="{Binding ElementName=grid, Path=ActualWidth}" Height="{Binding ElementName=grid, Path=ActualHeight}"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" >
+                <i:Interaction.Behaviors>
+                    <behaviors:ScaleImageBehavior x:Name="zoomVideo" />
+                </i:Interaction.Behaviors>
+            </Image>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <controls:DetectionMethodView Grid.Row="0" Margin="10,5,10,3" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=OptionsViewModel}"/>
+            <controls:DetectionOptionsView Grid.Row="1" Margin="10,3,10,3" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=OptionsViewModel}"/>
+            <controls:VideoToolsView Grid.Row="2" Margin="10,3,10,5" />
+        </Grid>
     </Grid>
 </UserControl>

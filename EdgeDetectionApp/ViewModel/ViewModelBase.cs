@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace EdgeDetectionApp.ViewModel
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -94,6 +94,13 @@ namespace EdgeDetectionApp.ViewModel
                 Gray_Values = new ChartValues<int>(histogramResults.Gray_Series);
             }
         }
+
+        public override void Dispose()
+        {
+            _messenger.Unsubscribe<HistogramDataChangedMessage>(this);
+            _messenger.Unsubscribe<ThresholdChangedMessage>(this);
+            base.Dispose();
+        }
         #endregion
     }
 }

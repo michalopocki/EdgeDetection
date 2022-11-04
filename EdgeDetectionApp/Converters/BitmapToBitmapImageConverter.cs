@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EdgeDetectionLib;
+using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Data;
@@ -10,15 +12,18 @@ namespace EdgeDetectionApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var ms = new MemoryStream();
-            ((System.Drawing.Bitmap)value).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            var image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
+            var bitmap = (Bitmap)value;
+            var bitmapImage = bitmap.ToBitmapImage();
 
-            return image;
+            //var ms = new MemoryStream();
+            //((System.Drawing.Bitmap)value).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            //var image = new BitmapImage();
+            //image.BeginInit();
+            //ms.Seek(0, SeekOrigin.Begin);
+            //image.StreamSource = ms;
+            //image.EndInit();
+
+            return bitmapImage;
         }
     }
 

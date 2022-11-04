@@ -23,6 +23,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         }
         public override EdgeDetectionResult DetectEdges()
         {
+            Prefiltration();
             PixelMatrix gradient = Convolution(_kernel);
             gradient.ChangeNegativeNumberToZero();
             gradient.Normalize();

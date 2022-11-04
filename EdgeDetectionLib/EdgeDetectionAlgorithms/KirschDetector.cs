@@ -63,6 +63,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public KirschDetector(GradientArgs args) : base(args){}
         public override EdgeDetectionResult DetectEdges()
         {
+            Prefiltration();
             PixelMatrix[] gradientMagnitudes = new PixelMatrix[8];
             gradientMagnitudes[0] = Convolution(_W);
             gradientMagnitudes[1] = Convolution(_SW); 

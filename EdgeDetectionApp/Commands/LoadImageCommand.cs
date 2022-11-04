@@ -26,7 +26,7 @@ namespace EdgeDetectionApp.Commands
             _dialogService = dialogService;
             _Messenger = messenger;
         }   
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             LoadImageFromFile();
         }
@@ -53,9 +53,11 @@ namespace EdgeDetectionApp.Commands
 
             if (dialogResult.HasValue && dialogResult.Value)
             {
-                Bitmap resultBmp = new Bitmap(settings.FileName);
-                _imageViewModel.OriginalImage = resultBmp;
-                _Messenger.Send(new HistogramDataChangedMessage(resultBmp));
+                using (var resultBmp = new Bitmap(settings.FileName))
+                {
+                    _imageViewModel.OriginalImage = (Bitmap)resultBmp.Clone();
+                    _Messenger.Send(new HistogramDataChangedMessage((Bitmap)resultBmp.Clone()));
+                }
             }
         }
     }

@@ -24,6 +24,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public PrewittDetector(GradientArgs args) : base(args) {}
         public override EdgeDetectionResult DetectEdges()
         {
+            Prefiltration();
             PixelMatrix gradientGx = Convolution(_Gx);
             PixelMatrix gradientGy = Convolution(_Gy);
             PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);

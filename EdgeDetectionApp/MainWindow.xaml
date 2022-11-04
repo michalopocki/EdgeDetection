@@ -42,13 +42,6 @@
             <controls:ToolBar DockPanel.Dock="Top" />
             <controls:StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"/>
             <ContentControl Content="{Binding SelectedViewModel}"/>
-            <!--<Frame Name="ContentFrame"  NavigationUIVisibility="Hidden">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Loaded">
-                        <i:InvokeCommandAction Command="{Binding ShowImageCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Frame>-->
         </DockPanel>
     </Border>
 </Window>

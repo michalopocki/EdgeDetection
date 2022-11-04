@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
-    public class EdgeDetectionResult
+    public class EdgeDetectionResult : IDisposable
     {
         public Bitmap ProcessedImage { get; set; }
         public Bitmap ImageBeforeThresholding { get; set; }
+
+        public void Dispose()
+        {
+            ProcessedImage?.Dispose();
+            ImageBeforeThresholding?.Dispose(); 
+        }
     }
 }

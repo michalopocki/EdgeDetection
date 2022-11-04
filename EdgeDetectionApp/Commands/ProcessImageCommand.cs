@@ -1,4 +1,6 @@
 ﻿using EdgeDetectionApp.Messages;
+using EdgeDetectionApp.Models;
+using EdgeDetectionApp.Stores;
 using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
@@ -16,43 +18,51 @@ namespace EdgeDetectionApp.Commands
         private readonly ImageViewModel _imageViewModel;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
+        private readonly DetectionParamsStore _detectionParamsStore;
+        private IEdgeDetector _edgeDetector;
+        private DetectionParameters _detectionParameters = new DetectionParameters();
 
-        public ProcessImageCommand(ImageViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger)
+        public ProcessImageCommand(ImageViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory, 
+                                   IMessenger messenger, DetectionParamsStore detectionParamsStore)
         {
             _imageViewModel = imageViewModel;
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
+            _detectionParamsStore = detectionParamsStore;
+            _detectionParamsStore.ParamsCreated += DetectionParamsStore_ParamsCreated;
             _imageViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
-        protected override async Task ExecuteAsync(object parameter)
+        private void DetectionParamsStore_ParamsCreated(Models.DetectionParameters detectionParams)
         {
-            _messenger.Send(new SendOptionsRequestMessage());
+            _detectionParameters = detectionParams;
+            _edgeDetector = _edgeDetectorFactory.Get(_detectionParameters.DetectorName,
+                                                     _detectionParameters.Args);
+        }
+
+        protected override async Task ExecuteAsync(object? parameter)
+        {
+            _messenger.Send(new SendOptionsRequestMessage(_imageViewModel));
             await Process();
         }
 
         private async Task Process()
         {
-            string detectorName = _imageViewModel.DetectionParameters.DetectorName;
-            IEdgeDetectorArgs args = _imageViewModel.DetectionParameters.Args;
-            args.ImageToProcess = _imageViewModel.IsGrayscale ? _imageViewModel.GrayscaleImage : _imageViewModel.OriginalImage;
-
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            IEdgeDetector edgeDetector = _edgeDetectorFactory.Get(detectorName, args);   
-            
-            EdgeDetectionResult detectionResult = await Task.Run(() => edgeDetector.DetectEdges());
+            _edgeDetector.SetBitmap(_imageViewModel.IsGrayscale ? _imageViewModel.GrayscaleImage : _imageViewModel.OriginalImage);
 
-            if (_imageViewModel.DetectionParameters.Negative)
+            using (EdgeDetectionResult detectionResult = await Task.Run(() => _edgeDetector.DetectEdges()))
             {
-                detectionResult.ProcessedImage.MakeNegative();
+                if (_detectionParameters.Negative)
+                {
+                    detectionResult.ProcessedImage.MakeNegative();
+                }
+
+                watch.Stop();
+                _imageViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
+                _imageViewModel.ImageToShow = (Bitmap)detectionResult.ProcessedImage.Clone();
+                _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding));
             }
-
-            watch.Stop();
-            System.Diagnostics.Trace.WriteLine("Detector:" + watch.ElapsedMilliseconds + " ms");
-            _imageViewModel.ComputingTime = (int)watch.ElapsedMilliseconds;
-
-            _imageViewModel.ImageToShow = detectionResult.ProcessedImage;
-            _messenger.Send(new HistogramDataChangedMessage(detectionResult.ImageBeforeThresholding));
         }
         private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

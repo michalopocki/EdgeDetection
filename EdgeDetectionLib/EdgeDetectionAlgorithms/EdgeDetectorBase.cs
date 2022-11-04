@@ -20,13 +20,24 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public EdgeDetectorBase() { }
         public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
-            _pixelMatrix = new PixelMatrix(args.ImageToProcess);
-            _width = args.ImageToProcess.Width;
-            _height = args.ImageToProcess.Height;
-            _dimensions = args.ImageToProcess.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
+            if (args.ImageToProcess is not null)
+            {
+                _pixelMatrix = new PixelMatrix(args.ImageToProcess);
+                _width = args.ImageToProcess.Width;
+                _height = args.ImageToProcess.Height;
+                _dimensions = args.ImageToProcess.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
+            }
         }
 
         public abstract EdgeDetectionResult DetectEdges();
+
+        public void SetBitmap(Bitmap newBitamp)
+        {
+            _pixelMatrix = new PixelMatrix(newBitamp);
+            _width = newBitamp.Width;
+            _height = newBitamp.Height;
+            _dimensions = newBitamp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
+        }
 
         protected PixelMatrix Convolution(double[][] filter)
         {

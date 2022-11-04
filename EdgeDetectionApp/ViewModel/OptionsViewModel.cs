@@ -1,5 +1,7 @@
-﻿using EdgeDetectionApp.Messages;
+﻿using EdgeDetectionApp.Commands;
+using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
+using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
@@ -7,7 +9,9 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Documents;
+using System.Windows.Input;
 
 namespace EdgeDetectionApp.ViewModel
 {
@@ -16,8 +20,8 @@ namespace EdgeDetectionApp.ViewModel
         #region Fields
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
-        private IEdgeDetector _selectedEdgeDetector = new RobertsDetector();
-        private DetectionParameters _detectionParameters = new DetectionParameters();
+        private readonly DetectionParamsStore _detectionParamsStore;
+        private IEdgeDetector _selectedEdgeDetector;
         private bool _isGrayscale;
         private bool _thresholingVisibility;
         private bool _prefiltrationVisibility;
@@ -41,14 +45,13 @@ namespace EdgeDetectionApp.ViewModel
             {
                 SetField(ref _selectedEdgeDetector, value);
                 if (_selectedEdgeDetector is not null)
+                {
                     AdjustOptions();
+                    CreateDetectionParams?.Execute(this);
+                }
             }
         }
-        public DetectionParameters DetectionParameters
-        {
-            get => _detectionParameters;
-            set => _detectionParameters = value;
-        }
+
         public bool IsGrayscale
         {
             get => _isGrayscale;
@@ -116,60 +119,29 @@ namespace EdgeDetectionApp.ViewModel
         public bool HystTreshVisibility { get => _hystTreshVisibility; set => SetField(ref _hystTreshVisibility, value); }
         #endregion
 
+        ICommand CreateDetectionParams { get; set; }
+
         #region Constructor
-        public OptionsViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger)
+        public OptionsViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, DetectionParamsStore detectionParamsStore)
         {
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
+            _detectionParamsStore = detectionParamsStore;
+            CreateDetectionParams = new CreateDetectionParamsCommand(this, _detectionParamsStore);
             EdgeDetectors = new ObservableCollection<IEdgeDetector>(_edgeDetectorFactory.GetAll());
+            SelectedEdgeDetector = new CannyDetector();
             _messenger.Subscribe<SendOptionsRequestMessage>(this, SendOptions);
+            CreateDetectionParams?.Execute(this);
         }
         #endregion
 
         #region Private Methods
         private void SendOptions(object obj)
         {
-            var parameters = new DetectionParameters()
-            {
-                DetectorName = SelectedEdgeDetector.Name,
-                Negative = Negative
-            };
-            Type detectorType = SelectedEdgeDetector.GetType();
-            IEdgeDetectorArgs args;
-
-            if (detectorType.IsAssignableFrom(typeof(CannyDetector)))
-            {
-                args = CannyArgsBuilder.Init()
-                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
-                    .SetHysteresisThresholds(TLow, THigh)
-                    .Build();
-                parameters.Args = args;
-            }
-            else if (detectorType.IsAssignableFrom(typeof(MarrHildrethDetector)))
-            {
-                args = MarrHildrethArgsBuilder.Init()
-                    .SetLoGKernel(LoGKernelSize, LoGSigma)
-                    .Build(); 
-                parameters.Args = args;
-            }
-            else if (detectorType.IsAssignableFrom(typeof(LaplacianDetector)))
-            {
-                args = LaplacianArgsBuilder.Init()
-                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
-                    .SetThresholding(Thresholding, Threshold)
-                    .SetAlpha(Alpha)
-                    .Build();
-                parameters.Args = args;
-            }
-            else
-            {
-                args = GradientArgsBuilder.Init()
-                    .SetPrefiltration(Prefiltration, PrefiltrationKernelSize, PrefiltrationSigma)
-                    .SetThresholding(Thresholding, Threshold)
-                    .Build();
-                parameters.Args = args;
-            }
-            _messenger.Send(new SendOptionsMessage(parameters));
+            var message = (SendOptionsRequestMessage)obj;
+            INotifyPropertyChanged sender = message.sender;
+            CreateDetectionParams?.Execute(this);
+            //throw new NotImplementedException();
         }
 
         private void AdjustOptions()
@@ -212,6 +184,12 @@ namespace EdgeDetectionApp.ViewModel
                 HystTreshVisibility = false;
                 _messenger.Send(new ThresholdChangedMessage(Threshold, 0));
             }
+        }
+
+        public override void Dispose()
+        {
+            _messenger.Unsubscribe<SendOptionsRequestMessage>(this);
+            base.Dispose();
         }
         #endregion
     }

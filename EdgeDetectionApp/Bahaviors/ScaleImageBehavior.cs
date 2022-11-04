@@ -22,7 +22,7 @@ namespace EdgeDetectionApp.Bahaviors
 
         public ScaleImageBehavior()
         {
-            _timer.Interval = TimeSpan.FromSeconds(0.005);
+            _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += Timer_Tick;
         }
 
@@ -40,15 +40,15 @@ namespace EdgeDetectionApp.Bahaviors
 
         private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
         {
-            var image = (Image?)sender;
-            if (image is not null)
-            {
-                _hashcode = image.Source.GetHashCode();
-            }
+            //var image = (Image?)sender;
+            //if (image is not null)
+            //{
+            //    _hashcode = image.Source.GetHashCode();
+            //}
             AssociatedObject.Loaded -= AssociatedObject_Loaded;
             AssociatedObject.PreviewMouseWheel += Image_PreviewMouseWheel;
             AssociatedObject.PreviewMouseLeftButtonDown += Image_PreviewMouseLeftButtonDown;
-            AssociatedObject.MouseMove += AssociatedObject_MouseMove;
+            //AssociatedObject.MouseMove += AssociatedObject_MouseMove;
         }
 
         private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
@@ -56,7 +56,7 @@ namespace EdgeDetectionApp.Bahaviors
             AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
             AssociatedObject.PreviewMouseWheel -= Image_PreviewMouseWheel;
             AssociatedObject.PreviewMouseLeftButtonDown -= Image_PreviewMouseLeftButtonDown;
-            AssociatedObject.MouseMove -= AssociatedObject_MouseMove;
+            //AssociatedObject.MouseMove -= AssociatedObject_MouseMove;
         }
 
         private void Image_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
