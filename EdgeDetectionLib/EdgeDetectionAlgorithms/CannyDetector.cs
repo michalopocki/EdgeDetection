@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using EdgeDetectionLib.Kernels;
 using System;
 using System.Drawing;
@@ -9,7 +9,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public class CannyDetector : EdgeDetectorBase
     {
-        public override string Name => "Canny";
+        public override string Name => GetName(this);
         protected bool _prefiltration;
         private readonly int _gaussianKernelSize;
         private readonly double _sigma;
@@ -27,8 +27,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { 0.0,   0.0,  0.0 },
             new double[] { 0.25,  0.5,  0.25 }
         };
-        public CannyDetector() { }
-        public CannyDetector(CannyArgs args) : base(args)
+        public CannyDetector(ICannyArgs args) : base(args)
         {
             _prefiltration = args.Prefiltration;
             _gaussianKernelSize = args.KernelSize;
@@ -56,13 +55,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             //3) Non-Maximum Suppression
             PixelMatrix nomMaximumSuppression = NonMaximumSuppression(gradient, gradientDirection); 
             nomMaximumSuppression.Normalize();
-            _result.ImageBeforeThresholding = nomMaximumSuppression.Bitmap;
+            var imageBeforeThresholding = (Bitmap)nomMaximumSuppression.Bitmap.Clone();
 
             //4) Hysteresis Thresholding
             PixelMatrix hysteresisThresholding = HysteresisThresholding(nomMaximumSuppression);
-            _result.ProcessedImage = hysteresisThresholding.Bitmap;
 
-            return _result;
+            var result = new EdgeDetectionResult(hysteresisThresholding.Bitmap, imageBeforeThresholding);
+
+            return result;
         }
 
         private PixelMatrix HysteresisThresholding(PixelMatrix NMS)

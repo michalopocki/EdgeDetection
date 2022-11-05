@@ -4,10 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
-    public class GradientArgs : BaseArgs
+    public class GradientArgs : BaseArgs, IGradientArgs
     {
         public bool Thresholding { get; set; }
         public int Threshold { get; set; }

@@ -4,10 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
-    public class LaplacianArgs : GradientArgs
+    public class LaplacianArgs : GradientArgs, ILaplacianArgs
     {
         public double Alpha { get; set; }
         public LaplacianArgs(Bitmap? imageToProcess, double alpha, 

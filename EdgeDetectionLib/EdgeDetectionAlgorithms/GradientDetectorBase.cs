@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using EdgeDetectionLib.Kernels;
 using System;
 using System.Collections.Generic;
@@ -11,15 +11,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public abstract class GradientDetectorBase : EdgeDetectorBase
     {
-        protected bool _thresholding;
-        protected int _threshold;
-        protected bool _prefiltration;
-        protected int _kernelSize;
-        protected double _sigma;
-        private double[][] _kernel;
+        protected internal bool _thresholding;
+        protected internal int _threshold;
+        protected internal bool _prefiltration;
+        protected internal int _kernelSize;
+        protected internal double _sigma;
+        internal readonly double[][] _kernel;
 
-        public GradientDetectorBase() { }
-        public GradientDetectorBase(GradientArgs args) :base(args)
+        public GradientDetectorBase(IGradientArgs args) :base(args)
         {
             _thresholding = args.Thresholding;
             _threshold = args.Threshold;
@@ -29,13 +28,24 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             IKernel gaussianKernel = new GaussianKernel(_kernelSize, _sigma);
             _kernel = gaussianKernel.Create();
         }
-        protected void Prefiltration()
+
+        protected internal void Prefiltration()
         {
-            if (_prefiltration)
+            if (_prefiltration && ValidateKernelSize())
             {
                 _pixelMatrix = Convolution(_kernel);
                 CutSides(_kernelSize);
             }
+        }
+
+        internal bool ValidateKernelSize()
+        {
+            int size = (int)Math.Ceiling((double)_kernelSize);
+            if (_width - 2 * size <= 0 || _height - 2 * size <= 0)
+            {
+                throw new ArgumentException("Kernel is over-sized");
+            }
+            return true;
         }
 
     }

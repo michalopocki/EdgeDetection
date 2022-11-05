@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,20 +7,26 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public class LaplacianDetector : GradientDetectorBase
     {
-        public override string Name => "Laplacian";
+        public override string Name => GetName(this);
         private readonly double _alpha;
         private readonly double[][] _kernel;
-        public LaplacianDetector(){}
-        public LaplacianDetector(LaplacianArgs args) : base(args)
+        public LaplacianDetector(ILaplacianArgs args) : base(args)
         {
             _alpha = args.Alpha;
-            _kernel = new double[3][]
-            {   
+            _kernel = CreateLaplacianKernel();
+        }
+
+        private double[][] CreateLaplacianKernel()
+        {
+            double[][] kernel = new double[3][]
+            {
                 new double[] { _alpha / (_alpha + 1),       (1 - _alpha) / (1 + _alpha),  _alpha / (_alpha + 1) },
                 new double[] { (1 - _alpha) / (1 + _alpha), -4 / (_alpha + 1),            (1 - _alpha) / (1 + _alpha) },
                 new double[] { _alpha / (_alpha + 1),       (1 - _alpha) / (1 + _alpha),  _alpha / (_alpha + 1) }
             };
+            return kernel;
         }
+
         public override EdgeDetectionResult DetectEdges()
         {
             Prefiltration();
@@ -28,15 +34,16 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             gradient.ChangeNegativeNumberToZero();
             gradient.Normalize();
 
-            _result.ImageBeforeThresholding = gradient.Bitmap;
+            var imageBeforeThresholding = (Bitmap)gradient.Bitmap.Clone();
 
             if (_thresholding)
             {
                 gradient.Thresholding(_threshold);
             }
-            _result.ProcessedImage = gradient.Bitmap;
 
-            return _result;
+            var result = new EdgeDetectionResult(gradient.Bitmap, imageBeforeThresholding);
+
+            return result;
         }
     }
 }

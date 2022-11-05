@@ -4,10 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
-    public class CannyArgs : BaseArgs
+    public class CannyArgs : BaseArgs, ICannyArgs
     {
         public bool Prefiltration { get; set; }
         public int KernelSize { get; set; }

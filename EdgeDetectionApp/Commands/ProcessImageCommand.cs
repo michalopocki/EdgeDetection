@@ -33,7 +33,7 @@ namespace EdgeDetectionApp.Commands
             _imageViewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
-        private void DetectionParamsStore_ParamsCreated(Models.DetectionParameters detectionParams)
+        private void DetectionParamsStore_ParamsCreated(DetectionParameters detectionParams)
         {
             _detectionParameters = detectionParams;
             _edgeDetector = _edgeDetectorFactory.Get(_detectionParameters.DetectorName,

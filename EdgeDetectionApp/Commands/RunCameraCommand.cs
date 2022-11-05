@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using System.Drawing;
 using System.Windows.Media.Imaging;
@@ -17,6 +16,7 @@ using EdgeDetectionLib;
 using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionApp.Messages;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionApp.Commands
 {

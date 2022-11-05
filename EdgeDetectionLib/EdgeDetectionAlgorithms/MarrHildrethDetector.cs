@@ -1,4 +1,5 @@
 ﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using EdgeDetectionLib.Kernels;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public class MarrHildrethDetector : EdgeDetectorBase
     {
-        public override string Name => "Marr-Hildreth";
+        public override string Name => GetName(this);
         private readonly int _LoGKernelSize;
         private readonly double _sigma;
-        public MarrHildrethDetector() { }
-        public MarrHildrethDetector(MarrHildrethArgs args) : base(args)
+        public MarrHildrethDetector(IMarrHildrethArgs args) : base(args)
         {
             _LoGKernelSize = args.KernelSize;
             _sigma = args.Sigma;
@@ -30,10 +30,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             img.Abs();
             img.Normalize();
-            _result.ImageBeforeThresholding = img.Bitmap;
-            _result.ProcessedImage = imgZeroCrossing.Bitmap;
 
-            return _result;
+            var result = new EdgeDetectionResult(imgZeroCrossing.Bitmap, img.Bitmap);
+
+            return result;
         }
         private PixelMatrix ZeroCrossing(PixelMatrix pixelMatrix)
         {

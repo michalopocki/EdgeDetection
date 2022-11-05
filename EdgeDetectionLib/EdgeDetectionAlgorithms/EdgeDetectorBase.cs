@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -11,21 +11,16 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public abstract class EdgeDetectorBase : IEdgeDetector
     {
         public abstract string Name { get; }
-        protected EdgeDetectionResult _result = new();
-        protected PixelMatrix _pixelMatrix;
-        protected int _width;
-        protected int _height;
-        protected int _dimensions;
+        protected internal PixelMatrix _pixelMatrix;
+        protected internal int _width;
+        protected internal int _height;
+        protected internal int _dimensions;
 
-        public EdgeDetectorBase() { }
         public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
             if (args.ImageToProcess is not null)
             {
-                _pixelMatrix = new PixelMatrix(args.ImageToProcess);
-                _width = args.ImageToProcess.Width;
-                _height = args.ImageToProcess.Height;
-                _dimensions = args.ImageToProcess.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
+                SetBitmap(args.ImageToProcess);
             }
         }
 
@@ -37,6 +32,16 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _width = newBitamp.Width;
             _height = newBitamp.Height;
             _dimensions = newBitamp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
+        }
+
+        public static string GetName(IEdgeDetector edgeDetector)
+        {
+            Type type = edgeDetector.GetType();
+            return type.Name.Replace("Detector", "");
+        }
+        public static string GetName(Type edgeDetector)
+        {
+            return edgeDetector.Name.Replace("Detector", "");
         }
 
         protected PixelMatrix Convolution(double[][] filter)
@@ -112,6 +117,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         protected void CutSides(int kernelSize)
         {
             int size = (int)Math.Ceiling((double)kernelSize / 2);
+
             var cutPixelMatrix = new PixelMatrix(_width - 2 * size, _height - 2 * size, _dimensions);
 
             for (int x = size, i = 0; x < _width - size; x++, i++)

@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,32 +10,39 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.Factory
 {
     public class EdgeDetectorFactory : IEdgeDetectorFactory
     {
-        private readonly IReadOnlyList<IEdgeDetector> _EdgeDetectors;
+        private readonly IReadOnlyList<Type> _edgeDetectors;
+
         public EdgeDetectorFactory()
         {
-            var calcType = typeof(IEdgeDetector);
-            _EdgeDetectors = calcType
-                             .Assembly
-                             .ExportedTypes
-                             .Where(x => calcType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                             .Select(x => { return Activator.CreateInstance(x); })
-                             .Cast<IEdgeDetector>()
-                             .OrderBy(x => x.Name)
-                             .ToList();
-        }
-
-        public IReadOnlyList<IEdgeDetector> GetAll()
-        {
-            return _EdgeDetectors;
+            _edgeDetectors = GetAllTypesThatImplementInterface<IEdgeDetector>();
         }
 
         public IEdgeDetector Get(string name, IEdgeDetectorArgs args)
         {
-            IEdgeDetector edgeDetector = _EdgeDetectors.Where(x => x.Name == name).First();
+            Type edgeDetector = _edgeDetectors.Where(x => x.Name.Contains(name)).First();
 
-            return Activator.CreateInstance(edgeDetector.GetType(), args) as IEdgeDetector
+            return Activator.CreateInstance(edgeDetector, args) as IEdgeDetector
                                                 ?? throw new InvalidOperationException();
         }
 
+        public IReadOnlyList<string> GetAll()
+        {
+            IReadOnlyList<string> detectorsNames = _edgeDetectors.Select(x => EdgeDetectorBase.GetName(x)).ToList();
+            return detectorsNames;
+        }
+
+        private IReadOnlyList<Type> GetAllTypesThatImplementInterface<T>()
+        {
+            var @interface = typeof(T);
+            return @interface.IsInterface
+                       ? AppDomain.CurrentDomain.GetAssemblies()
+                             .SelectMany(assembly => assembly.GetTypes())
+                             .Where(type => !type.IsInterface
+                                         && !type.IsAbstract
+                                         && type.GetInterfaces().Contains(@interface))
+                             .ToList()
+                       : new Type[] { };
+
+        }
     }
 }

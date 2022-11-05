@@ -1,4 +1,4 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +8,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
     public class FreiChenDetector : GradientDetectorBase
     {
-        public override string Name => "Frei-Chen";
+        public override string Name => GetName(this);
         private readonly double[][] _Gx = new double[3][]
         {
             new double[] { -1 / (2 + Sqrt(2)), -Sqrt(2) / (2 + Sqrt(2)), -1 / (2 + Sqrt(2)) },
@@ -21,8 +21,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] { Sqrt(2) / (2 + Sqrt(2)), 0 / (2 + Sqrt(2)), -Sqrt(2) / (2 + Sqrt(2)) },
             new double[] {       1 / (2 + Sqrt(2)), 0 / (2 + Sqrt(2)),       -1 / (2 + Sqrt(2)) }
         };
-        public FreiChenDetector() { }
-        public FreiChenDetector(GradientArgs args) : base(args) {}
+        public FreiChenDetector(IGradientArgs args) : base(args) {}
         public override EdgeDetectionResult DetectEdges()
         {
             Prefiltration();
@@ -30,15 +29,17 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             PixelMatrix gradientGy = Convolution(_Gy);
             PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);
             gradient.Normalize();
-            _result.ImageBeforeThresholding = gradient.Bitmap;
+
+            var imageBeforeThresholding = (Bitmap)gradient.Bitmap.Clone();
 
             if (_thresholding)
             {
                 gradient.Thresholding(_threshold);
             }
-            _result.ProcessedImage = gradient.Bitmap;
 
-            return _result;
+            var result = new EdgeDetectionResult(gradient.Bitmap, imageBeforeThresholding);
+
+            return result;
         }
 
     }

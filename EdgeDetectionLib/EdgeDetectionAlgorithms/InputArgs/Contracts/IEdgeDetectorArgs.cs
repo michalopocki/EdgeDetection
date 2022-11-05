@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
+namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts
 {
     public interface IEdgeDetectorArgs
     {
-        Bitmap ImageToProcess { get; set; }
+        Bitmap? ImageToProcess { get; set; }
     }
 }

@@ -2,13 +2,13 @@
 using EdgeDetectionApp.Stores;
 using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionApp.Commands
 {
@@ -33,13 +33,13 @@ namespace EdgeDetectionApp.Commands
         {
             var parameters = new DetectionParameters()
             {
-                DetectorName = _optionsViewModel.SelectedEdgeDetector.Name,
+                DetectorName = _optionsViewModel.SelectedEdgeDetector,
                 Negative = _optionsViewModel.Negative
             };
-            Type detectorType = _optionsViewModel.SelectedEdgeDetector.GetType();
+            string detectorType = _optionsViewModel.SelectedEdgeDetector;
             IEdgeDetectorArgs args;
 
-            if (detectorType.IsAssignableFrom(typeof(CannyDetector)))
+            if (detectorType.Equals(EdgeDetectorBase.GetName(typeof(CannyDetector))))
             {
                 args = CannyArgsBuilder.Init()
                     .SetPrefiltration(_optionsViewModel.Prefiltration,
@@ -50,14 +50,14 @@ namespace EdgeDetectionApp.Commands
                     .Build();
                 parameters.Args = args;
             }
-            else if (detectorType.IsAssignableFrom(typeof(MarrHildrethDetector)))
+            else if (detectorType.Equals(EdgeDetectorBase.GetName(typeof(MarrHildrethDetector))))
             {
                 args = MarrHildrethArgsBuilder.Init()
                     .SetLoGKernel(_optionsViewModel.LoGKernelSize, _optionsViewModel.LoGSigma)
                     .Build();
                 parameters.Args = args;
             }
-            else if (detectorType.IsAssignableFrom(typeof(LaplacianDetector)))
+            else if (detectorType.Equals(EdgeDetectorBase.GetName(typeof(LaplacianDetector))))
             {
                 args = LaplacianArgsBuilder.Init()
                     .SetPrefiltration(_optionsViewModel.Prefiltration,
