@@ -124,6 +124,11 @@ namespace EdgeDetectionLib
             }
         }
 
+        public static int GetBytesPerPixel(PixelFormat pixelFormat)
+        {
+            return System.Drawing.Bitmap.GetPixelFormatSize(pixelFormat) / 8;
+        }
+
         [DllImport("msvcrt.dll")]
         private static extern int memcmp(IntPtr b1, IntPtr b2, long count);
         public static bool CompareMemCmp(Bitmap b1, Bitmap b2)
