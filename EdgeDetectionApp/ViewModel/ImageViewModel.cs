@@ -65,7 +65,7 @@ namespace EdgeDetectionApp.ViewModel
         public ImageViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, 
                              IDialogService dialogService, DetectionParamsStore detectionParamsStore)
         {
-            OriginalImage = new Bitmap(@"Resources\Images\bird.jpg");
+            OriginalImage = new Bitmap(@"Resources\SampleImage\bird.jpg");
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;
             _dialogService = dialogService;
