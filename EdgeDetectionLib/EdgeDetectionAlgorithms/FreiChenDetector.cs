@@ -9,13 +9,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public class FreiChenDetector : GradientDetectorBase
     {
         public override string Name => GetName(this);
-        private readonly double[][] _Gx = new double[3][]
+        internal readonly double[][] _Gx = new double[3][]
         {
             new double[] { -1 / (2 + Sqrt(2)), -Sqrt(2) / (2 + Sqrt(2)), -1 / (2 + Sqrt(2)) },
             new double[] {  0 / (2 + Sqrt(2)),        0 / (2 + Sqrt(2)),  0 / (2 + Sqrt(2)) },
             new double[] {  1 / (2 + Sqrt(2)),  Sqrt(2) / (2 + Sqrt(2)),  1 / (2 + Sqrt(2)) }
         };
-        private readonly double[][] _Gy = new double[3][]
+        internal readonly double[][] _Gy = new double[3][]
         {
             new double[] {       1 / (2 + Sqrt(2)), 0 / (2 + Sqrt(2)),       -1 / (2 + Sqrt(2)) },
             new double[] { Sqrt(2) / (2 + Sqrt(2)), 0 / (2 + Sqrt(2)), -Sqrt(2) / (2 + Sqrt(2)) },
@@ -24,6 +24,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public FreiChenDetector(IGradientArgs args) : base(args) {}
         public override EdgeDetectionResult DetectEdges()
         {
+            if (_pixelMatrix is null)
+            {
+                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not be null");
+            }
+
             Prefiltration();
             PixelMatrix gradientGx = Convolution(_Gx);
             PixelMatrix gradientGy = Convolution(_Gy);

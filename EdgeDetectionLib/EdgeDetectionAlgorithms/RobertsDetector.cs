@@ -26,7 +26,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public override EdgeDetectionResult DetectEdges()
         {
             if (_pixelMatrix is null)
-                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not bu null");
+            {
+                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not be null");
+            }
 
             Prefiltration();
             PixelMatrix gradientGx = Convolution(_Gx);

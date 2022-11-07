@@ -1,35 +1,28 @@
-﻿using EdgeDetectionLib.EdgeDetectionAlgorithms;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
+using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using Moq;
-using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace EdgeDetectionLib.Tests.EdgeDetectors
 {
-    public class RobertsDetectorTests
+    public class FreiChenDetectorTests
     {
-        private readonly RobertsDetector _sut;
-        public RobertsDetectorTests()
+        private readonly FreiChenDetector _sut;
+        public FreiChenDetectorTests()
         {
             var mock = new Mock<IGradientArgs>();
-            _sut = new RobertsDetector(mock.Object);
+            _sut = new FreiChenDetector(mock.Object);
         }
 
         [Fact]
         public void PropertyName_ShouldBe_Roberts()
         {
-            string expected = "Roberts";
+            string expected = "FreiChen";
             string actual = _sut.Name;
 
             Assert.Equal(expected, actual);
@@ -41,7 +34,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             double expected = 0;
             double actual = _sut._Gx.SelectMany(item => item).Sum();
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual, 10);
         }
 
         [Fact]
@@ -50,7 +43,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             double expected = 0;
             double actual = _sut._Gy.SelectMany(item => item).Sum();
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, actual, 10);
         }
 
         [Fact]
@@ -86,8 +79,8 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
 
             var mock = new Mock<IGradientArgs>();
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
-            
-            var detector = new RobertsDetector(mock.Object);
+
+            var detector = new FreiChenDetector(mock.Object);
 
             var result = detector.DetectEdges();
 
@@ -107,61 +100,16 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
             mock.SetupGet(m => m.Thresholding).Returns(thresholding);
 
-            var detector = new RobertsDetector(mock.Object);
+            var detector = new FreiChenDetector(mock.Object);
             var result = detector.DetectEdges();
 
             bool sameBitmaps = BitmapExtensions.CompareMemCmp(result.ProcessedImage, result.ImageBeforeThresholding);
-            
-            if(thresholding == false)
+
+            if (thresholding == false)
                 Assert.True(sameBitmaps == true);
             else
                 Assert.True(sameBitmaps == false);
         }
 
-        [Theory]
-        [InlineData(2)]
-        [InlineData(10)]
-        public void CutSides_ShouldCutBitmapEdges(int kernelSize)
-        {
-            using var bitmap = new Bitmap(@"test.jpg");
-            var expectedWidth = bitmap.Width - 2 * Math.Ceiling((double)kernelSize / 2);
-            var expectedHeight = bitmap.Height - 2 * Math.Ceiling((double)kernelSize / 2);
-
-            var mock = new Mock<IGradientArgs>();
-            mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
-            mock.SetupGet(m => m.Prefiltration).Returns(true);
-            mock.SetupGet(m => m.KernelSize).Returns(kernelSize);
-            mock.SetupGet(m => m.Sigma).Returns(2.0);
-
-            var detector = new RobertsDetector(mock.Object);
-            var result = detector.DetectEdges();
-
-            var actualWidth = result.ProcessedImage.Width;
-            var actualHeight = result.ProcessedImage.Height;
-
-            Assert.Equal(expectedWidth, actualWidth);
-            Assert.Equal(expectedHeight, actualHeight);
-        }
-
-        [Fact]
-        public void CutSides_OversizedKernel_ShouldThrowArgumentException()
-        {
-            using var bitmap = new Bitmap(@"test.jpg");
-            int kernelSize = bitmap.Width / 2 + 10;
-
-            var mock = new Mock<IGradientArgs>();
-            mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
-            mock.SetupGet(m => m.Prefiltration).Returns(true);
-            mock.SetupGet(m => m.KernelSize).Returns(kernelSize);
-            mock.SetupGet(m => m.Sigma).Returns(2.0);
-
-            var robertDetector = new RobertsDetector(mock.Object);
-
-            Action act = () => robertDetector.DetectEdges();
-            var ex = Record.Exception(act);
-
-            Assert.NotNull(ex);
-            Assert.Throws<ArgumentException>(act);
-        }
     }
 }
