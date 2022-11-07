@@ -8,12 +8,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
     public class LaplacianDetector : GradientDetectorBase
     {
         public override string Name => GetName(this);
-        private readonly double _alpha;
-        private readonly double[][] _kernel;
+        internal readonly double _alpha;
+        internal readonly double[][] _mask;
         public LaplacianDetector(ILaplacianArgs args) : base(args)
         {
             _alpha = args.Alpha;
-            _kernel = CreateLaplacianKernel();
+            _mask = CreateLaplacianKernel();
         }
 
         private double[][] CreateLaplacianKernel()
@@ -29,12 +29,17 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
         public override EdgeDetectionResult DetectEdges()
         {
+            if (_pixelMatrix is null)
+            {
+                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not be null");
+            }
+
             Prefiltration();
-            PixelMatrix gradient = Convolution(_kernel);
+            PixelMatrix gradient = Convolution(_mask);
             gradient.ChangeNegativeNumberToZero();
             gradient.Normalize();
 
-            var imageBeforeThresholding = (Bitmap)gradient.Bitmap.Clone();
+            var imageBeforeThresholding = gradient.Bitmap;
 
             if (_thresholding)
             {

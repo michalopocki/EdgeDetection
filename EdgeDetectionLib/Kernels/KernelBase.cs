@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Accessibility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,8 @@ namespace EdgeDetectionLib.Kernels
 {
     public abstract class KernelBase : IKernel
     {
-        public int M { get; set; } //M - number of rows
-        public int N { get; set; } //N - number of columns
+        public int M { get; init; }
+        public int N { get; init; }
 
         public KernelBase(int M, int N)
         {
@@ -20,7 +21,7 @@ namespace EdgeDetectionLib.Kernels
         {
             M = MxN; N = MxN;
         }
-        public KernelBase(){}
+        public KernelBase() { }
 
         public abstract double[][] Create();
 

@@ -11,8 +11,8 @@ namespace EdgeDetectionLib.Tests
 {
     public class PixelMatrixTests
     {
-        PixelMatrix _sut = new PixelMatrix(new Bitmap(@"test.jpg"));
-        PixelMatrix _sutGray = new PixelMatrix(new Bitmap(@"test.jpg").ToGrayscale());
+        PixelMatrix _sut = new PixelMatrix(new Bitmap(TestingConstants.TestJpgImage));
+        PixelMatrix _sutGray = new PixelMatrix(new Bitmap(TestingConstants.TestJpgImage).ToGrayscale());
 
         [Fact]
         public void PixelMatrix_Dimension_ShouldBe_One()
@@ -38,7 +38,7 @@ namespace EdgeDetectionLib.Tests
         [InlineData(40, 76, 2)]
         public void GetPixel_ShouldBe_TheSameAsGetPixelFromBitmap(int x, int y, int dimension)
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             Color bmpPixel = colorBmp.GetPixel(x, y);
             double expectedPixel = 0;
 
@@ -74,7 +74,7 @@ namespace EdgeDetectionLib.Tests
         [InlineData(0, 0, 4)]
         public void SetPixel_ShouldThrow_ArgumentOutOfRangeException_IfInvalidInput(int x, int y, int dimension)
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             var pixelMatrix = new PixelMatrix(colorBmp);
 
             Action act = () => pixelMatrix.SetPixel(x, y, dimension, 50);
@@ -91,7 +91,7 @@ namespace EdgeDetectionLib.Tests
         [InlineData(40, 76, 2, double.MinValue)]
         public void SetPixel_ShouldBe_TheSameAsGetPixel(int x, int y, int dimension, double value)
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             var pixelMatrix = new PixelMatrix(colorBmp);
             pixelMatrix.SetPixel(x, y, dimension, value);
 
@@ -103,7 +103,7 @@ namespace EdgeDetectionLib.Tests
         [Fact]
         public void Abs_AllValuesShouldBeGreaterThanZero()
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             var pixelMatrix = new PixelMatrix(colorBmp);
 
             pixelMatrix.Abs();
@@ -125,7 +125,7 @@ namespace EdgeDetectionLib.Tests
         [Fact]
         public void Normalize_ValuesSholudBeBeetween0and255()
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             var pixelMatrix = new PixelMatrix(colorBmp);
             pixelMatrix.Normalize();
 
@@ -139,7 +139,7 @@ namespace EdgeDetectionLib.Tests
         [InlineData(255)]
         public void Thresholding_ValuesShouldBeZeroOr255(int threshold)
         {
-            using var colorBmp = new Bitmap(@"test.jpg");
+            using var colorBmp = new Bitmap(TestingConstants.TestJpgImage);
             var pixelMatrix = new PixelMatrix(colorBmp);
             pixelMatrix.Thresholding(threshold);
 
@@ -170,7 +170,7 @@ namespace EdgeDetectionLib.Tests
         [Fact]
         public void LoadBitmapData_BitsLengthShouldBeAsBitmapDimensions()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
             int width = bitmap.Width;
             int height = bitmap.Height;
             int dimemsions = BitmapExtensions.GetBytesPerPixel(bitmap.PixelFormat);

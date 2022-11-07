@@ -3,45 +3,43 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace EdgeDetectionLib.Tests.EdgeDetectors
 {
-    public class FreiChenDetectorTests
+    public class LaplacianDetectorTests
     {
-        private readonly FreiChenDetector _sut;
-        public FreiChenDetectorTests()
+        private LaplacianDetector _sut;
+        public LaplacianDetectorTests()
         {
-            var mock = new Mock<IGradientArgs>();
-            _sut = new FreiChenDetector(mock.Object);
+            var mock = new Mock<ILaplacianArgs>();
+            _sut = new LaplacianDetector(mock.Object);
         }
 
         [Fact]
         public void PropertyName_ShouldBe_Roberts()
         {
-            string expected = "FreiChen";
+            string expected = "Laplacian";
             string actual = _sut.Name;
 
             Assert.Equal(expected, actual);
         }
 
-        [Fact]
-        public void FieldGx_SumOfAllElements_ShouldBeZero()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(0.5)]
+        [InlineData(1)]
+        public void FieldKernel_SumOfAllElements_ShouldBeZero(double alpha)
         {
-            double expected = 0;
-            double actual = _sut._Gx.SelectMany(item => item).Sum();
+            var mock = new Mock<ILaplacianArgs>();
+            mock.SetupGet(x => x.Alpha).Returns(alpha);
+            _sut = new LaplacianDetector(mock.Object);
 
-            Assert.Equal(expected, actual, 10);
-        }
-
-        [Fact]
-        public void FieldGy_SumOfAllElements_ShouldBeZero()
-        {
             double expected = 0;
-            double actual = _sut._Gy.SelectMany(item => item).Sum();
+            double actual = _sut._mask.SelectMany(item => item).Sum();
 
             Assert.Equal(expected, actual, 10);
         }
@@ -77,10 +75,11 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         {
             using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
-            var mock = new Mock<IGradientArgs>();
+            var mock = new Mock<ILaplacianArgs>();
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
+            mock.SetupGet(x => x.Alpha).Returns(0.1);
 
-            var detector = new FreiChenDetector(mock.Object);
+            var detector = new LaplacianDetector(mock.Object);
 
             var result = detector.DetectEdges();
 
@@ -96,11 +95,12 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         {
             using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
-            var mock = new Mock<IGradientArgs>();
+            var mock = new Mock<ILaplacianArgs>();
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
             mock.SetupGet(m => m.Thresholding).Returns(thresholding);
+            mock.SetupGet(x => x.Alpha).Returns(0.1);
 
-            var detector = new FreiChenDetector(mock.Object);
+            var detector = new LaplacianDetector(mock.Object);
             var result = detector.DetectEdges();
 
             bool sameBitmaps = BitmapExtensions.CompareMemCmp(result.ProcessedImage, result.ImageBeforeThresholding);
@@ -110,6 +110,5 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             else
                 Assert.True(sameBitmaps == false);
         }
-
     }
 }

@@ -8,7 +8,7 @@ namespace EdgeDetectionLib.Kernels
 {
     public class LaplacianOfGaussianKernel : KernelBase
     {
-        public double Sigma { get; set; }
+        public double Sigma { get; init; }
 
         public LaplacianOfGaussianKernel(int M, int N, double sigma) : base(M, N)
         {
@@ -60,6 +60,7 @@ namespace EdgeDetectionLib.Kernels
                     LoG[m][n] -= mean2;
                 }
             }
+
             return LoG;
         }
         private double[][] CalculateMatrixA(double[][] meshX, double[][] meshY)

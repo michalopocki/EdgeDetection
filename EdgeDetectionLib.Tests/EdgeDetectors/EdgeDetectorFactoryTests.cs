@@ -64,6 +64,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
                     "Roberts",
                     typeof(RobertsDetector),
                     new Mock<IGradientArgs>().Object
+
                 };
                 yield return new object[] {
                     "Sobel",

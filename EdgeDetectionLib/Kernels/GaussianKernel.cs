@@ -8,7 +8,7 @@ namespace EdgeDetectionLib.Kernels
 {
     public class GaussianKernel : KernelBase
     {
-        public double Sigma { get; set; }
+        public double Sigma { get; init; }
 
         public GaussianKernel(int M, int N, double sigma) : base(M, N)
         {
@@ -43,6 +43,7 @@ namespace EdgeDetectionLib.Kernels
                     sum += gaussianKernel[m][n];
                 }
             }
+
             for (int m = 0; m < M; m++)
             {
                 for (int n = 0; n < N; n++)

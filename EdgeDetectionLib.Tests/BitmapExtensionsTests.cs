@@ -14,7 +14,7 @@ namespace EdgeDetectionLib.Tests
         [Fact]
         public void SetGrayscale_PixelFormat_ShouldBe_Format8bppIndexed()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             var expected = PixelFormat.Format8bppIndexed;
 
@@ -27,7 +27,7 @@ namespace EdgeDetectionLib.Tests
         [Fact]
         public void SetGrayscale_PixelFormat_ShouldBe_TheSameAsInputImage()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             var expected = bitmap.PixelFormat;
             var actual = bitmap.PixelFormat;
@@ -40,7 +40,7 @@ namespace EdgeDetectionLib.Tests
         {
             for (int i = 0; i < 20; i++) 
             {
-                using var bitmap = new Bitmap(@"test.jpg");
+                using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
                 int x = RandomGenerator.GetPseudoIntegerWithinRange(0, bitmap.Width - 1);
                 int y = RandomGenerator.GetPseudoIntegerWithinRange(0, bitmap.Height - 1);

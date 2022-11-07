@@ -66,7 +66,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         [Fact]
         public void SetBitmap_AndCall_DetectEdges_ShouldReturnEdgeDetectionResult()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             _sut.SetBitmap(bitmap);
             var actual = _sut._pixelMatrix;
@@ -82,7 +82,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         [Fact]
         public void DetectEdges_ShouldReturnEdgeDetectionResult()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             var mock = new Mock<IGradientArgs>();
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
@@ -99,9 +99,9 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void DetectEdges_Thresholding_ResultsShouldBeTheSameOrNot(bool thresholding)
+        public void DetectEdges_ResultsShouldBeTheSameOrNotDependingOnThresholding(bool thresholding)
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             var mock = new Mock<IGradientArgs>();
             mock.SetupGet(m => m.ImageToProcess).Returns(bitmap);
@@ -123,7 +123,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         [InlineData(10)]
         public void CutSides_ShouldCutBitmapEdges(int kernelSize)
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
             var expectedWidth = bitmap.Width - 2 * Math.Ceiling((double)kernelSize / 2);
             var expectedHeight = bitmap.Height - 2 * Math.Ceiling((double)kernelSize / 2);
 
@@ -146,7 +146,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         [Fact]
         public void CutSides_OversizedKernel_ShouldThrowArgumentException()
         {
-            using var bitmap = new Bitmap(@"test.jpg");
+            using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
             int kernelSize = bitmap.Width / 2 + 10;
 
             var mock = new Mock<IGradientArgs>();

@@ -34,7 +34,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             PixelMatrix gradient = GradientMagnitude(gradientGx, gradientGy);
             gradient.Normalize();
 
-            var imageBeforeThresholding = (Bitmap)gradient.Bitmap.Clone();
+            var imageBeforeThresholding = gradient.Bitmap;
 
             if (_thresholding)
             {
