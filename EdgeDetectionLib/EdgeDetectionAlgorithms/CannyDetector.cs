@@ -15,13 +15,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         private readonly double _sigma;
         private readonly int _THigh;
         private readonly int _TLow;
-        private readonly double[][] _Gx = new double[3][]
-{
+        internal readonly double[][] _Gx = new double[3][]
+        {
             new double[] { -0.25, 0.0, 0.25},
             new double[] { -0.5 , 0.0, 0.5 },
             new double[] { -0.25, 0.0, 0.25 }
-};
-        private readonly double[][] _Gy = new double[3][]
+        };
+        internal readonly double[][] _Gy = new double[3][]
         {
             new double[] {-0.25, -0.5, -0.25},
             new double[] { 0.0,   0.0,  0.0 },
@@ -37,6 +37,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         }
         public override EdgeDetectionResult DetectEdges()
         {
+            if (_pixelMatrix is null)
+            {
+                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not be null");
+            }
+
             //1) Noise Reduction - Gaussian filter
             if (_prefiltration)
             {
@@ -55,7 +60,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             //3) Non-Maximum Suppression
             PixelMatrix nomMaximumSuppression = NonMaximumSuppression(gradient, gradientDirection); 
             nomMaximumSuppression.Normalize();
-            var imageBeforeThresholding = (Bitmap)nomMaximumSuppression.Bitmap.Clone();
+            var imageBeforeThresholding = nomMaximumSuppression.Bitmap;
 
             //4) Hysteresis Thresholding
             PixelMatrix hysteresisThresholding = HysteresisThresholding(nomMaximumSuppression);
@@ -152,7 +157,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                     for (int d = 0; d < _dimensions; d++)
                     {
                         gradDir = Math.Atan2(gradientGy[x, y, d], gradientGx[x, y, d]) * toDeg;
-                        gradDir = gradDir < 0 ? gradDir + 360d : gradDir;
+                        //gradDir = gradDir < 0 ? gradDir + 360d : gradDir;
                         gradientDirection[x, y, d] = RoundGradientDirectionAngle(gradDir);
                     }
                 }
@@ -160,9 +165,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             return gradientDirection;
         }
-        private static double RoundGradientDirectionAngle(double angle)
+        internal static double RoundGradientDirectionAngle(double angle)
         {
+            angle = angle < 0 ? angle + 360d : angle;
             double roundedAngle = 0;
+
             if ((angle >= 0 && angle < 22.5) || (angle >= 157.5 && angle < 202.5) || (angle >= 337.5 && angle <= 360))
             {
                 roundedAngle = 0.0;

@@ -15,13 +15,20 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         public override string Name => GetName(this);
         private readonly int _LoGKernelSize;
         private readonly double _sigma;
+
         public MarrHildrethDetector(IMarrHildrethArgs args) : base(args)
         {
             _LoGKernelSize = args.KernelSize;
             _sigma = args.Sigma;
         }
+
         public override EdgeDetectionResult DetectEdges()
         {
+            if (_pixelMatrix is null)
+            {
+                throw new ArgumentNullException("pixelMatrix", "PixelMatrix can not be null");
+            }
+
             IKernel LoGKernel = new LaplacianOfGaussianKernel(_LoGKernelSize, _LoGKernelSize, _sigma);
             double[][] kernel = LoGKernel.Create();
 
@@ -35,6 +42,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             return result;
         }
+
         private PixelMatrix ZeroCrossing(PixelMatrix pixelMatrix)
         {
             var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
