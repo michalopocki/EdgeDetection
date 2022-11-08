@@ -10,7 +10,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
 {
     public class MarrHildrethArgsBuilder : IArgsBuilder
     {
-        private readonly MarrHildrethArgs _marrHildrethArgs = new MarrHildrethArgs(null, 0, 0);
+        private readonly MarrHildrethArgs _marrHildrethArgs = new MarrHildrethArgs(null, 2, 0);
         public IEdgeDetectorArgs Build() => _marrHildrethArgs;
         private MarrHildrethArgsBuilder() { }
 

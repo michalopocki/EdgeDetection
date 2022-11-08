@@ -4,6 +4,8 @@ using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Models;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
+using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using MvvmDialogs;
 using System;
 using System.Drawing;

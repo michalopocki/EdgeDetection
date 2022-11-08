@@ -19,7 +19,7 @@ namespace EdgeDetectionApp.Commands
             _videoViewModel = videoViewModel;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
             SaveSnapshot();
         }

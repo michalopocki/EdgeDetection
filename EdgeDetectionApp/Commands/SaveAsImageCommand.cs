@@ -40,7 +40,7 @@ namespace EdgeDetectionApp.Commands
             {
                 success = _dialogService.ShowSaveFileDialog(_imageViewModel, settings);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("View not registered");
             }

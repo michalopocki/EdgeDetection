@@ -13,7 +13,7 @@ namespace EdgeDetectionLib
     public class PixelMatrix
     {
         #region Fields
-        internal double[] Bits { get; set; }
+        internal double[] Bits;
         #endregion
 
         #region Properties
@@ -34,16 +34,17 @@ namespace EdgeDetectionLib
 
         public PixelMatrix(Bitmap bitmap)
         {
-            if (bitmap is not null)
+            if (bitmap is null)
             {
-                Width = bitmap.Width;
-                Height = bitmap.Height;
-                Dimensions = BitmapExtensions.GetBytesPerPixel(bitmap.PixelFormat);
-                Bits = new double[Width * Height * Dimensions];
-                LoadBitmapData(bitmap);
+                throw new ArgumentNullException($"{nameof(bitmap)} can not be null.");
             }
-        }
 
+            Width = bitmap.Width;
+            Height = bitmap.Height;
+            Dimensions = BitmapExtensions.GetBytesPerPixel(bitmap.PixelFormat);
+            Bits = new double[Width * Height * Dimensions];
+            LoadBitmapData(bitmap);
+        }
         #endregion
 
         #region Get and Set pixel
@@ -59,7 +60,7 @@ namespace EdgeDetectionLib
                 x > Width || y > Height ||
                 dimension < 0 || dimension > 2)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("The pixel value or dimension is out of range.");
             }
             int index = dimension * Width * Height + y * Width + x;
             Bits[index] = value;
@@ -71,7 +72,7 @@ namespace EdgeDetectionLib
                 x > Width || y > Height ||
                 dimension < 0 || dimension > 2)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException("The pixel value or dimension is out of range.");
             }
             int index = dimension * Width * Height + y * Width + x;
             return Bits[index];

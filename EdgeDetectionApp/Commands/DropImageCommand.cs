@@ -19,10 +19,10 @@ namespace EdgeDetectionApp.Commands
             _imageViewModel = imgeViewModel;
             _dialogService = dialogService;
         }
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
-            var e = (DragEventArgs)parameter;
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            var e = parameter as DragEventArgs;
+            if (e!.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 string fileExtension = Path.GetExtension(files[0]);
@@ -45,7 +45,7 @@ namespace EdgeDetectionApp.Commands
 
             foreach(var codec in codecs)
             {
-                string[] extensions = codec.FilenameExtension.Split(';');
+                string[] extensions = codec.FilenameExtension!.Split(';');
                 foreach (var extension in extensions)
                 {
                     imageExtensions.Add(extension.Substring(1).ToLower());

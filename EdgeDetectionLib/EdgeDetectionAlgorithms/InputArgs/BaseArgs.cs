@@ -15,6 +15,5 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
         {
             ImageToProcess = imageToProcess;
         }
-        public BaseArgs(){}
     }
 }

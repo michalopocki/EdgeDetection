@@ -76,7 +76,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Column="0" Grid.Row="0" Text="Size" Margin="10"/>
                         <TextBlock Grid.Column="0" Grid.Row="1" Text="Sigma" Margin="10"/>
-                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0" Margin="10,5,0,5" Value="{Binding LoGKernelSize, Mode=TwoWay}" Increment="1" Minimum="2" Maximum="25"
+                        <xctk:IntegerUpDown Grid.Column="1" Grid.Row="0" Margin="10,5,0,5" Value="{Binding LoGKernelSize, Mode=TwoWay}" Increment="2" Minimum="3" Maximum="25"
                                        AllowSpin="True" Width="70" HorizontalAlignment="Left" />
                         <xctk:DoubleUpDown Grid.Column="1" Grid.Row="1" Margin="10,5,0,5" Value="{Binding LoGSigma, Mode=TwoWay}" Increment=".1" Minimum="0" Maximum="20" FormatString="N1"
                                        AllowSpin="True" Width="70" HorizontalAlignment="Left" />

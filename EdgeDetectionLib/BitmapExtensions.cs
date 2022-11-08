@@ -57,7 +57,7 @@ namespace EdgeDetectionLib
             BitmapData originalBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
             BitmapData resultBitmapData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.WriteOnly, result.PixelFormat);
 
-            int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+            int bytesPerPixel = GetBytesPerPixel(bitmap.PixelFormat);
             int height = originalBitmapData.Height;
             int width = originalBitmapData.Width;
             byte* PtrFirstPixel = (byte*)originalBitmapData.Scan0;
@@ -101,23 +101,24 @@ namespace EdgeDetectionLib
             {
                 BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
 
-                int bytesPerPixel = System.Drawing.Bitmap.GetPixelFormatSize(bitmap.PixelFormat) / 8;
+                int bytesPerPixel = GetBytesPerPixel(bitmap.PixelFormat);
                 int heightInPixels = bitmapData.Height;
                 int widthInBytes = bitmapData.Width * bytesPerPixel;
                 byte* PtrFirstPixel = (byte*)bitmapData.Scan0;
+                byte maxRange = byte.MaxValue;
 
                 Parallel.For(0, heightInPixels, y =>
                 {
                     byte* currentLine = PtrFirstPixel + (y * bitmapData.Stride);
                     for (int x = 0; x < widthInBytes; x += bytesPerPixel)
                     {
-                        int bluePixel = currentLine[x];
-                        int greenPixel = currentLine[x + 1];
-                        int redPixel = currentLine[x + 2];
+                        byte bluePixel = currentLine[x];
+                        byte greenPixel = currentLine[x + 1];
+                        byte redPixel = currentLine[x + 2];
 
-                        currentLine[x] = (byte)(Math.Abs(bluePixel - 255));
-                        currentLine[x + 1] = (byte)(Math.Abs(greenPixel - 255));
-                        currentLine[x + 2] = (byte)(Math.Abs(redPixel - 255));
+                        currentLine[x] = (byte)(maxRange - bluePixel);
+                        currentLine[x + 1] = (byte)(maxRange - greenPixel);
+                        currentLine[x + 2] = (byte)(maxRange - redPixel);
                     }
                 });
                 bitmap.UnlockBits(bitmapData);
@@ -133,8 +134,8 @@ namespace EdgeDetectionLib
         private static extern int memcmp(IntPtr b1, IntPtr b2, long count);
         public static bool CompareMemCmp(Bitmap b1, Bitmap b2)
         {
-            if ((b1 == null) != (b2 == null)) return false;
-            if (b1.Size != b2.Size) return false;
+            if ((b1 is null) != (b2 is null)) return false;
+            if (b1!.Size != b2!.Size) return false;
 
             var bd1 = b1.LockBits(new Rectangle(new Point(0, 0), b1.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             var bd2 = b2.LockBits(new Rectangle(new Point(0, 0), b2.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);

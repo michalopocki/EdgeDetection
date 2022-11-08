@@ -11,7 +11,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
     public class LaplacianArgsBuilder : IArgsBuilder
     {
 
-        private readonly LaplacianArgs _laplacianArgs = new LaplacianArgs(null, 0, false, 0, false, 0, 0);
+        private readonly LaplacianArgs _laplacianArgs = new LaplacianArgs(null, 0, false, 0, false, 2, 0);
         public IEdgeDetectorArgs Build() => _laplacianArgs;
 
         public static LaplacianArgsBuilder Init()

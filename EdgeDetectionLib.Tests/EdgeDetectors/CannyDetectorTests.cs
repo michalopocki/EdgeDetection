@@ -19,6 +19,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             var mock = new Mock<ICannyArgs>();
             mock.SetupGet(x=>x.THigh).Returns(40);
             mock.SetupGet(x => x.TLow).Returns(15);
+           // mock.SetupGet(x => x.TLow).Returns(15);
             _sut = new CannyDetector(mock.Object);
         }
 
@@ -84,6 +85,12 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
                 Assert.Contains(value, expectedValues);
             }
         }
+
+        //[Fact]
+        //public void CannyDetector_ShouldBeNotNull()
+        //{
+
+        //}
 
     }
 }

@@ -22,15 +22,18 @@ namespace EdgeDetectionApp.Commands
             _videoViewModel = videoViewModel;
         }
 
-        public override void Execute(object parameter)
+        public override void Execute(object? parameter)
         {
-            if (parameter.ToString() == "Image")
+            if (parameter is null) return;
+
+            string view = Convert.ToString(parameter)!;
+
+            if (view.Equals("Image"))
             {
                 _mainViewModel.SelectedViewModel = _imageViewModel;
             }
-            else if (parameter.ToString() == "Video")
+            else if (view.Equals("Video"))
             {
-                //ChartViewModel.canGet = false;
                 _mainViewModel.SelectedViewModel = _videoViewModel;
             }
         }

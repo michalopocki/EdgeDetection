@@ -11,7 +11,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
 {
     public class CannyArgsBuilder : IArgsBuilder
     {
-        private readonly CannyArgs _cannyArgs = new CannyArgs(null, false, 0, 0, 0, 0);
+        private readonly CannyArgs _cannyArgs = new CannyArgs(null, false, 2, 0, 0, 0);
         public IEdgeDetectorArgs Build() => _cannyArgs;
         private CannyArgsBuilder() { }
 

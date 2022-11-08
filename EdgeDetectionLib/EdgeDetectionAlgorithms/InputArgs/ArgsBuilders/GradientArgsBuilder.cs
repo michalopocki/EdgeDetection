@@ -10,7 +10,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
 {
     public class GradientArgsBuilder : IArgsBuilder
     {
-        protected readonly GradientArgs _gradientArgs = new GradientArgs(null, false, 0, false, 0, 0);
+        protected readonly GradientArgs _gradientArgs = new GradientArgs(null, false, 0, false, 2, 0);
 
         public virtual IEdgeDetectorArgs Build() => _gradientArgs;
 
