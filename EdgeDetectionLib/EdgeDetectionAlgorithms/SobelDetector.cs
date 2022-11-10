@@ -6,9 +6,14 @@ using System.Drawing;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
+    /// <summary>
+    /// Class that enables edge detection in an image utilising Sobel operator.
+    /// </summary>
     public class SobelDetector : GradientDetectorBase
     {
+        /// <inheritdoc />
         public override string Name => GetName(this);
+
         internal readonly double[][] _Gx = new double[3][]
         {
             new double[] { -0.25, 0.0, 0.25},

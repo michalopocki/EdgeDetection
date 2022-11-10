@@ -8,14 +8,27 @@ using System.Windows.Media.Media3D;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
+    /// <summary>
+    /// Base abstract class for each edge detector containing basic alghoritms.
+    /// </summary>
     public abstract class EdgeDetectorBase : IEdgeDetector
     {
+        /// <inheritdoc />
         public abstract string Name { get; }
+
+        /// <summary>Class containing image pixels.</summary>
         protected internal PixelMatrix _pixelMatrix;
+        /// <summary>Width of an image.</summary>
         protected internal int _width;
+        /// <summary>Height of an image.</summary>
         protected internal int _height;
+        /// <summary>If an image is grayscale equal 1, else equal 3.</summary>
         protected internal int _dimensions;
 
+        /// <summary>
+        /// Base constructor initializing input image.
+        /// </summary>
+        /// <param name="args"></param>
         public EdgeDetectorBase(IEdgeDetectorArgs args)
         {
             if (args.ImageToProcess is not null)
@@ -24,8 +37,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             }
         }
 
+        /// <inheritdoc />
         public abstract EdgeDetectionResult DetectEdges();
 
+        /// <inheritdoc />
         public void SetBitmap(Bitmap newBitamp)
         {
             _pixelMatrix = new PixelMatrix(newBitamp);
@@ -34,17 +49,62 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _dimensions = newBitamp.PixelFormat == System.Drawing.Imaging.PixelFormat.Format8bppIndexed ? 1 : 3;
         }
 
+        /// <summary>
+        /// Gets name of edge detector.
+        /// </summary>
+        /// <param name="edgeDetector">
+        /// Instance of class that implements <see cref="IEdgeDetector"/> interface.
+        /// </param>
+        /// <returns>
+        /// A <see langword="string"/> value of detector name.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <see cref="IEdgeDetector"/> does not contain 'Detector' word. 
+        /// </exception>
         public static string GetName(IEdgeDetector edgeDetector)
         {
             Type type = edgeDetector.GetType();
+
+            if (!type.Name.Contains("Detector"))
+            {
+                throw new ArgumentException("Type name must contain string Detector");
+            }
+
             return type.Name.Replace("Detector", "");
         }
 
+        /// <summary>
+        /// Gets name of edge detector.
+        /// </summary>
+        /// <param name="edgeDetector">
+        /// Type of instance that constains "Detector" word.
+        /// </param>
+        /// <returns>
+        /// A <see langword="string"/> value of detector name.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// Type does not contain 'Detector' word. 
+        /// </exception>
         public static string GetName(Type edgeDetector)
         {
+            if (!edgeDetector.Name.Contains("Detector"))
+            {
+                throw new ArgumentException("Type name must contain string Detector");
+            }
+
             return edgeDetector.Name.Replace("Detector", "");
         }
 
+        /// <summary>
+        /// Implementation of mathematical convolution operation that process 
+        /// image based on specific kernel.
+        /// </summary>
+        /// <param name="filter">
+        /// A square matrix that represents a kernel (or mask).
+        /// </param>
+        /// <returns>
+        /// Creates <see cref="PixelMatrix"/> instance which imply processed pixels.
+        /// </returns>
         protected PixelMatrix Convolution(double[][] filter)
         {
             var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
@@ -70,51 +130,12 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             return resultMatrix;
         }
 
-        //protected PixelMatrix Convolution(double[][] filter)
-        //{
-        //    var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
-        //    int limiter = (filter.GetLength(0) - 1) / 2;
-
-        //    int degreeOfParallelism = Environment.ProcessorCount;
-        //    int from = limiter; //0
-        //    int to = _width; //length
-
-        //    Parallel.For(0, degreeOfParallelism, workerId =>
-        //    {
-        //        var max = to * (workerId + 1) / degreeOfParallelism;
-        //        int limitFrom = 0, limitTo = 0;
-        //        if (workerId == 0)
-        //        {
-        //            limitFrom = limiter;
-        //            limitTo = 0;
-        //        }
-        //        if (workerId == degreeOfParallelism - 1)
-        //        {
-        //            limitFrom = 0;
-        //            limitTo = limiter;
-        //        }
-
-        //        for (int x = to * workerId / degreeOfParallelism + limitFrom; x < max - limitTo; x++)
-        //        {
-        //            for (int y = limiter; y < _height - limiter; y++)
-        //            {
-        //                for (int m = -limiter; m <= limiter; m++)
-        //                {
-        //                    for (int n = -limiter; n <= limiter; n++)
-        //                    {
-        //                        for (int d = 0; d < _dimensions; d++)
-        //                        {
-        //                            resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limiter][n + limiter];
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    });
-
-        //    return resultMatrix;
-        //}
-
+        /// <summary>
+        /// Cut sides of an image after convolution
+        /// </summary>
+        /// <param name="kernelSize">
+        /// Size of square kernel.
+        /// </param>
         protected void CutSides(int kernelSize)
         {
             int size = (int)Math.Ceiling((double)kernelSize / 2);
@@ -136,6 +157,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _height -= 2 * size;
         }
 
+        /// <summary>
+        /// Calculate magintude of two gradients.
+        /// </summary>
+        /// <param name="gradientGx"></param>
+        /// <param name="gradientGy"></param>
+        /// <returns>
+        /// Creates <see cref="PixelMatrix"/> instance which imply magnitude pixels.
+        /// </returns>
         protected PixelMatrix GradientMagnitude(PixelMatrix gradientGx, PixelMatrix gradientGy)
         {
             //gradientGx.Abs();

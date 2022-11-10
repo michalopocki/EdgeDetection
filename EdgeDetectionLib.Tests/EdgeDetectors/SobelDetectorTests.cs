@@ -17,6 +17,8 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         {
             var mock = new Mock<IGradientArgs>();
             _sut = new SobelDetector(mock.Object);
+            
+            EdgeDetectorBase.GetName()
         }
 
         [Fact]
@@ -62,6 +64,7 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
             using var bitmap = new Bitmap(TestingConstants.TestJpgImage);
 
             _sut.SetBitmap(bitmap);
+
             var actual = _sut._pixelMatrix;
             var reslut = _sut.DetectEdges();
 

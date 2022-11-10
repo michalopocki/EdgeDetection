@@ -9,15 +9,28 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
+    /// <summary>
+    /// Base abstract class for gradient edge detectors.
+    /// </summary>
     public abstract class GradientDetectorBase : EdgeDetectorBase
     {
+        /// <summary>Determines if apply binary thresholding </summary>
         protected internal bool _thresholding;
+        /// <summary>Value of threshold between 0 and 155.</summary>
         protected internal int _threshold;
+        /// <summary>Determines if apply gaussian smoothing before edge detection.</summary>
         protected internal bool _prefiltration;
+        /// <summary>Size of gaussian kernel.</summary>
         protected internal int _kernelSize;
+        /// <summary>Sigma of gaussian kernel.</summary>
         protected internal double _sigma;
+        /// <summary>Square matrix that represents gaussian kernel.</summary>
         internal readonly double[][] _kernel;
 
+        /// <summary>
+        /// Gradient methods base constructor initializing gussian kernel.
+        /// </summary>
+        /// <param name="args"></param>
         public GradientDetectorBase(IGradientArgs args) :base(args)
         {
             _thresholding = args.Thresholding;
@@ -29,6 +42,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             _kernel = gaussianKernel.Create();
         }
 
+        /// <summary>
+        /// Blurs an image utilising gaussian smoothing.
+        /// </summary>
         protected internal void Prefiltration()
         {
             if (_prefiltration && ValidateKernelSize())
