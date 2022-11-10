@@ -21,7 +21,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Fields
         private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private Bitmap _originalImage;
         private Bitmap _grayscaleImage;
@@ -63,7 +63,7 @@ namespace EdgeDetectionApp.ViewModel
 
         #region Constructor
         public ImageViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, 
-                             IDialogService dialogService, DetectionParamsStore detectionParamsStore)
+                             IDialogService dialogService, IDetectionParamsStore detectionParamsStore)
         {
             OriginalImage = new Bitmap(@"Resources\SampleImage\bird.jpg");
             _edgeDetectorFactory = edgeDetectorFactory;

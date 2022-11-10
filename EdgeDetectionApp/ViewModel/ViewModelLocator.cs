@@ -26,7 +26,7 @@ namespace EdgeDetectionApp.ViewModel
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<DetectionParamsStore>();
+            services.AddSingleton<IDetectionParamsStore, DetectionParamsStore>();
 
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<ImageViewModel>();

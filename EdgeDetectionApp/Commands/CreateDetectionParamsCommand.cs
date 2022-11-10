@@ -15,9 +15,9 @@ namespace EdgeDetectionApp.Commands
     public class CreateDetectionParamsCommand : CommandBase
     {
         private readonly OptionsViewModel _optionsViewModel;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
 
-        public CreateDetectionParamsCommand(OptionsViewModel optionsViewModel, DetectionParamsStore detectionParamsStore)
+        public CreateDetectionParamsCommand(OptionsViewModel optionsViewModel, IDetectionParamsStore detectionParamsStore)
         {
             _optionsViewModel = optionsViewModel;
             _detectionParamsStore = detectionParamsStore;

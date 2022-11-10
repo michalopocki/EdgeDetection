@@ -27,7 +27,7 @@ namespace EdgeDetectionApp.Commands
         private readonly IMessenger _messenger;
         private readonly IDialogService _dialogService;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
         private IEdgeDetector _edgeDetector;
         private bool _videoStart = true;
 
@@ -36,7 +36,7 @@ namespace EdgeDetectionApp.Commands
                                 IMessenger messenger,
                                 IDialogService dialogService,
                                 IEdgeDetectorFactory edgeDetectorFactory,
-                                DetectionParamsStore detectionParamsStore)
+                                IDetectionParamsStore detectionParamsStore)
         {
             _videoViewModel = videoViewModel;
             _videoSource = videoSource;

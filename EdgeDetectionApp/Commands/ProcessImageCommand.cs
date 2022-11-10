@@ -18,12 +18,12 @@ namespace EdgeDetectionApp.Commands
         private readonly ImageViewModel _imageViewModel;
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
         private IEdgeDetector _edgeDetector;
         private DetectionParameters _detectionParameters = new DetectionParameters();
 
         public ProcessImageCommand(ImageViewModel imageViewModel, IEdgeDetectorFactory edgeDetectorFactory, 
-                                   IMessenger messenger, DetectionParamsStore detectionParamsStore)
+                                   IMessenger messenger, IDetectionParamsStore detectionParamsStore)
         {
             _imageViewModel = imageViewModel;
             _edgeDetectorFactory = edgeDetectorFactory;

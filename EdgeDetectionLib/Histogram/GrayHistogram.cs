@@ -17,17 +17,18 @@ namespace EdgeDetectionLib.Histogram
         }
         public HistogramResults Calculate()
         {
-            var results = new HistogramResults();
+            var results = new HistogramResults(HistogramType.Grayscale);
             int width = _pixelMatrix.Width;
             int height = _pixelMatrix.Height;
 
-            Parallel.For(0, width, x =>
+            for(int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    results.Gray_Series[(int)_pixelMatrix[x, y, 0]]++;
+                    int index = (int)_pixelMatrix[x, y, 0];
+                    results.Gray_Series![index]++;
                 }
-            });
+            }
             return results;
         }
     }

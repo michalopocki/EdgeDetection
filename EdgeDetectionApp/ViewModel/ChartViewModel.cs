@@ -26,7 +26,6 @@ namespace EdgeDetectionApp.ViewModel
         private bool _threshold2Visibility;
         #endregion
 
-
         #region Properties
         public ChartValues<int> R_Values {
             get => r_values;

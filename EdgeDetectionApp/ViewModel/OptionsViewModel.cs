@@ -22,7 +22,7 @@ namespace EdgeDetectionApp.ViewModel
         #region Fields
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IMessenger _messenger;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
         private string _selectedEdgeDetector;
         private bool _isGrayscale;
         private bool _thresholingVisibility;
@@ -124,7 +124,7 @@ namespace EdgeDetectionApp.ViewModel
         ICommand CreateDetectionParams { get; set; }
 
         #region Constructor
-        public OptionsViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, DetectionParamsStore detectionParamsStore)
+        public OptionsViewModel(IEdgeDetectorFactory edgeDetectorFactory, IMessenger messenger, IDetectionParamsStore detectionParamsStore)
         {
             _edgeDetectorFactory = edgeDetectorFactory;
             _messenger = messenger;

@@ -30,7 +30,7 @@ namespace EdgeDetectionApp.ViewModel
         private readonly IEdgeDetectorFactory _edgeDetectorFactory;
         private readonly IDialogService _dialogService;
         private readonly IMessenger _messenger;
-        private readonly DetectionParamsStore _detectionParamsStore;
+        private readonly IDetectionParamsStore _detectionParamsStore;
         private IVideoSource _videoSource;
         private FilterInfo _currentDevice;
         private BitmapImage _bitmapImage;
@@ -60,7 +60,7 @@ namespace EdgeDetectionApp.ViewModel
         public VideoViewModel(IEdgeDetectorFactory edgeDetectorFactory,
                               IDialogService dialogService, 
                               IMessenger messenger,
-                              DetectionParamsStore detectionParamsStore)
+                              IDetectionParamsStore detectionParamsStore)
         {
             _edgeDetectorFactory = edgeDetectorFactory;
             _dialogService = dialogService;

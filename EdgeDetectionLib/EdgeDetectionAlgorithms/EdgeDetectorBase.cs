@@ -47,19 +47,44 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         protected PixelMatrix Convolution(double[][] filter)
         {
             var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
-            int limiter = (filter.GetLength(0) - 1) / 2;
+            int limit = (filter.GetLength(0) - 1) / 2;
 
-            Parallel.For(limiter, _width - limiter, x =>
+            Parallel.For(limit, _width - limit, x =>
             {
-                for (int y = limiter; y < _height - limiter; y++)
+                for (int y = limit; y < _height - limit; y++)
                 {
-                    for (int m = -limiter; m <= limiter; m++)
+                    for (int m = -limit; m <= limit; m++)
                     {
-                        for (int n = -limiter; n <= limiter; n++)
+                        for (int n = -limit; n <= limit; n++)
                         {
                             for (int d = 0; d < _dimensions; d++)
                             {
-                                resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limiter][n + limiter];
+                                resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limit][n + limit];
+                            }
+                        }
+                    }
+                }
+            });
+
+            return resultMatrix;
+        }
+
+        protected PixelMatrix Convolution(double[][] filter)
+        {
+            var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
+            int limit = (filter.GetLength(0) - 1) / 2;
+
+            Parallel.For(limit, _height - limit, y =>
+            {
+                for (int x = limit; x < _width - limit; x++)
+                {
+                    for (int m = -limit; m <= limit; m++)
+                    {
+                        for (int n = -limit; n <= limit; n++)
+                        {
+                            for (int d = 0; d < _dimensions; d++)
+                            {
+                                resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limit][n + limit];
                             }
                         }
                     }

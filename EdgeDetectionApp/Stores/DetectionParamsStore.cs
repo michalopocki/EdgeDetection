@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionApp.Stores
 {
-    public class DetectionParamsStore
+    public class DetectionParamsStore : IDetectionParamsStore
     {
         public event Action<DetectionParameters>? ParamsCreated;
 
