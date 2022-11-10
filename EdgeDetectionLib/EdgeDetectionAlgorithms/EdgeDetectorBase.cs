@@ -39,34 +39,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             Type type = edgeDetector.GetType();
             return type.Name.Replace("Detector", "");
         }
+
         public static string GetName(Type edgeDetector)
         {
             return edgeDetector.Name.Replace("Detector", "");
-        }
-
-        protected PixelMatrix Convolution(double[][] filter)
-        {
-            var resultMatrix = new PixelMatrix(_width, _height, _dimensions);
-            int limit = (filter.GetLength(0) - 1) / 2;
-
-            Parallel.For(limit, _width - limit, x =>
-            {
-                for (int y = limit; y < _height - limit; y++)
-                {
-                    for (int m = -limit; m <= limit; m++)
-                    {
-                        for (int n = -limit; n <= limit; n++)
-                        {
-                            for (int d = 0; d < _dimensions; d++)
-                            {
-                                resultMatrix[x, y, d] += _pixelMatrix[x - m, y - n, d] * filter[m + limit][n + limit];
-                            }
-                        }
-                    }
-                }
-            });
-
-            return resultMatrix;
         }
 
         protected PixelMatrix Convolution(double[][] filter)
@@ -78,9 +54,9 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             {
                 for (int x = limit; x < _width - limit; x++)
                 {
-                    for (int m = -limit; m <= limit; m++)
+                    for (int n = -limit; n <= limit; n++)
                     {
-                        for (int n = -limit; n <= limit; n++)
+                        for (int m = -limit; m <= limit; m++)
                         {
                             for (int d = 0; d < _dimensions; d++)
                             {
@@ -171,10 +147,10 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 
             Parallel.For(0, degreeOfParallelism, workerId =>
             {
-                var max = _width * (workerId + 1) / degreeOfParallelism;
-                for (int x = _width * workerId / degreeOfParallelism; x < max; x++)
+                var max = _height * (workerId + 1) / degreeOfParallelism;
+                for (int y = _height * workerId / degreeOfParallelism; y < max; y++)
                 {
-                    for (int y = 0; y < _height; y++)
+                    for (int x = 0; x < _width; x++)
                     {
                         for (int d = 0; d < _dimensions; d++)
                         {
@@ -183,6 +159,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
                     }
                 }
             });
+
             return gradientMagnitude;
         }
     }
