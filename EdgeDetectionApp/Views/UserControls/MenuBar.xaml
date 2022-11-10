@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EdgeDetectionApp.Views.UserControls"
              mc:Ignorable="d" 
+             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"
              d:DesignWidth="800">
     <UserControl.Resources>
         <LinearGradientBrush x:Key="DarkBrush" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -151,9 +152,15 @@
         <MenuItem Header="Tools" Template="{DynamicResource MenuItemControlTemplate1}">
             <MenuItem Header="Options" Template="{DynamicResource MenuItemControlTemplate2}"/>
         </MenuItem>
-        <MenuItem Header="Window" Template="{DynamicResource MenuItemControlTemplate1}">
-            <MenuItem Header="Image" Template="{DynamicResource MenuItemControlTemplate2}"/>
-            <MenuItem Header="WebCam" Template="{DynamicResource MenuItemControlTemplate2}"/>
+        <MenuItem Header="Window" Template="{DynamicResource MenuItemControlTemplate1}" >
+            <MenuItem Header="Image" Template="{DynamicResource MenuItemControlTemplate2}" 
+                      DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
+                      Command="{Binding UpdateViewCommand}" CommandParameter="Image"/>
+            <MenuItem Header="WebCam" Template="{DynamicResource MenuItemControlTemplate2}" 
+                      DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainViewModel}"
+                      Command="{Binding UpdateViewCommand}" CommandParameter="Video">
+                
+            </MenuItem>
         </MenuItem>
         <MenuItem Header="Help" Template="{DynamicResource MenuItemControlTemplate1}">
             <MenuItem Header="Open" Template="{DynamicResource MenuItemControlTemplate2}"/>

@@ -4,36 +4,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
+using System.Windows;
+using MvvmDialogs;
 using System.Windows.Input;
 
 namespace EdgeDetectionApp.Bahaviors
 {
     public class CloseWindowBehavior : Behavior<Window>
     {
-        public static readonly DependencyProperty ButtonProperty =
-            DependencyProperty.Register(
-                "Button",
-                typeof(Button),
-                typeof(CloseWindowBehavior),
-                new PropertyMetadata(null, CloseButton)
-                );
+        private Window? _window;
 
-        public Button Button
+        public static readonly DependencyProperty ButtonProperty =
+             DependencyProperty.Register(
+             "UIElement",
+             typeof(UIElement),
+             typeof(CloseWindowBehavior));
+
+        public UIElement UIElement
         {
-            get { return (Button)GetValue(ButtonProperty); }
+            get { return (UIElement)GetValue(ButtonProperty); }
             set { SetValue(ButtonProperty, value); }
         }
 
-        private static void CloseButton(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        protected override void OnAttached()
         {
-            var window = (d as CloseWindowBehavior).AssociatedObject;
+            base.OnAttached();
+            AssociatedObject.Loaded += AssociatedObject_Loaded;
+            AssociatedObject.Unloaded += AssociatedObject_Unloaded;
 
-            RoutedEventHandler buttonClick = (object sender, RoutedEventArgs _e) => { window.Close(); };
+            _window = (Window)AssociatedObject;
+        }
+        private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
+        {
+            AssociatedObject.Loaded -= AssociatedObject_Loaded;
 
-            if (e.OldValue != null) ((Button)e.OldValue).Click -= buttonClick;
-            if (e.NewValue != null) ((Button)e.NewValue).Click += buttonClick;
+            switch(UIElement)
+            {
+                case Button button:
+                    {
+                        button.Click += CloseWindow2_Click;
+                        break;
+                    }
+                case MenuItem menuItem:
+                    {
+                        menuItem.Click += CloseWindow2_Click;
+                        break;
+                    }
+                default:
+                    {
+                        UIElement.MouseUp += CloseWindow2_Click;
+                        break;
+                    }
+            }
+        }
+
+        private void CloseWindow2_Click(object sender, RoutedEventArgs e)
+        {
+            if (_window is not null)
+            {
+                _window.Close();
+            }
+        }
+
+        private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
+        {
+            AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
+            UIElement.MouseLeftButtonDown -= CloseWindow2_Click;
         }
     }
 }

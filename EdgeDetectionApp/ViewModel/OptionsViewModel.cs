@@ -1,18 +1,9 @@
 ﻿using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.Messages;
-using EdgeDetectionApp.Models;
 using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO.Packaging;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace EdgeDetectionApp.ViewModel

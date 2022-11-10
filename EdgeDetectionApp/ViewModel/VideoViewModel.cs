@@ -6,21 +6,11 @@ using EdgeDetectionApp.Messages;
 using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using MvvmDialogs;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace EdgeDetectionApp.ViewModel
 {

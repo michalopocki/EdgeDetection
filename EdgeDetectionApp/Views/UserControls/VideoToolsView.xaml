@@ -56,14 +56,14 @@
                         </Button.Content>
                     </Button>
                 </GroupBox>
-                <GroupBox Header="Video Recording" Margin="5,0,5,2">
+                <!--<GroupBox Header="Video Recording" Margin="5,0,5,2">
                     <Button Width="67" Height="21" Margin="10" FontWeight="Bold"
                             Content="Start" Style="{StaticResource startStopButtonStyle}">
                         <i:Interaction.Behaviors>
                             <behaviors:StartStopButtonBehavior />
                         </i:Interaction.Behaviors>
                     </Button>
-                </GroupBox>
+                </GroupBox>-->
             </StackPanel>
         </ScrollViewer>
     </GroupBox>

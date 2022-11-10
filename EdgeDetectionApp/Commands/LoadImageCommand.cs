@@ -53,11 +53,10 @@ namespace EdgeDetectionApp.Commands
 
             if (dialogResult.HasValue && dialogResult.Value)
             {
-                using (var resultBmp = new Bitmap(settings.FileName))
-                {
-                    _imageViewModel.OriginalImage = (Bitmap)resultBmp.Clone();
-                    _Messenger.Send(new HistogramDataChangedMessage((Bitmap)resultBmp.Clone()));
-                }
+                using var resultBmp = new Bitmap(settings.FileName);
+
+                _imageViewModel.OriginalImage = (Bitmap)resultBmp.Clone();
+                _Messenger.Send(new HistogramDataChangedMessage((Bitmap)resultBmp.Clone()));
             }
         }
     }

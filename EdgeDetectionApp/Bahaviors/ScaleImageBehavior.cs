@@ -18,7 +18,6 @@ namespace EdgeDetectionApp.Bahaviors
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private double _actualScale = 1;
         private readonly double _step = 0.05;
-        private int _hashcode;
 
         public ScaleImageBehavior()
         {
@@ -40,15 +39,9 @@ namespace EdgeDetectionApp.Bahaviors
 
         private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
         {
-            //var image = (Image?)sender;
-            //if (image is not null)
-            //{
-            //    _hashcode = image.Source.GetHashCode();
-            //}
             AssociatedObject.Loaded -= AssociatedObject_Loaded;
             AssociatedObject.PreviewMouseWheel += Image_PreviewMouseWheel;
             AssociatedObject.PreviewMouseLeftButtonDown += Image_PreviewMouseLeftButtonDown;
-            //AssociatedObject.MouseMove += AssociatedObject_MouseMove;
         }
 
         private void AssociatedObject_Unloaded(object sender, RoutedEventArgs e)
@@ -56,7 +49,6 @@ namespace EdgeDetectionApp.Bahaviors
             AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
             AssociatedObject.PreviewMouseWheel -= Image_PreviewMouseWheel;
             AssociatedObject.PreviewMouseLeftButtonDown -= Image_PreviewMouseLeftButtonDown;
-            //AssociatedObject.MouseMove -= AssociatedObject_MouseMove;
         }
 
         private void Image_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -91,19 +83,5 @@ namespace EdgeDetectionApp.Bahaviors
             }
         }
 
-        private void AssociatedObject_MouseMove(object sender, MouseEventArgs e)
-        {
-            var image = (Image?)sender;
-            if (image is not null)
-            {
-                int newHashcode = image.Source.GetHashCode();
-                if (newHashcode != _hashcode)
-                {
-                    _actualScale = 1;
-                    image.LayoutTransform = new ScaleTransform(_actualScale, _actualScale, 0.5, 0.5);
-                    _hashcode = newHashcode;
-                }
-            }
-        }
     }
 }

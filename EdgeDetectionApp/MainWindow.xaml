@@ -28,9 +28,8 @@
         </DataTemplate>
     </Window.Resources>
     <i:Interaction.Behaviors>
-        <!--<behaviors:CloseWindowBehavior x:Name="closeWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonClose}"/>-->
-        <behaviors:CloseWindowBehavior2 x:Name="closeWindowBehavior" UIElement="{Binding ElementName=titleBar, Path=ButtonClose}"/>
-        <behaviors:CloseWindowBehavior2 UIElement="{Binding ElementName=menuBar, Path=CloseMenuItem}"/>
+        <behaviors:CloseWindowBehavior x:Name="closeWindowBehavior" UIElement="{Binding ElementName=titleBar, Path=ButtonClose}"/>
+        <behaviors:CloseWindowBehavior UIElement="{Binding ElementName=menuBar, Path=CloseMenuItem}"/>
         <behaviors:RestoreDownBehavior x:Name="restoreDownWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonRestoreDown}"/>
         <behaviors:MinimizeWindowBehavior x:Name="minimizeWindowBehavior" Button="{Binding ElementName=titleBar, Path=ButtonMinimize}"/>
         <behaviors:WindowMoveBehavior x:Name="windowMoveBehavior" UserControl="{Binding ElementName=titleBar}"/>
@@ -38,7 +37,7 @@
     <Border BorderThickness="0.5,0,0,0" BorderBrush="Black">
         <DockPanel>
             <controls:TitleBar DockPanel.Dock="Top" x:Name="titleBar"/>
-            <controls:MenuBar DockPanel.Dock="Top" x:Name="menuBar" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"/>
+            <controls:MenuBar DockPanel.Dock="Top" x:Name="menuBar" />
             <controls:ToolBar DockPanel.Dock="Top" />
             <controls:StatusBar DockPanel.Dock="Bottom" DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ImageViewModel}"/>
             <ContentControl Content="{Binding SelectedViewModel}"/>
