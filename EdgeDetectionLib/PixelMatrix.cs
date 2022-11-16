@@ -7,20 +7,47 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib
 {
+    /// <summary>
+    /// Class that converts bitmap to array.
+    /// </summary>
     public class PixelMatrix
     {
         #region Fields
+        /// <summary>
+        /// Array contaning image pixel values.
+        /// </summary>
         internal double[] Bits;
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Returns <see cref="System.Drawing.Bitmap"/>.
+        /// </summary>
         public Bitmap Bitmap => ToBitmap();
+
+        /// <summary>
+        /// Height of an image.
+        /// </summary>
         public int Height { get; private set; }
+
+        /// <summary>
+        /// Width of an image.
+        /// </summary>
         public int Width { get; private set; }
+
+        /// <summary>
+        /// Number of dimensions of an image. If colorscale then <see cref="Dimensions"/> equlas 3, if grayscale equals 1.
+        /// </summary>
         public int Dimensions { get; private set; }
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PixelMatrix"/> class.
+        /// </summary>
+        /// <param name="width"> Width of an image. </param>
+        /// <param name="height"> Height of an image. </param>
+        /// <param name="dimensions"> Number of dimensions of an image. </param>
         public PixelMatrix(int width, int height, int dimensions)
         {
             Width = width;
@@ -29,6 +56,11 @@ namespace EdgeDetectionLib
             Bits = new double[width * height * dimensions];
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PixelMatrix"/> class.
+        /// </summary>
+        /// <param name="bitmap"> Image to convert. </param>
+        /// <exception cref="ArgumentNullException"></exception>
         public PixelMatrix(Bitmap bitmap)
         {
             if (bitmap is null)
@@ -45,12 +77,27 @@ namespace EdgeDetectionLib
         #endregion
 
         #region Get and Set pixel
+        /// <summary>
+        /// Gets and sets pixel value.
+        /// </summary>
+        /// <param name="x"> Horizontal number of a pixel. </param>
+        /// <param name="y"> Vertical number of a pixel. </param>
+        /// <param name="dimension"> Dimension of a pixel. </param>
+        /// <returns></returns>
         public double this[int x, int y, int dimension]
         {
             get => Bits[dimension * Width * Height + y * Width + x];
             set => Bits[dimension * Width * Height + y * Width + x] = value;
         }
 
+        /// <summary>
+        /// Sets pixel value.
+        /// </summary>
+        /// <param name="x"> Horizontal number of a pixel. </param>
+        /// <param name="y"> Vertical number of a pixel. </param>
+        /// <param name="dimension"> Dimension of a pixel. </param>
+        /// <param name="value"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void SetPixel(int x, int y, int dimension, double value)
         {
             if (x < 0 || y < 0 ||
@@ -63,6 +110,14 @@ namespace EdgeDetectionLib
             Bits[index] = value;
         }
 
+        /// <summary>
+        /// Gets pixel value.
+        /// </summary>
+        /// <param name="x"> Horizontal number of a pixel. </param>
+        /// <param name="y"> Vertical number of a pixel. </param>
+        /// <param name="dimension"> Dimension of a pixel. </param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public double GetPixel(int x, int y, int dimension)
         {
             if (x < 0 || y < 0 ||
@@ -77,6 +132,10 @@ namespace EdgeDetectionLib
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Converts each pixel to the absolute value.
+        /// </summary>
         public void Abs()
         {
             int length = Width * Height * Dimensions;
@@ -91,6 +150,9 @@ namespace EdgeDetectionLib
             });
         }
 
+        /// <summary>
+        /// Changes value of negative pixels to zero.
+        /// </summary>
         public void ChangeNegativeNumberToZero()
         {
             int length = Width * Height * Dimensions;
@@ -105,6 +167,10 @@ namespace EdgeDetectionLib
             });
         }
 
+        /// <summary>
+        /// Calculates mean of all pixels.
+        /// </summary>
+        /// <returns></returns>
         public double Mean()
         {
             int length = Width * Height * Dimensions;
@@ -124,6 +190,9 @@ namespace EdgeDetectionLib
             return mean;
         }
 
+        /// <summary>
+        /// Normalizes pixels in range 0-255.
+        /// </summary>
         public void Normalize()
         {
             double minValue = Bits.AsParallel().Min();
@@ -141,6 +210,10 @@ namespace EdgeDetectionLib
             });
         }
 
+        /// <summary>
+        /// Applies thresholding to all pixels.
+        /// </summary>
+        /// <param name="threshold"> Threshold in range 0-255. </param>
         public void Thresholding(int threshold)
         {
             int length = Width * Height * Dimensions;
@@ -156,6 +229,12 @@ namespace EdgeDetectionLib
             });
         }
 
+        /// <summary>
+        /// Adds two <see cref="PixelMatrix"/> instances.
+        /// </summary>
+        /// <param name="pixelArray1"></param>
+        /// <param name="pixelArray2"></param>
+        /// <returns></returns>
         public static PixelMatrix operator +(PixelMatrix pixelArray1, PixelMatrix pixelArray2)
         {
             var resultArray = new PixelMatrix(pixelArray1.Width, pixelArray1.Height, pixelArray1.Dimensions);
@@ -199,6 +278,10 @@ namespace EdgeDetectionLib
             }
         }
 
+        /// <summary>
+        /// Converts <see cref="PixelMatrix"/> to <see cref="System.Drawing.Bitmap"/>.
+        /// </summary>
+        /// <returns></returns>
         public unsafe Bitmap ToBitmap()
         {
             unsafe
@@ -208,7 +291,7 @@ namespace EdgeDetectionLib
 
                 if (pixelFormat == PixelFormat.Format8bppIndexed)
                 {
-                    processedBitmap.SetGrayscalePalete();
+                    processedBitmap.SetGrayscalePalette();
                 }
 
                 BitmapData bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.WriteOnly, processedBitmap.PixelFormat);

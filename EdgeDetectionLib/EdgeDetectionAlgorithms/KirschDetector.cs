@@ -4,9 +4,17 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
+    /// <summary>
+    /// Class that enables edge detection in an image utilising Kirsch compass operator.
+    /// </summary>
     public class KirschDetector : GradientDetectorBase
     {
+        /// <inheritdoc />
         public override string Name => GetName(this);
+
+        /// <summary>
+        /// Single kernel mask rotates in 45 increments through all 8 compass directions
+        /// </summary>
         internal readonly double[][] _W = new double[3][]
         {
             new double[] { 5, -3, -3 },
@@ -55,7 +63,25 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             new double[] {  5,  0, -3 },
             new double[] { -3, -3, -3 }
         };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KirschDetector"/> class.
+        /// </summary>
+        /// <param name="args">
+        /// Class that contains gradient detector arguments (implements <see cref="IGradientArgs"></see> interface).
+        /// </param>
         public KirschDetector(IGradientArgs args) : base(args){}
+
+        /// <summary>
+        /// Detects edges in an image utilising Kirsch compass operator.
+        /// </summary>
+        /// <returns>
+        /// Instance of class <see cref="EdgeDetectionResult"/> containing two bitmaps that 
+        /// represent result image and image before thresholding.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The bitmap has not been set.
+        /// </exception>
         public override EdgeDetectionResult DetectEdges()
         {
             if (_pixelMatrix is null)
@@ -94,6 +120,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             return result;
         }
 
+        /// <summary>
+        /// Calculates as the maximum magnitude across all directions
+        /// </summary>
+        /// <param name="pixelMatrixs"></param>
+        /// <returns></returns>
         private PixelMatrix FindMaxMagnitude(params PixelMatrix[] pixelMatrixs)
         {
             var gradientMagnitude = new PixelMatrix(_width, _height, _dimensions);

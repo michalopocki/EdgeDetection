@@ -30,7 +30,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         /// Detects edges in an image based on the selected method.
         /// </summary>
         /// <returns>
-        /// Class <see cref="EdgeDetectionResult"/> containing two bitmaps that 
+        /// Instance of class <see cref="EdgeDetectionResult"/> containing histogram series.
         /// represent result image and image before thresholding.
         /// </returns>
         EdgeDetectionResult DetectEdges();

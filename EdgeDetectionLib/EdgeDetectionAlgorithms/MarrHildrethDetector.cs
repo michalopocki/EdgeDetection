@@ -5,18 +5,42 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
+    /// <summary>
+    /// Class that enables edge detection in an image utilising Marr–Hildreth algorithm.
+    /// </summary>
     public class MarrHildrethDetector : EdgeDetectorBase
     {
+        /// <inheritdoc />
         public override string Name => GetName(this);
+
+        /// <summary>Size of Laplacian of Gaussian kernel.</summary>
         private readonly int _LoGKernelSize;
+
+        /// <summary> Gaussian standard deviation of Laplacian of Gaussian kernel</summary>
         private readonly double _sigma;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MarrHildrethDetector"/> class.
+        /// </summary>
+        /// <param name="args">
+        /// Class that contains Marr-Hildreth detector arguments (implements <see cref="IMarrHildrethArgs"></see> interface).
+        /// </param>
         public MarrHildrethDetector(IMarrHildrethArgs args) : base(args)
         {
             _LoGKernelSize = args.KernelSize;
             _sigma = args.Sigma;
         }
 
+        /// <summary>
+        /// Detects edges in an image utilising Marr–Hildreth algorithm.
+        /// </summary>
+        /// <returns>
+        /// Instance of class <see cref="EdgeDetectionResult"/> containing two bitmaps that 
+        /// represent result image and image before thresholding.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The bitmap has not been set.
+        /// </exception>
         public override EdgeDetectionResult DetectEdges()
         {
             if (_pixelMatrix is null)
@@ -38,6 +62,11 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
             return result;
         }
 
+        /// <summary>
+        ///  Finds the zero crossing of the second derivative of image intensity.
+        /// </summary>
+        /// <param name="pixelMatrix"></param>
+        /// <returns></returns>
         private PixelMatrix ZeroCrossing(PixelMatrix pixelMatrix)
         {
             var resultMatrix = new PixelMatrix(_width, _height, _dimensions);

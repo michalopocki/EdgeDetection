@@ -1,4 +1,5 @@
 ﻿using EdgeDetectionApp.ViewModel;
+using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace EdgeDetectionAppTests.ViewModels
         {
             var result = _sut.MainViewModel;
             Assert.NotNull(result);
+
+            //SobelDetector sob = new SobelDetector()
         }
 
         [Fact]

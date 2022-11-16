@@ -3,22 +3,42 @@
 
 namespace EdgeDetectionLib.Kernels
 {
+    /// <summary>
+    /// Base abstract class for kernalr containing basic alghoritms.
+    /// </summary>
     public abstract class KernelBase : IKernel
     {
+        /// <inheritdoc />
         public int M { get; init; }
+
+        /// <inheritdoc />
         public int N { get; init; }
 
+        /// <summary>
+        /// Base constructor initializing kernel.
+        /// </summary>
+        /// <param name="M"> Number of rows. </param>
+        /// <param name="N"> Number of columns. </param>
         public KernelBase(int M, int N)
         {
             this.M = M; this.N = N;
         }
 
+        /// <summary>
+        /// Base constructor initializing kernel.
+        /// </summary>
+        /// <param name="MxN"> Number of rows and columns. </param>
         public KernelBase(int MxN)
         {
             M = MxN; N = MxN;
         }
+
+        /// <summary>
+        /// Base constructor initializing kernel.
+        /// </summary>
         public KernelBase() { }
 
+        /// <inheritdoc />
         public abstract double[][] Create();
 
         protected double[][] CreateMeshGrid(MeshType type)

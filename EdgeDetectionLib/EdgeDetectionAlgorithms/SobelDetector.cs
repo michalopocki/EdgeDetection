@@ -1,5 +1,6 @@
 ﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using System;
+using System.Security.Policy;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
@@ -11,19 +12,40 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         /// <inheritdoc />
         public override string Name => GetName(this);
 
+        /// <summary> Sobel operator horizontal kernel. </summary>
         internal readonly double[][] _Gx = new double[3][]
         {
             new double[] { -0.25, 0.0, 0.25},
             new double[] { -0.5 , 0.0, 0.5 },
             new double[] { -0.25, 0.0, 0.25 }
         };
+
+        /// <summary> Sobel operator vertical kernel. </summary>
         internal readonly double[][] _Gy = new double[3][]
         {
             new double[] {-0.25, -0.5, -0.25},
             new double[] { 0.0,   0.0,  0.0 },
             new double[] { 0.25,  0.5,  0.25 }
         };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SobelDetector"/> class.
+        /// </summary>
+        /// <param name="args">
+        /// Class that contains gradient detector arguments (implements <see cref="IGradientArgs"></see> interface).
+        /// </param>
         public SobelDetector(IGradientArgs args) : base(args) {}
+
+        /// <summary>
+        /// Detects edges in an image utilising Sobel operator.
+        /// </summary>
+        /// <returns>
+        /// Instance of class <see cref="EdgeDetectionResult"/> containing two bitmaps that 
+        /// represent result image and image before thresholding.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// The bitmap has not been set.
+        /// </exception>
         public override EdgeDetectionResult DetectEdges()
         {
             if (_pixelMatrix is null)

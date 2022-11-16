@@ -17,7 +17,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms
         protected internal bool _prefiltration;
         /// <summary>Size of gaussian kernel.</summary>
         protected internal int _kernelSize;
-        /// <summary>Sigma of gaussian kernel.</summary>
+        /// <summary> Gaussian standard deviation of gaussian kernel.</summary>
         protected internal double _sigma;
         /// <summary>Square matrix that represents gaussian kernel.</summary>
         internal readonly double[][] _kernel;

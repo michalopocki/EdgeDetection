@@ -4,11 +4,15 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
+    /// <summary>
+    /// Class that specifies Marr-Hildreth detector input arguments.
+    /// </summary>
     public class MarrHildrethArgs : BaseArgs, IMarrHildrethArgs
     {
         private int _kernelSize;
         private double _sigma;
 
+        /// <inheritdoc />
         public int KernelSize
         {
             get => _kernelSize;
@@ -22,6 +26,8 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
                 _kernelSize = value;
             }
         }
+
+        /// <inheritdoc />
         public double Sigma
         {
             get => _sigma;
@@ -34,6 +40,13 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
                 _sigma = value;
             }
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MarrHildrethArgs"/> class.
+        /// </summary>
+        /// <param name="imageToProcess"></param>
+        /// <param name="kernelSize"></param>
+        /// <param name="sigma"></param>
         public MarrHildrethArgs(Bitmap? imageToProcess, int kernelSize, double sigma) : base(imageToProcess)
         {
             KernelSize = kernelSize;

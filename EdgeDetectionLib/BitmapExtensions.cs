@@ -10,8 +10,16 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace EdgeDetectionLib
 {
+    /// <summary>
+    /// Static class that contains bitmap extensions.
+    /// </summary>
     public static class BitmapExtensions
     {
+        /// <summary>
+        /// Converts <see cref="Bitmap"/> to <see cref="BitmapImage"/>.
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public static BitmapImage ToBitmapImage(this Bitmap bitmap)
         {
             var bi = new BitmapImage();
@@ -24,10 +32,17 @@ namespace EdgeDetectionLib
             return bi;
         }
 
+        /// <summary>
+        /// Changes bitmap RGB color scale to grayscale.
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns>
+        /// <see cref="Bitmap"/> with Format8bppIndexed pixel format.
+        /// </returns>
         public unsafe static Bitmap ToGrayscale(this Bitmap bitmap)
         {
             var result = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format8bppIndexed);
-            result.SetGrayscalePalete();
+            result.SetGrayscalePalette();
 
             BitmapData originalBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
             BitmapData resultBitmapData = result.LockBits(new Rectangle(0, 0, result.Width, result.Height), ImageLockMode.WriteOnly, result.PixelFormat);
@@ -58,7 +73,11 @@ namespace EdgeDetectionLib
             return result;
         }
 
-        public static void SetGrayscalePalete(this Bitmap bitmap)
+        /// <summary>
+        /// Sets bitmap grayscale palette.
+        /// </summary>
+        /// <param name="bitmap"></param>
+        public static void SetGrayscalePalette(this Bitmap bitmap)
         {
             var resultPalette = bitmap.Palette;
 
@@ -70,6 +89,11 @@ namespace EdgeDetectionLib
             bitmap.Palette = resultPalette;
         }
 
+        /// <summary>
+        /// The complement of an image. Changes <see cref="Bitmap"/> to complemented pixels (255 − x(m, n)).
+        /// </summary>
+        /// <param name="bitmap">
+        /// </param>
         public static unsafe void MakeNegative(this Bitmap bitmap)
         {
             unsafe
@@ -99,7 +123,11 @@ namespace EdgeDetectionLib
                 bitmap.UnlockBits(bitmapData);
             }
         }
-
+        /// <summary>
+        /// Gets number of bytes per pixel.
+        /// </summary>
+        /// <param name="pixelFormat"></param>
+        /// <returns></returns>
         public static int GetBytesPerPixel(PixelFormat pixelFormat)
         {
             return System.Drawing.Bitmap.GetPixelFormatSize(pixelFormat) / 8;
@@ -107,13 +135,21 @@ namespace EdgeDetectionLib
 
         [DllImport("msvcrt.dll")]
         private static extern int memcmp(IntPtr b1, IntPtr b2, long count);
-        public static bool CompareMemCmp(Bitmap b1, Bitmap b2)
+        /// <summary>
+        /// Compares two images.
+        /// </summary>
+        /// <param name="bitmap1"></param>
+        /// <param name="bitmap2"></param>
+        /// <returns>
+        /// <see langword="true"/> if images are identical. Otherwise returns <see langword="false"/>.
+        /// </returns>
+        public static bool CompareMemCmp(Bitmap bitmap1, Bitmap bitmap2)
         {
-            if ((b1 is null) != (b2 is null)) return false;
-            if (b1!.Size != b2!.Size) return false;
+            if ((bitmap1 is null) != (bitmap2 is null)) return false;
+            if (bitmap1!.Size != bitmap2!.Size) return false;
 
-            var bd1 = b1.LockBits(new Rectangle(new Point(0, 0), b1.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            var bd2 = b2.LockBits(new Rectangle(new Point(0, 0), b2.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var bd1 = bitmap1.LockBits(new Rectangle(new Point(0, 0), bitmap1.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var bd2 = bitmap2.LockBits(new Rectangle(new Point(0, 0), bitmap2.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             try
             {
@@ -121,14 +157,14 @@ namespace EdgeDetectionLib
                 IntPtr bd2scan0 = bd2.Scan0;
 
                 int stride = bd1.Stride;
-                int len = stride * b1.Height;
+                int len = stride * bitmap1.Height;
 
                 return memcmp(bd1scan0, bd2scan0, len) == 0;
             }
             finally
             {
-                b1.UnlockBits(bd1);
-                b2.UnlockBits(bd2);
+                bitmap1.UnlockBits(bd1);
+                bitmap2.UnlockBits(bd2);
             }
         }
     }

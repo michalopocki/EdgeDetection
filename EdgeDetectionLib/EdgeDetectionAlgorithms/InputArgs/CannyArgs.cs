@@ -4,6 +4,9 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
+    /// <summary>
+    /// Class that specifies Canny detector input arguments.
+    /// </summary>
     public class CannyArgs : BaseArgs, ICannyArgs
     {
         private bool _prefiltration;
@@ -12,12 +15,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
         private int _tHigh;
         private int _tLow;
 
+        /// <inheritdoc />
         public bool Prefiltration
         {
             get => _prefiltration;
             set => _prefiltration = value;
         }
 
+        /// <inheritdoc />
         public int KernelSize
         {
             get => _kernelSize;
@@ -31,6 +36,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <inheritdoc />
         public double Sigma
         {
             get => _sigma;
@@ -44,6 +50,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <inheritdoc />
         public int THigh
         {
             get => _tHigh;
@@ -57,6 +64,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <inheritdoc />
         public int TLow
         {
             get => _tLow;
@@ -70,6 +78,15 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CannyArgs"/> class.
+        /// </summary>
+        /// <param name="imageToProcess"></param>
+        /// <param name="prefiltration"></param>
+        /// <param name="kernelSize"></param>
+        /// <param name="sigma"></param>
+        /// <param name="tHigh"></param>
+        /// <param name="tLow"></param>
         public CannyArgs(Bitmap? imageToProcess, bool prefiltration, int kernelSize, double sigma, int tHigh, int tLow) : base(imageToProcess)
         {
             Prefiltration = prefiltration;

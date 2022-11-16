@@ -7,8 +7,17 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders
 {
+    /// <summary>
+    /// Interface abstracting edte detectors arguments builder.
+    /// </summary>
     public interface IArgsBuilder
     {
+        /// <summary>
+        /// Builds edge detector arguments.
+        /// </summary>
+        /// <returns>
+        /// Class that implements <see cref="IEdgeDetectorArgs"/> interface.
+        /// </returns>
         IEdgeDetectorArgs Build();
     }
 }

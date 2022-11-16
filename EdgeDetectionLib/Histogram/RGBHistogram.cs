@@ -2,15 +2,23 @@
 
 namespace EdgeDetectionLib.Histogram
 {
+    /// <summary>
+    /// Class that calculates image histogram RGB series.
+    /// </summary>
     public class RGBHistogram : IHistogram
     {
         private readonly PixelMatrix _pixelMatrix;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RGBHistogram"/> class.
+        /// </summary>
+        /// <param name="bitmap"></param>
         public RGBHistogram(Bitmap bitmap)
         {
             _pixelMatrix = new PixelMatrix(bitmap);
         }
 
+        /// <inheritdoc />
         public HistogramResults Calculate()
         {
             var results = new HistogramResults(HistogramType.Colorscale);

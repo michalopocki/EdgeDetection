@@ -17,8 +17,6 @@ namespace EdgeDetectionLib.Tests.EdgeDetectors
         {
             var mock = new Mock<IGradientArgs>();
             _sut = new SobelDetector(mock.Object);
-            
-            EdgeDetectorBase.GetName()
         }
 
         [Fact]

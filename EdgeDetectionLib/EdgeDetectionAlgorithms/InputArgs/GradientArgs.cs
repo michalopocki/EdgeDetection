@@ -4,6 +4,9 @@ using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
 {
+    /// <summary>
+    /// Class that specifies gradient detector input arguments.
+    /// </summary>
     public class GradientArgs : BaseArgs, IGradientArgs
     {
         private bool _thresholding;
@@ -12,13 +15,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
         private int _kernelSize;
         private double _sigma;
 
-
+        /// <inheritdoc />
         public bool Thresholding
         {
             get => _thresholding;
             set => _thresholding = value;
         }
 
+        /// <inheritdoc />
         public int Threshold
         {
             get => _threshold;
@@ -32,12 +36,14 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <inheritdoc />
         public bool Prefiltration
         {
             get => _prefiltration;
             set => _prefiltration = value;
         }
 
+        /// <inheritdoc />
         public int KernelSize
         {
             get => _kernelSize;
@@ -51,6 +57,7 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <inheritdoc />
         public double Sigma
         {
             get => _sigma;
@@ -64,6 +71,15 @@ namespace EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GradientArgs"/> class.
+        /// </summary>
+        /// <param name="imageToProcess"></param>
+        /// <param name="thresholding"></param>
+        /// <param name="threshold"></param>
+        /// <param name="prefiltration"></param>
+        /// <param name="kernelSize"></param>
+        /// <param name="sigma"></param>
         public GradientArgs(Bitmap? imageToProcess, bool thresholding, int threshold,
                             bool prefiltration, int kernelSize, double sigma) : base(imageToProcess)
         {
