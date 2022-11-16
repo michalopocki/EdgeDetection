@@ -18,7 +18,7 @@
         x:Name="mainWindow"
         DataContext="{Binding Path=MainViewModel, Source={StaticResource ViewModelLocator}}"
         Background="{StaticResource mainColor}" WindowStartupLocation="CenterScreen"
-        Title="Edge Detection" Height="700" Width="1300">
+        Title="Edge Detector" Height="700" Width="1300">
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:ImageViewModel}">
             <v:ImageView/>
