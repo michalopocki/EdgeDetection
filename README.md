@@ -4,4 +4,4 @@
 
 Edge Detector is WPF MVVM application enables detecting edges in images and real-time videos.
 
-![App1](https://user-images.githubusercontent.com/112479106/202189693-a46c52a5-e193-4dc0-b10c-6a3e862ad79f.JPG)
+![App2](https://user-images.githubusercontent.com/112479106/202193009-aba77b57-8918-4ddf-bc01-5d7e4cbd3b1f.JPG)
