@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDetectionLib", "EdgeDet
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDetectionLib.Tests", "EdgeDetectionLib.Tests\EdgeDetectionLib.Tests.csproj", "{8C80DA3D-FB1E-440B-9855-48ABDFE0A51D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EdgeDetectionAppTests", "EdgeDetectionAppTests\EdgeDetectionAppTests.csproj", "{ADD018F9-8FCF-4F02-B8F6-69872DC740C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdgeDetectionApp.Tests", "EdgeDetectionApp.Tests\EdgeDetectionApp.Tests.csproj", "{ADD018F9-8FCF-4F02-B8F6-69872DC740C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
