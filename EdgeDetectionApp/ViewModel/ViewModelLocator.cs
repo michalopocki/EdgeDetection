@@ -1,10 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using EdgeDetectionApp.Stores;
+﻿using EdgeDetectionApp.Stores;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using EdgeDetectionLib.Histogram;
 using Microsoft.Extensions.DependencyInjection;
 using MvvmDialogs;
-using System;
 
 namespace EdgeDetectionApp.ViewModel
 {

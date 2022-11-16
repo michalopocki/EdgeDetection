@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EdgeDetectionLib.Histogram
 {
@@ -15,6 +11,7 @@ namespace EdgeDetectionLib.Histogram
         {
             _pixelMatrix = new PixelMatrix(bitmap);
         }
+
         public HistogramResults Calculate()
         {
             var results = new HistogramResults(HistogramType.Grayscale);

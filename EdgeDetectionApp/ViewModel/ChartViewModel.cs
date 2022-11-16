@@ -1,11 +1,6 @@
 ﻿using EdgeDetectionLib.Histogram;
-using System.Windows.Media;
-using Color = System.Windows.Media.Color;
 using EdgeDetectionApp.Messages;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
-using System;
-using System.Windows;
-using LiveCharts.Wpf;
 using LiveCharts;
 
 namespace EdgeDetectionApp.ViewModel

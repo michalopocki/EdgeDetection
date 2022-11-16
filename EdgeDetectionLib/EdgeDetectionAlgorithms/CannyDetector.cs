@@ -1,7 +1,6 @@
 ﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 using EdgeDetectionLib.Kernels;
 using System;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 

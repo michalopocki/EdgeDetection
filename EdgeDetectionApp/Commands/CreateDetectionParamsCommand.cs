@@ -3,11 +3,6 @@ using EdgeDetectionApp.Stores;
 using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.ArgsBuilders;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
 
 namespace EdgeDetectionApp.Commands

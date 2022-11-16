@@ -5,8 +5,6 @@ using EdgeDetectionApp.ViewModel;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
-using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs;
-using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;

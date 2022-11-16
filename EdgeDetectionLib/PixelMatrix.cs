@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Printing;
 using System.Threading.Tasks;
-using System.Windows.Markup;
-using System.Windows.Media.Media3D;
+
 
 namespace EdgeDetectionLib
 {

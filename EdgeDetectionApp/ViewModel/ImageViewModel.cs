@@ -1,17 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using EdgeDetectionApp.Commands;
+﻿using EdgeDetectionApp.Commands;
 using EdgeDetectionApp.Messages;
-using EdgeDetectionApp.Models;
 using EdgeDetectionApp.Stores;
 using EdgeDetectionLib;
 using EdgeDetectionLib.EdgeDetectionAlgorithms.Factory;
 using MvvmDialogs;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace EdgeDetectionApp.ViewModel

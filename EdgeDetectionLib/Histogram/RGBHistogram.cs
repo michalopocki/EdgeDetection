@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace EdgeDetectionLib.Histogram
 {
@@ -15,13 +10,13 @@ namespace EdgeDetectionLib.Histogram
         {
             _pixelMatrix = new PixelMatrix(bitmap);
         }
+
         public HistogramResults Calculate()
         {
             var results = new HistogramResults(HistogramType.Colorscale);
             int width = _pixelMatrix.Width;
             int height = _pixelMatrix.Height;
 
-            //Parallel.For(0, width, x =>
             for(int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)

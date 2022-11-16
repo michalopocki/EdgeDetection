@@ -1,8 +1,5 @@
 ﻿using EdgeDetectionLib.EdgeDetectionAlgorithms.InputArgs.Contracts;
-using EdgeDetectionLib.Kernels;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace EdgeDetectionLib.EdgeDetectionAlgorithms
 {
